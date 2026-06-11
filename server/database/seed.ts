@@ -1,6 +1,7 @@
 import { drizzle } from 'drizzle-orm/mysql2';
 import { sql } from 'drizzle-orm';
 import mysql from 'mysql2/promise';
+import bcrypt from 'bcryptjs';
 import * as schema from './schema';
 
 async function main() {
@@ -17,12 +18,15 @@ async function main() {
   const db = drizzle(connection, { schema, mode: 'default' });
 
   try {
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash('password123', salt);
+
     // 1. Seed Gudang
     console.log('Seeding gudang...');
     await db.insert(schema.gudang).values([
       { kode: 'GDG-001', nama: 'Gudang Pusat Jakarta', alamat: 'Jl. Sudirman No. 1, Jakarta', apakahAktif: 1 },
       { kode: 'GDG-002', nama: 'Gudang Cabang Bandung', alamat: 'Jl. Asia Afrika No. 10, Bandung', apakahAktif: 1 },
-    ]).onDuplicateKeyUpdate({ set: { id: sql`id` } }); // ignore if exists
+    ]).onDuplicateKeyUpdate({ set: { id: sql`id` } });
 
     // Fetch gudang for relations
     const gudangs = await db.select().from(schema.gudang);
@@ -36,14 +40,13 @@ async function main() {
     
     const pemasoks = await db.select().from(schema.pemasok);
 
-    // 3. Seed Pengguna (Users)
+    // 3. Seed Pengguna (Users) with real bcrypt passwords
     console.log('Seeding pengguna...');
-    // Note: password_hash uses dummy string for now. In real app, use bcrypt.
     await db.insert(schema.pengguna).values([
-      { nama: 'Admin Pusat', email: 'admin@sikons.com', passwordHash: 'hashedpassword123', peran: 'penyalur', apakahAktif: 1 },
-      { nama: 'Sales Bandung', email: 'sales1@sikons.com', passwordHash: 'hashedpassword123', peran: 'sales', apakahAktif: 1 },
-      { nama: 'Toko Makmur', email: 'mitra1@sikons.com', passwordHash: 'hashedpassword123', peran: 'mitra', apakahAktif: 1 },
-      { nama: 'Supplier Indofood', email: 'supplier1@sikons.com', passwordHash: 'hashedpassword123', peran: 'pemasok', idPemasok: pemasoks[0].id, apakahAktif: 1 },
+      { nama: 'Admin Pusat', email: 'admin@sikons.com', passwordHash: hashedPassword, peran: 'penyalur', apakahAktif: 1 },
+      { nama: 'Sales Bandung', email: 'sales1@sikons.com', passwordHash: hashedPassword, peran: 'sales', apakahAktif: 1 },
+      { nama: 'Toko Makmur', email: 'mitra1@sikons.com', passwordHash: hashedPassword, peran: 'mitra', apakahAktif: 1 },
+      { nama: 'Supplier Indofood', email: 'supplier1@sikons.com', passwordHash: hashedPassword, peran: 'pemasok', idPemasok: pemasoks[0].id, apakahAktif: 1 },
     ]).onDuplicateKeyUpdate({ set: { id: sql`id` } });
 
     const penggunas = await db.select().from(schema.pengguna);
@@ -77,6 +80,13 @@ async function main() {
     ]).onDuplicateKeyUpdate({ set: { id: sql`id` } });
 
     console.log('Seeding completed successfully!');
+    console.log('');
+    console.log('=== Login Credentials ===');
+    console.log('admin@sikons.com / password123 (Penyalur)');
+    console.log('sales1@sikons.com / password123 (Sales)');
+    console.log('mitra1@sikons.com / password123 (Mitra)');
+    console.log('supplier1@sikons.com / password123 (Pemasok)');
+    console.log('========================');
   } catch (err) {
     console.error('Seeding failed:', err);
   } finally {

@@ -60,20 +60,20 @@
 
 | No | Fitur | Status | Catatan |
 | :-- | :---- | :----- | :------ |
-| 3.1 | **Manajemen Pemasok (Suppliers)** — CRUD | ✅ | Backend API + Frontend pages with @nuxt/ui |
-| 3.2 | **Manajemen Produk / SKU** — CRUD (+ kode unik) | ✅ | Backend API + Frontend pages with pemasok select |
-| 3.3 | **Manajemen Mitra (Partners)** — CRUD (+ GPS, assign sales) | ✅ | Backend API + Frontend pages with sales select |
-| 3.4 | **Manajemen Gudang (Warehouses)** — CRUD | ✅ | Backend API + Frontend pages |
-| 3.5 | **Manajemen User & Roles** — CRUD (4 peran) | ✅ | Backend API + Frontend pages (excl. password hash exposure) |
+| 3.1 | **Manajemen Pemasok (Suppliers)** — CRUD | ⏳ | |
+| 3.2 | **Manajemen Produk / SKU** — CRUD (+ kode unik) | ⏳ | |
+| 3.3 | **Manajemen Mitra (Partners)** — CRUD (+ GPS, assign sales) | ⏳ | |
+| 3.4 | **Manajemen Gudang (Warehouses)** — CRUD | ⏳ | |
+| 3.5 | **Manajemen User & Roles** — CRUD (4 peran) | ⏳ | |
 
 ### Hak Akses Modul A
 
 | Peran | Akses | Status |
 | :---- | :---- | :----- |
-| Penyalur | CRUD | ✅ |
-| Sales Field | Read | ✅ |
+| Penyalur | CRUD | ⏳ |
+| Sales Field | Read | ⏳ |
 | Mitra | — | ⏳ |
-| Pemasok | Read | ✅ |
+| Pemasok | Read | ⏳ |
 
 ## 4. Modul B — Penerimaan Barang
 
@@ -198,7 +198,7 @@
 | 10.2 | Halaman Register (jika dibutuhkan) | ⏳ | |
 | 10.3 | JWT token (access + refresh) | ✅ | Access token generated via util |
 | 10.4 | Middleware RBAC per route | ✅ | Middleware checks token |
-| 10.5 | Logout + session management | ✅ | Sidebar logout + composable |
+| 10.5 | Logout + session management | ⏳ | |
 | 10.6 | Profile & ganti password | ⏳ | |
 
 ## 11. UI/UX — Layout & Komponen Global
@@ -262,40 +262,25 @@
 | :------- | :---------: | :---------: | :---------: | :---------: | :--------: |
 | 1. Inisialisasi & Setup | 12 | 10 | 0 | 2 | 83% |
 | 2. Database Migration | 17 | 17 | 0 | 0 | 100% |
-| 3. Modul A — Master Data | 5 | 5 | 0 | 0 | 100% |
+| 3. Modul A — Master Data | 5 | 0 | 0 | 5 | 0% |
 | 4. Modul B — Penerimaan | 4 | 0 | 0 | 4 | 0% |
 | 5. Modul C — Penyaluran & Faktur | 8 | 0 | 0 | 8 | 0% |
 | 6. Modul D — Opname Stok | 5 | 0 | 0 | 5 | 0% |
 | 7. Modul E — Rekonsiliasi | 5 | 0 | 0 | 5 | 0% |
 | 8. Modul F — Request Restock | 4 | 0 | 0 | 4 | 0% |
 | 9. Modul G — Prediksi Stok AI | 5 | 0 | 0 | 5 | 0% |
-| 10. Autentikasi | 6 | 5 | 0 | 1 | 83% |
+| 10. Autentikasi | 6 | 3 | 0 | 3 | 50% |
 | 11. UI/UX Global | 9 | 8 | 0 | 1 | 88% |
 | 12. Non-Fungsional | 6 | 2 | 0 | 4 | 33% |
 | 13. Testing | 4 | 0 | 0 | 4 | 0% |
 | 14. Deployment | 6 | 0 | 0 | 6 | 0% |
 | 15. Dokumentasi | 3 | 0 | 0 | 3 | 0% |
-| **TOTAL** | **99** | **47** | **0** | **52** | **47%** |
+| **TOTAL** | **99** | **40** | **0** | **59** | **40%** |
 
 ---
 
-> ⏱ Terakhir diperbarui: Rabu, 11 Juni 2026 — Template alignment: layout restructure, main.css cleanup, AppTopbar removed.
+> ⏱ Terakhir diperbarui: Rabu, 11 Juni 2026 — UI Global Layout, Dark Mode & Auth Page selesai.
 >
-> 🔧 **Bug Fix v1:**
-> - **useApi.ts**: Ganti `new Headers()` → plain object spread agar bearer token benar-benar terkirim di header (ofetch di Nuxt 3.16 overwrite Headers instance)
-> - **AppSidebar**: Fix akses `user.value` di computed (sebelumnya akses `user.nama` di object Ref)
-> - **Hapus** `Sidebar.vue` & `Topbar.vue` (dead code)
-> - **pages/index.vue**: Ganti `(auth.user as any)` → `auth.user.value`, ganti `(r as any)` → typed cast
->
-> 🔄 **Template Alignment v1:**
-> - **app.vue**: Tambah `<NuxtLayout>` agar layout system aktif
-> - **app.config.ts**: primary `green`, gray `zinc` (sesuai template dashboard-template.nuxt.dev)
-> - **layouts/auth.vue**: Ganti `slate` → `zinc`
-> - **Semua pages**: Ganti `text-slate-900` → `text-zinc-900`, `bg-slate-*` → `bg-zinc-*`
-> - **main.css**: Hapus custom HSL variables override — biarkan Nuxt UI handle dengan green/zinc dari app.config
-> - **Hapus** `AppTopbar.vue` — template tidak punya topbar terpisah
-> - **default.vue**: Restructure — sidebar `fixed`, konten pake `lg:ml-64`/`lg:ml-16`, mobile hamburger floating
-> - **AppSidebar.vue**: Integrasi user menu (profile, dark mode toggle, logout) — sama seperti template
 > Cara update progress:
 > 1. Ganti ⏳ → ✅ jika sudah selesai
 > 2. Ganti ⏳ → 🔄 jika sedang dikerjakan

@@ -2,11 +2,33 @@
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
-  modules: ['@nuxtjs/tailwindcss'],
+  modules: ['@nuxt/ui'],
   css: ['~/assets/css/main.css'],
+  app: {
+    head: {
+      title: 'SIKONS - Sistem Informasi Konsinyasi',
+      link: [
+        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
+        { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap' },
+      ],
+    },
+  },
+  tailwindcss: {
+    config: {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+        },
+      },
+    },
+  },
   typescript: {
     strict: true,
-    typeCheck: false, // set true setelah install selesai
+    typeCheck: false,
   },
   runtimeConfig: {
     dbHost: process.env.DB_HOST || 'localhost',

@@ -1,3 +1,105 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    /* ——— Background & Text ——— */
+    --background: 0 0% 98%;       /* zinc-50 */
+    --foreground: 240 6% 10%;     /* zinc-900 */
+
+    /* ——— Primary (ganti hue-nya aja buat ganti warna) ——— */
+    /* Hijau=142, Biru=221, Merah=0, Ungu=270, Orange=30, Pink=330 */
+    --primary: 142 71% 45%;       /* green-500 */
+    --primary-foreground: 0 0% 100%;
+
+    /* ——— Muted ——— */
+    --muted: 240 5% 96%;          /* zinc-100 */
+    --muted-foreground: 240 4% 46%;  /* zinc-500 */
+
+    /* ——— Border ——— */
+    --border: 240 6% 90%;         /* zinc-200 */
+
+    /* ——— Destructive ——— */
+    --destructive: 0 84% 60%;     /* red-500 */
+    --destructive-foreground: 0 0% 100%;
+
+    /* ——— RGB varian buat rgba() opacity ——— */
+    --muted-foreground-rgb: 113, 113, 122;  /* zinc-500 */
+
+    /* ——— Lainnya ——— */
+    --radius: 0.75rem;
+    --sidebar-width: 16rem;
+    --sidebar-collapsed-width: 4rem;
+  }
+
+  .dark {
+    --background: 240 10% 4%;     /* zinc-950 */
+    --foreground: 240 6% 90%;     /* zinc-200 */
+
+    --primary: 142 69% 58%;       /* green-400 */
+    --primary-foreground: 240 10% 4%;
+
+    --muted: 240 4% 16%;          /* zinc-800 */
+    --muted-foreground: 240 5% 65%;  /* zinc-400 */
+
+    --border: 240 4% 16%;         /* zinc-800 */
+
+    --destructive: 0 62% 30%;     /* red-900 */
+    --destructive-foreground: 0 0% 100%;
+
+    --muted-foreground-rgb: 161, 161, 170;  /* zinc-400 */
+  }
+}
+
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    @apply antialiased;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(var(--muted-foreground-rgb), 0.2);
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(var(--muted-foreground-rgb), 0.4);
+  }
+}
+
+@layer utilities {
+  .text-muted-foreground {
+    color: hsl(var(--muted-foreground));
+  }
+
+  .text-foreground {
+    color: hsl(var(--foreground));
+  }
+
+  .bg-background {
+    background-color: hsl(var(--background));
+  }
+
+  .bg-muted {
+    background-color: hsl(var(--muted));
+  }
+
+  .border-default {
+    border-color: hsl(var(--border));
+  }
+}

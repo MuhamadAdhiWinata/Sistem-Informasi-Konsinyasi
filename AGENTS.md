@@ -21,7 +21,8 @@
 |:------|:----------|:------|
 | **Framework** | Nuxt 3 | ^3.16 |
 | **Language** | TypeScript | strict mode |
-| **Styling** | Tailwind CSS | via @nuxtjs/tailwindcss |
+| **UI Library** | Nuxt UI (@nuxt/ui) | ^2.x (Wajib digunakan untuk komponen UI) |
+| **Styling** | Tailwind CSS | via @nuxt/ui & assets/css/main.css |
 | **Database** | MariaDB | 10.10 (Docker container: `mariadb_local`) |
 | **ORM** | Drizzle ORM | ^0.40 |
 | **Validasi** | Zod | ^3.24 |
@@ -140,18 +141,20 @@ pnpm typecheck        # TypeScript type check
 ### ✅ HARUS dilakukan:
 1. **Baca `progress.md` dulu** sebelum mulai task apapun
 2. **Update `progress.md`** setiap kali task selesai (ganti ⏳ → ✅)
-3. **Ikuti konvensi penamaan** tabel dalam Bahasa Indonesia
-4. **Gunakan Drizzle ORM** untuk semua query database, BUKAN raw SQL
-5. **Gunakan Zod** untuk validasi semua input API
-6. **Cek `.env`** sebelum hardcode kredensial apapun
+3. **Gunakan komponen `@nuxt/ui`** (seperti `<UTable>`, `<UModal>`, `<UForm>`) ketimbang membuat komponen Tailwind mentah dari nol.
+4. **Ikuti konvensi penamaan** tabel dalam Bahasa Indonesia
+5. **Gunakan Drizzle ORM** untuk semua query database, BUKAN raw SQL
+6. **Gunakan Zod** untuk validasi semua input API (dan UForm state)
+7. **Cek `.env`** sebelum hardcode kredensial apapun
 
 ### ❌ DILARANG:
 1. Mengganti tech stack tanpa konfirmasi eksplisit dari user
-2. Hardcode kredensial database di luar `.env`
-3. Menggunakan `any` di TypeScript (strict mode)
-4. Menulis raw SQL langsung (gunakan Drizzle)
-5. Menghapus file `AGENTS.md`, `PRD_SIKONS_v1.2.md`, atau `progress.md`
-6. Menjalankan `DROP TABLE` atau operasi destruktif tanpa konfirmasi
+2. Membuat komponen *reusable* secara manual (tabel, modal, form) jika komponen tersebut sudah tersedia di `@nuxt/ui`.
+3. Hardcode kredensial database di luar `.env`
+4. Menggunakan `any` di TypeScript (strict mode)
+5. Menulis raw SQL langsung (gunakan Drizzle)
+6. Menghapus file `AGENTS.md`, `PRD_SIKONS_v1.2.md`, atau `progress.md`
+7. Menjalankan `DROP TABLE` atau operasi destruktif tanpa konfirmasi
 
 ## 10. Catatan Instalasi & Environment
 
