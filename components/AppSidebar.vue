@@ -87,6 +87,7 @@ const isDark = computed(() => colorMode.value === 'dark')
 
 const navItems = [
   { name: 'Dashboard', path: '/', icon: 'i-heroicons-home' },
+  { name: 'Penerimaan', path: '/penerimaan-barang', icon: 'i-heroicons-document-arrow-down' },
   { name: 'Pemasok', path: '/master/pemasok', icon: 'i-heroicons-truck' },
   { name: 'Produk', path: '/master/produk', icon: 'i-heroicons-cube' },
   { name: 'Mitra', path: '/master/mitra', icon: 'i-heroicons-building-storefront' },

@@ -1,4 +1,4 @@
-import { bigint, decimal, mysqlTable, tinyint, varchar } from 'drizzle-orm/mysql-core';
+import { bigint, decimal, mysqlTable, text, tinyint, varchar } from 'drizzle-orm/mysql-core';
 import { pemasok } from './pemasok';
 
 // Tabel: produk (products)
@@ -11,5 +11,6 @@ export const produk = mysqlTable('produk', {
   satuan:      varchar('satuan', { length: 20 }).notNull(),
   hargaTebus:  decimal('harga_tebus', { precision: 12, scale: 2 }).notNull(),
   hargaJual:   decimal('harga_jual', { precision: 12, scale: 2 }).notNull(),
+  gambar:      text('gambar', { length: 'medium' }),
   apakahAktif: tinyint('apakah_aktif').notNull().default(1),
 });

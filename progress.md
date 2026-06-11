@@ -23,7 +23,7 @@
 | :-- | :--- | :--- | :----- | :------ |
 | 1.1 | Inisialisasi proyek Nuxt 3 (`npx nuxi init`) | Nuxt 3 | ✅ | Setup manual — nuxi init CLI interaktif diganti manual |
 | 1.2 | Konfigurasi TypeScript strict mode | TypeScript | ✅ | tsconfig.json + nuxt.config.ts strict |
-| 1.3 | Setup Tailwind CSS (konfigurasi + file globals) | Tailwind CSS | ✅ | @nuxtjs/tailwindcss + assets/css/main.css |
+| 1.3 | Setup Tailwind CSS (konfigurasi + file globals) | Tailwind CSS | ✅ | @nuxt/ui (includes tailwindcss) + assets/css/main.css |
 | 1.4 | Setup ESLint + Prettier | Tooling | ⏳ | |
 | 1.5 | Setup struktur folder (modular) | Struktur | ✅ | pages/, server/, components/, dll |
 | 1.6 | Setup environment variables (.env) | Config | ✅ | .env + runtimeConfig di nuxt.config.ts |
@@ -31,7 +31,7 @@
 | 1.8 | Setup ORM / DB Client (Knex / Drizzle / Prisma) | DB | ✅ | Drizzle ORM + drizzle-kit + drizzle.config.ts |
 | 1.9 | Setup autentikasi (JWT + middleware) | Auth | ✅ | jsonwebtoken + bcryptjs installed |
 | 1.10 | Setup RBAC middleware (per-role) | Auth | ✅ | server/middleware/auth.ts + server/utils/rbac.ts |
-| 1.11 | Setup layout utama (sidebar, navbar, dark mode) | UI | ✅ | layouts/default.vue created |
+| 1.11 | Setup layout utama (sidebar, navbar, dark mode) | UI | ✅ | Fixed sidebar, AppTopbar, dark mode toggle, user dropdown |
 | 1.12 | Setup error handling global (client + server) | Tooling | ⏳ | |
 
 ## 2. Database — Migration & Seeder
@@ -79,17 +79,17 @@
 
 | No | Fitur | Status | Catatan |
 | :-- | :---- | :----- | :------ |
-| 4.1 | Form penerimaan (header: pemasok, gudang, tanggal) | ⏳ | |
-| 4.2 | Detail item (produk, jumlah, harga tebus aktual) | ⏳ | |
-| 4.3 | Auto-update stok gudang (`stok_gudang.jumlah`) | ⏳ | |
-| 4.4 | View / daftar penerimaan barang | ⏳ | |
+| 4.1 | Form penerimaan (header: pemasok, gudang, tanggal) | ✅ | pages/penerimaan-barang/create.vue |
+| 4.2 | Detail item (produk, jumlah, harga tebus aktual) | ✅ | Dynamic items table in create form |
+| 4.3 | Auto-update stok gudang (`stok_gudang.jumlah`) | ✅ | Upsert stok_gudang in DB transaction |
+| 4.4 | View / daftar penerimaan barang | ✅ | pages/penerimaan-barang/index.vue + [id].vue |
 
 ### Hak Akses Modul B
 
 | Peran | Akses | Status |
 | :---- | :---- | :----- |
-| Penyalur | CRUD | ⏳ |
-| Sales Field | Create | ⏳ |
+| Penyalur | CRUD | ✅ |
+| Sales Field | Create | ✅ |
 | Mitra | — | ⏳ |
 | Pemasok | Read | ⏳ |
 
@@ -205,7 +205,7 @@
 
 | No | Fitur | Status | Catatan |
 | :-- | :---- | :----- | :------ |
-| 11.1 | Layout utama (sidebar navigasi + topbar) | ✅ | Premium default layout |
+| 11.1 | Layout utama (sidebar navigasi + topbar) | ✅ | Fixed sidebar + AppTopbar + mobile hamburger |
 | 11.2 | Sidebar navigasi dinamis berdasarkan role | ⏳ | |
 | 11.3 | Tema dark/light mode | ✅ | Tailwind dark mode with toggle |
 | 11.4 | Komponen `DataTable` reusable (sort, filter, search) | ✅ | Menggunakan `<UTable>` dari `@nuxt/ui` |
@@ -263,7 +263,7 @@
 | 1. Inisialisasi & Setup | 12 | 10 | 0 | 2 | 83% |
 | 2. Database Migration | 17 | 17 | 0 | 0 | 100% |
 | 3. Modul A — Master Data | 5 | 5 | 0 | 0 | 100% |
-| 4. Modul B — Penerimaan | 4 | 0 | 0 | 4 | 0% |
+| 4. Modul B — Penerimaan | 4 | 4 | 0 | 0 | 100% |
 | 5. Modul C — Penyaluran & Faktur | 8 | 0 | 0 | 8 | 0% |
 | 6. Modul D — Opname Stok | 5 | 0 | 0 | 5 | 0% |
 | 7. Modul E — Rekonsiliasi | 5 | 0 | 0 | 5 | 0% |
@@ -275,27 +275,35 @@
 | 13. Testing | 4 | 0 | 0 | 4 | 0% |
 | 14. Deployment | 6 | 0 | 0 | 6 | 0% |
 | 15. Dokumentasi | 3 | 0 | 0 | 3 | 0% |
-| **TOTAL** | **99** | **47** | **0** | **52** | **47%** |
+| **TOTAL** | **99** | **51** | **0** | **48** | **51%** |
 
 ---
 
-> ⏱ Terakhir diperbarui: Rabu, 11 Juni 2026 — Template alignment: layout restructure, main.css cleanup, AppTopbar removed.
+> ⏱ Terakhir diperbarui: Kamis, 11 Juni 2026 — Modul B (Penerimaan Barang) selesai.
 >
-> 🔧 **Bug Fix v1:**
-> - **useApi.ts**: Ganti `new Headers()` → plain object spread agar bearer token benar-benar terkirim di header (ofetch di Nuxt 3.16 overwrite Headers instance)
+> 🚀 **Modul B — Penerimaan Barang (NEW):**
+> - **API**: `GET /api/penerimaan-barang`, `GET /api/penerimaan-barang/:id`, `POST /api/penerimaan-barang`
+> - **POST** dalam 1 transaksi: insert header + items + auto-upsert `stok_gudang`
+> - **Frontend**: `pages/penerimaan-barang/` — list, create (form + dynamic items table), detail
+> - **Sidebar**: menu "Penerimaan" ditambahkan
+> - **RBAC**: Penyalur & Sales bisa create
+>
+> 🔧 **Bug Fix v1 (solved):**
+> - **useApi.ts**: Ganti `new Headers()` → plain object spread agar bearer token benar-benar terkirim di header (ofetch Nuxt 3.16 overwrite Headers instance)
 > - **AppSidebar**: Fix akses `user.value` di computed (sebelumnya akses `user.nama` di object Ref)
 > - **Hapus** `Sidebar.vue` & `Topbar.vue` (dead code)
 > - **pages/index.vue**: Ganti `(auth.user as any)` → `auth.user.value`, ganti `(r as any)` → typed cast
+> - **color="neutral" fix**: Ganti semua `color="neutral"` → `color="gray"` (@nuxt/ui v2 tidak punya `neutral`)
 >
-> 🔄 **Template Alignment v1:**
+> 🔄 **Template Alignment v1 (done):**
 > - **app.vue**: Tambah `<NuxtLayout>` agar layout system aktif
-> - **app.config.ts**: primary `green`, gray `zinc` (sesuai template dashboard-template.nuxt.dev)
+> - **app.config.ts**: primary `green`, gray `zinc` (sesuai dashboard-template.nuxt.dev)
 > - **layouts/auth.vue**: Ganti `slate` → `zinc`
 > - **Semua pages**: Ganti `text-slate-900` → `text-zinc-900`, `bg-slate-*` → `bg-zinc-*`
-> - **main.css**: Hapus custom HSL variables override — biarkan Nuxt UI handle dengan green/zinc dari app.config
-> - **Hapus** `AppTopbar.vue` — template tidak punya topbar terpisah
-> - **default.vue**: Restructure — sidebar `fixed`, konten pake `lg:ml-64`/`lg:ml-16`, mobile hamburger floating
-> - **AppSidebar.vue**: Integrasi user menu (profile, dark mode toggle, logout) — sama seperti template
+> - **default.vue**: Restructure — sidebar `fixed`, konten `lg:ml-64`/`lg:ml-16`, mobile hamburger floating
+> - **AppSidebar.vue**: Redesign — logo header, nav items, user dropdown (profile, dark mode toggle, logout)
+> - **AppTopbar.vue**: Dibuat ulang — minimal header dengan hamburger (mobile), page title, search
+> - **main.css**: HSL variables + utility classes (`bg-background`, `text-foreground`, dll)
 > Cara update progress:
 > 1. Ganti ⏳ → ✅ jika sudah selesai
 > 2. Ganti ⏳ → 🔄 jika sedang dikerjakan

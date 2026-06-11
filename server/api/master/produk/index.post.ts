@@ -10,6 +10,7 @@ const bodySchema = z.object({
   satuan: z.string().min(1, 'Satuan wajib diisi').max(20),
   hargaTebus: z.string({ required_error: 'Harga tebus wajib diisi' }),
   hargaJual: z.string({ required_error: 'Harga jual wajib diisi' }),
+  gambar: z.string().optional(),
   apakahAktif: z.number().int().min(0).max(1).default(1),
 });
 
