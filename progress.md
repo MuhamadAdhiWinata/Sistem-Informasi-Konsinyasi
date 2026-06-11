@@ -38,23 +38,23 @@
 
 | No | Nama Tabel (Indonesia) | English | Status | Catatan |
 | :-- | :--------------------- | :------ | :----- | :------ |
-| 2.1 | `pengguna` | users | ⏳ | |
-| 2.2 | `pemasok` | suppliers | ⏳ | |
-| 2.3 | `produk` | products | ⏳ | |
-| 2.4 | `gudang` | warehouses | ⏳ | |
-| 2.5 | `stok_gudang` | warehouse_stocks | ⏳ | |
-| 2.6 | `mitra` | partners | ⏳ | |
-| 2.7 | `penerimaan_barang` | goods_receipts | ⏳ | |
-| 2.8 | `item_penerimaan_barang` | goods_receipt_items | ⏳ | |
-| 2.9 | `penyaluran` | distributions | ⏳ | |
-| 2.10 | `item_penyaluran` | distribution_items | ⏳ | |
-| 2.11 | `faktur` | invoices | ⏳ | |
-| 2.12 | `opname_stok` | stock_opnames | ⏳ | |
-| 2.13 | `item_opname` | opname_items | ⏳ | |
-| 2.14 | `permintaan_stok` | restock_requests | ⏳ | |
-| 2.15 | `item_permintaan_stok` | restock_request_items | ⏳ | |
-| 2.16 | `prediksi_stok` | stock_forecasts | ⏳ | |
-| 2.17 | **Seeder** data dummy | — | ⏳ | |
+| 2.1 | `pengguna` | users | ✅ | Schema created |
+| 2.2 | `pemasok` | suppliers | ✅ | Schema created |
+| 2.3 | `produk` | products | ✅ | Schema created |
+| 2.4 | `gudang` | warehouses | ✅ | Schema created |
+| 2.5 | `stok_gudang` | warehouse_stocks | ✅ | Schema created |
+| 2.6 | `mitra` | partners | ✅ | Schema created |
+| 2.7 | `penerimaan_barang` | goods_receipts | ✅ | Schema created |
+| 2.8 | `item_penerimaan_barang` | goods_receipt_items | ✅ | Schema created |
+| 2.9 | `penyaluran` | distributions | ✅ | Schema created |
+| 2.10 | `item_penyaluran` | distribution_items | ✅ | Schema created |
+| 2.11 | `faktur` | invoices | ✅ | Schema created |
+| 2.12 | `opname_stok` | stock_opnames | ✅ | Schema created |
+| 2.13 | `item_opname` | opname_items | ✅ | Schema created |
+| 2.14 | `permintaan_stok` | restock_requests | ✅ | Schema created |
+| 2.15 | `item_permintaan_stok` | restock_request_items | ✅ | Schema created |
+| 2.16 | `prediksi_stok` | stock_forecasts | ✅ | Schema created |
+| 2.17 | **Seeder** data dummy | — | ✅ | Basic dummy data seeded |
 
 ## 3. Modul A — Master Data
 
@@ -260,8 +260,8 @@
 
 | Kategori | Total Task | ✅ Selesai | 🔄 Progres | ⏳ Pending | Progress % |
 | :------- | :---------: | :---------: | :---------: | :---------: | :--------: |
-| 1. Inisialisasi & Setup | 12 | 0 | 0 | 12 | 0% |
-| 2. Database Migration | 17 | 0 | 0 | 17 | 0% |
+| 1. Inisialisasi & Setup | 12 | 7 | 0 | 5 | 58% |
+| 2. Database Migration | 17 | 17 | 0 | 0 | 100% |
 | 3. Modul A — Master Data | 5 | 0 | 0 | 5 | 0% |
 | 4. Modul B — Penerimaan | 4 | 0 | 0 | 4 | 0% |
 | 5. Modul C — Penyaluran & Faktur | 8 | 0 | 0 | 8 | 0% |
@@ -275,11 +275,11 @@
 | 13. Testing | 4 | 0 | 0 | 4 | 0% |
 | 14. Deployment | 6 | 0 | 0 | 6 | 0% |
 | 15. Dokumentasi | 3 | 0 | 0 | 3 | 0% |
-| **TOTAL** | **99** | **7** | **0** | **92** | **7%** |
+| **TOTAL** | **99** | **24** | **0** | **75** | **24%** |
 
 ---
 
-> ⏱ Terakhir diperbarui: Rabu, 11 Juni 2026 — Setup & instalasi selesai. Nuxt 3 running di localhost:3000
+> ⏱ Terakhir diperbarui: Rabu, 11 Juni 2026 — Seeder database berjalan sukses.
 >
 > Cara update progress:
 > 1. Ganti ⏳ → ✅ jika sudah selesai
