@@ -9,7 +9,10 @@
 
     <div class="mb-4 flex items-center gap-3 flex-wrap">
       <UInput v-model="searchQuery" placeholder="Cari produk..." icon="i-heroicons-magnifying-glass-20-solid" class="w-64" size="sm" />
-      <USelect v-model="filterGudang" :options="gudangOptions" placeholder="Semua Gudang" class="w-56" size="sm" clearable />
+      <select v-model="filterGudang" class="w-56 rounded-md border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm shadow-sm px-3 py-1.5 text-zinc-900 dark:text-white focus:border-primary focus:ring-primary">
+        <option value="">Semua Gudang</option>
+        <option v-for="g in gudangList" :key="g.id" :value="g.id">{{ g.nama }}</option>
+      </select>
     </div>
 
     <UCard :ui="{ body: { padding: 'p-0 sm:p-0' } }">
@@ -31,7 +34,7 @@ definePageMeta({ layout: 'default' })
 const api = useApi()
 
 const searchQuery = ref('')
-const filterGudang = ref<number | undefined>(undefined)
+const filterGudang = ref<string | number>('')
 const isLoading = ref(false)
 const items = ref<any[]>([])
 const gudangList = ref<any[]>([])
@@ -45,14 +48,10 @@ const columns = [
   { key: 'jumlah', label: 'Stok Tersedia', sortable: true },
 ]
 
-const gudangOptions = computed(() =>
-  gudangList.value.map((g: any) => ({ label: g.nama, value: g.id })),
-)
-
 const filteredItems = computed(() => {
   let result = items.value
-  const gd = filterGudang.value
-  if (gd !== undefined && gd !== null) {
+  if (filterGudang.value !== '') {
+    const gd = Number(filterGudang.value)
     result = result.filter((i: any) => i.idGudang === gd)
   }
   if (searchQuery.value) {
