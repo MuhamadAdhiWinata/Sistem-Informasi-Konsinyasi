@@ -7,6 +7,9 @@
 
     <div class="mb-4 flex items-center gap-3">
       <UInput v-model="searchQuery" placeholder="Cari mitra..." icon="i-heroicons-magnifying-glass-20-solid" class="w-72" size="sm" />
+      <UButton icon="i-heroicons-arrow-down-tray" size="sm" color="gray" variant="soft" :loading="isExporting" @click="exportCsv">
+        Export CSV
+      </UButton>
     </div>
 
     <div v-if="isLoading" class="flex items-center justify-center py-20">
@@ -96,6 +99,7 @@ const router = useRouter()
 
 const searchQuery = ref('')
 const isLoading = ref(true)
+const isExporting = ref(false)
 const items = ref<any[]>([])
 
 const filteredItems = computed(() => {
@@ -131,6 +135,27 @@ async function fetchData() {
 
 function viewDetail(idMitra: number) {
   router.push(`/rekonsiliasi/${idMitra}`)
+}
+
+function exportCsv() {
+  isExporting.value = true
+  try {
+    const rows = filteredItems.value
+    const header = 'Mitra,Telepon,Opname,Penyaluran,Total Laku,Total Retur,Pendapatan Mitra,Pendapatan Penyalur,Retur Baik,Retur Rusak,Retur Expired,Margin\n'
+    const csv = rows.map((r: any) =>
+      `"${r.mitra}","${r.telepon || ''}",${r.totalOpname},${r.totalPenyaluran},${Number(r.totalLaku).toFixed(0)},${Number(r.totalRetur).toFixed(0)},${Number(r.totalPendapatanMitra).toFixed(2)},${Number(r.totalPendapatanPenyalur).toFixed(2)},${Number(r.returBaik).toFixed(0)},${Number(r.returRusak).toFixed(0)},${Number(r.returExpired).toFixed(0)},"${marginPercent(r)}"`,
+    ).join('\n')
+
+    const blob = new Blob([header + csv], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `rekonsiliasi-${new Date().toISOString().slice(0, 10)}.csv`
+    a.click()
+    URL.revokeObjectURL(url)
+  } finally {
+    isExporting.value = false
+  }
 }
 
 onMounted(() => fetchData())

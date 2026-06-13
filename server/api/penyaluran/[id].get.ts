@@ -1,10 +1,13 @@
 import { eq } from 'drizzle-orm'
 import { penyaluran, itemPenyaluran, mitra, gudang, pengguna, produk, faktur } from '~~/server/database/schema'
 import { useDB } from '~~/server/utils/database'
+import { requireRole } from '~~/server/utils/rbac'
 
 export default defineEventHandler(async (event) => {
+  requireRole(event, ['penyalur', 'sales', 'mitra', 'pemasok'])
   const id = Number(getRouterParam(event, 'id'))
   const db = await useDB()
+  const user = event.context.user!
 
   const header = await db
     .select({
@@ -31,7 +34,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: 'Penyaluran not found' })
   }
 
-  const items = await db
+  let items = await db
     .select({
       id: itemPenyaluran.id,
       idProduk: itemPenyaluran.idProduk,
@@ -46,6 +49,14 @@ export default defineEventHandler(async (event) => {
     .from(itemPenyaluran)
     .leftJoin(produk, eq(itemPenyaluran.idProduk, produk.id))
     .where(eq(itemPenyaluran.idPenyaluran, id))
+
+  if (user.peran === 'pemasok') {
+    items = items.map(i => ({
+      ...i,
+      snapshotHargaJual: '0',
+      snapshotHargaTebus: '0',
+    }))
+  }
 
   const fakturData = await db
     .select()

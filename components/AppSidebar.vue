@@ -90,36 +90,87 @@ const colorMode = useColorMode()
 
 const isDark = computed(() => colorMode.value === 'dark')
 
-const navGroups = [
-  {
-    label: 'Umum',
-    items: [
-      { name: 'Dashboard', path: '/', icon: 'i-heroicons-home' },
-    ],
-  },
-  {
-    label: 'Data Master',
-    items: [
-      { name: 'Pemasok', path: '/master/pemasok', icon: 'i-heroicons-building-library' },
-      { name: 'Produk', path: '/master/produk', icon: 'i-heroicons-cube' },
-      { name: 'Mitra', path: '/master/mitra', icon: 'i-heroicons-building-storefront' },
-      { name: 'Gudang', path: '/master/gudang', icon: 'i-heroicons-building-office-2' },
-      { name: 'Pengguna', path: '/master/pengguna', icon: 'i-heroicons-users' },
-      { name: 'Stok Gudang', path: '/stok-gudang', icon: 'i-heroicons-cube' },
-    ],
-  },
-  {
-    label: 'Transaksi',
-    items: [
-      { name: 'Penerimaan', path: '/penerimaan-barang', icon: 'i-heroicons-document-arrow-down' },
-      { name: 'Penyaluran', path: '/penyaluran', icon: 'i-heroicons-truck' },
-      { name: 'Opname', path: '/opname-stok', icon: 'i-heroicons-clipboard-document-check' },
-      { name: 'Rekonsiliasi', path: '/rekonsiliasi', icon: 'i-heroicons-receipt-percent' },
-      { name: 'Restok', path: '/permintaan-stok', icon: 'i-heroicons-shopping-cart' },
-      { name: 'Prediksi', path: '/prediksi-stok', icon: 'i-heroicons-chart-bar-square' },
-    ],
-  },
-]
+const navGroups = computed(() => {
+  const role = user.value?.peran
+
+  const groups = [
+    {
+      label: 'Umum',
+      items: [
+        { name: 'Dashboard', path: '/', icon: 'i-heroicons-home' },
+      ],
+    },
+    {
+      label: 'Data Master',
+      items: [
+        { name: 'Pemasok', path: '/master/pemasok', icon: 'i-heroicons-building-library' },
+        { name: 'Produk', path: '/master/produk', icon: 'i-heroicons-cube' },
+        { name: 'Mitra', path: '/master/mitra', icon: 'i-heroicons-building-storefront' },
+        { name: 'Gudang', path: '/master/gudang', icon: 'i-heroicons-building-office-2' },
+        { name: 'Pengguna', path: '/master/pengguna', icon: 'i-heroicons-users' },
+        { name: 'Stok Gudang', path: '/stok-gudang', icon: 'i-heroicons-cube' },
+      ],
+    },
+    {
+      label: 'Transaksi',
+      items: [
+        { name: 'Penerimaan', path: '/penerimaan-barang', icon: 'i-heroicons-document-arrow-down' },
+        { name: 'Penyaluran', path: '/penyaluran', icon: 'i-heroicons-truck' },
+        { name: 'Faktur', path: '/faktur', icon: 'i-heroicons-document-text' },
+        { name: 'Opname', path: '/opname-stok', icon: 'i-heroicons-clipboard-document-check' },
+        { name: 'Rekonsiliasi', path: '/rekonsiliasi', icon: 'i-heroicons-receipt-percent' },
+        { name: 'Restok', path: '/permintaan-stok', icon: 'i-heroicons-shopping-cart' },
+        { name: 'Prediksi', path: '/prediksi-stok', icon: 'i-heroicons-chart-bar-square' },
+      ],
+    },
+  ]
+
+  // Role-based filtering
+  if (role === 'mitra') {
+    return [
+      { label: 'Umum', items: [{ name: 'Dashboard', path: '/', icon: 'i-heroicons-home' }] },
+      { label: 'Transaksi', items: [
+        { name: 'Penyaluran', path: '/penyaluran', icon: 'i-heroicons-truck' },
+        { name: 'Opname', path: '/opname-stok', icon: 'i-heroicons-clipboard-document-check' },
+        { name: 'Restok', path: '/permintaan-stok', icon: 'i-heroicons-shopping-cart' },
+        { name: 'Rekonsiliasi', path: '/rekonsiliasi', icon: 'i-heroicons-receipt-percent' },
+      ]},
+    ]
+  }
+
+  if (role === 'pemasok') {
+    return [
+      { label: 'Umum', items: [{ name: 'Dashboard', path: '/', icon: 'i-heroicons-home' }] },
+      { label: 'Data Master', items: [
+        { name: 'Produk', path: '/master/produk', icon: 'i-heroicons-cube' },
+      ]},
+      { label: 'Transaksi', items: [
+        { name: 'Penerimaan', path: '/penerimaan-barang', icon: 'i-heroicons-document-arrow-down' },
+        { name: 'Penyaluran', path: '/penyaluran', icon: 'i-heroicons-truck' },
+      ]},
+    ]
+  }
+
+  if (role === 'sales') {
+    return [
+      { label: 'Umum', items: [{ name: 'Dashboard', path: '/', icon: 'i-heroicons-home' }] },
+      { label: 'Data Master', items: [
+        { name: 'Mitra', path: '/master/mitra', icon: 'i-heroicons-building-storefront' },
+        { name: 'Produk', path: '/master/produk', icon: 'i-heroicons-cube' },
+        { name: 'Stok Gudang', path: '/stok-gudang', icon: 'i-heroicons-cube' },
+      ]},
+      { label: 'Transaksi', items: [
+        { name: 'Penyaluran', path: '/penyaluran', icon: 'i-heroicons-truck' },
+        { name: 'Opname', path: '/opname-stok', icon: 'i-heroicons-clipboard-document-check' },
+        { name: 'Restok', path: '/permintaan-stok', icon: 'i-heroicons-shopping-cart' },
+        { name: 'Prediksi', path: '/prediksi-stok', icon: 'i-heroicons-chart-bar-square' },
+      ]},
+    ]
+  }
+
+  // Penyalur (admin) — full access
+  return groups
+})
 
 const userName = computed(() => user.value?.nama || 'User')
 const userRole = computed(() => user.value?.peran || '-')

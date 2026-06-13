@@ -1,0 +1,1 @@
+ALTER TABLE `penerimaan_barang` ADD `status` enum('draft','completed') DEFAULT 'draft' NOT NULL;

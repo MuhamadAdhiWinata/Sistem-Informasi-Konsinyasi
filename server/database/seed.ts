@@ -176,9 +176,9 @@ async function main() {
 
     interface GRItem { produkIdx: number; jumlah: number; hargaTebusAktual: string }
 
-    const grData: { nomor: string; pemasok: typeof pWings; gudang: typeof gPusat; tgl: Date; items: GRItem[] }[] = [
+    const grData: { nomor: string; pemasok: typeof pWings; gudang: typeof gPusat; tgl: Date; items: GRItem[]; status: 'draft' | 'completed' }[] = [
       {
-        nomor: 'GR-20260601-0001', pemasok: pWings, gudang: gPusat, tgl: new Date('2026-06-01'),
+        nomor: 'GR-20260601-0001', pemasok: pWings, gudang: gPusat, tgl: new Date('2026-06-01'), status: 'completed',
         items: [
           { produkIdx: 0, jumlah: 80, hargaTebusAktual: '4000' },
           { produkIdx: 1, jumlah: 70, hargaTebusAktual: '4000' },
@@ -186,7 +186,7 @@ async function main() {
         ],
       },
       {
-        nomor: 'GR-20260602-0001', pemasok: pMayora, gudang: gPusat, tgl: new Date('2026-06-02'),
+        nomor: 'GR-20260602-0001', pemasok: pMayora, gudang: gPusat, tgl: new Date('2026-06-02'), status: 'completed',
         items: [
           { produkIdx: 3, jumlah: 70, hargaTebusAktual: '4500' },
           { produkIdx: 4, jumlah: 60, hargaTebusAktual: '5000' },
@@ -194,7 +194,7 @@ async function main() {
         ],
       },
       {
-        nomor: 'GR-20260605-0001', pemasok: pCoca, gudang: gBandung, tgl: new Date('2026-06-05'),
+        nomor: 'GR-20260605-0001', pemasok: pCoca, gudang: gBandung, tgl: new Date('2026-06-05'), status: 'completed',
         items: [
           { produkIdx: 9, jumlah: 60, hargaTebusAktual: '4500' },
           { produkIdx: 10, jumlah: 50, hargaTebusAktual: '4500' },
@@ -202,14 +202,14 @@ async function main() {
         ],
       },
       {
-        nomor: 'GR-20260607-0001', pemasok: pSosro, gudang: gBandung, tgl: new Date('2026-06-07'),
+        nomor: 'GR-20260607-0001', pemasok: pSosro, gudang: gBandung, tgl: new Date('2026-06-07'), status: 'draft',
         items: [
           { produkIdx: 12, jumlah: 70, hargaTebusAktual: '3500' },
           { produkIdx: 13, jumlah: 60, hargaTebusAktual: '3500' },
         ],
       },
       {
-        nomor: 'GR-20260610-0001', pemasok: pUltra, gudang: gSurabaya, tgl: new Date('2026-06-10'),
+        nomor: 'GR-20260610-0001', pemasok: pUltra, gudang: gSurabaya, tgl: new Date('2026-06-10'), status: 'draft',
         items: [
           { produkIdx: 14, jumlah: 60, hargaTebusAktual: '5000' },
           { produkIdx: 15, jumlah: 50, hargaTebusAktual: '5000' },
@@ -217,7 +217,7 @@ async function main() {
         ],
       },
       {
-        nomor: 'GR-20260612-0001', pemasok: pIndofood, gudang: gPusat, tgl: new Date('2026-06-12'),
+        nomor: 'GR-20260612-0001', pemasok: pIndofood, gudang: gPusat, tgl: new Date('2026-06-12'), status: 'draft',
         items: [
           { produkIdx: 18, jumlah: 70, hargaTebusAktual: '3200' },
           { produkIdx: 19, jumlah: 60, hargaTebusAktual: '2800' },
@@ -228,7 +228,7 @@ async function main() {
     for (const gr of grData) {
       await db.insert(schema.penerimaanBarang).values([{
         nomorPenerimaan: gr.nomor, idPemasok: gr.pemasok.id, idGudang: gr.gudang.id,
-        diterimaOleh: admin.id, tanggalPenerimaan: gr.tgl,
+        diterimaOleh: admin.id, tanggalPenerimaan: gr.tgl, status: gr.status,
       }]);
       const [header] = await db.select().from(schema.penerimaanBarang).where(sql`nomor_penerimaan = ${gr.nomor}`);
       for (const item of gr.items) {
@@ -237,10 +237,12 @@ async function main() {
           idPenerimaan: header.id, idProduk: prod.id, jumlah: item.jumlah,
           hargaTebusAktual: item.hargaTebusAktual,
         }]);
-        await db.update(schema.stokGudang)
-          .set({ jumlah: sql`jumlah + ${item.jumlah}`, diperbaruiPada: sql`CURRENT_TIMESTAMP` })
-          .where(sql`id_gudang = ${gr.gudang.id} AND id_produk = ${prod.id}`);
-        addStock(gr.gudang.id, prod.id, item.jumlah);
+        if (gr.status === 'completed') {
+          await db.update(schema.stokGudang)
+            .set({ jumlah: sql`jumlah + ${item.jumlah}`, diperbaruiPada: sql`CURRENT_TIMESTAMP` })
+            .where(sql`id_gudang = ${gr.gudang.id} AND id_produk = ${prod.id}`);
+          addStock(gr.gudang.id, prod.id, item.jumlah);
+        }
       }
     }
 
@@ -318,18 +320,20 @@ async function main() {
       const [header] = await db.select().from(schema.penyaluran).where(sql`nomor_penyaluran = ${del.nomor}`);
       for (const item of del.items) {
         const prod = produk[item.produkIdx];
-        const stok = getStock(del.gudang.id, prod.id);
-        if (stok < item.jumlahDikirim) {
-          throw new Error(`[BALANCE ERROR] Stok ${prod.nama} di gudang ${del.gudang.id} hanya ${stok}, butuh ${item.jumlahDikirim}`);
-        }
         await db.insert(schema.itemPenyaluran).values([{
           idPenyaluran: header.id, idProduk: prod.id, jumlahDikirim: item.jumlahDikirim,
           snapshotHargaJual: prod.hargaJualPenyalur, snapshotHargaTebus: prod.hargaTebus,
         }]);
-        await db.update(schema.stokGudang)
-          .set({ jumlah: sql`jumlah - ${item.jumlahDikirim}`, diperbaruiPada: sql`CURRENT_TIMESTAMP` })
-          .where(sql`id_gudang = ${del.gudang.id} AND id_produk = ${prod.id}`);
-        subStock(del.gudang.id, prod.id, item.jumlahDikirim);
+        if (del.status !== 'draft') {
+          const stok = getStock(del.gudang.id, prod.id);
+          if (stok < item.jumlahDikirim) {
+            throw new Error(`[BALANCE ERROR] Stok ${prod.nama} di gudang ${del.gudang.id} hanya ${stok}, butuh ${item.jumlahDikirim}`);
+          }
+          await db.update(schema.stokGudang)
+            .set({ jumlah: sql`jumlah - ${item.jumlahDikirim}`, diperbaruiPada: sql`CURRENT_TIMESTAMP` })
+            .where(sql`id_gudang = ${del.gudang.id} AND id_produk = ${prod.id}`);
+          subStock(del.gudang.id, prod.id, item.jumlahDikirim);
+        }
       }
     }
 

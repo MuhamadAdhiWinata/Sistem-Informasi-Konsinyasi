@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="p-8">
     <div class="text-center mb-8">
       <div class="mx-auto w-14 h-14 bg-gradient-to-br from-primary to-primary/60 text-white rounded-2xl flex items-center justify-center mb-4 shadow-lg shadow-primary/25">
         <Icon name="i-heroicons-cube-transparent" class="w-7 h-7" />
@@ -79,17 +79,17 @@
           <p class="font-semibold text-foreground">Penyalur</p>
           <p class="text-muted-foreground mt-0.5">admin@sikons.com</p>
         </div>
-        <div class="p-2.5 rounded-lg bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 cursor-pointer hover:border-primary/40 transition-colors" @click="fillCredentials('sales1@sikons.com', 'password123')">
+        <div class="p-2.5 rounded-lg bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 cursor-pointer hover:border-primary/40 transition-colors" @click="fillCredentials('rudi@sikons.com', 'password123')">
           <p class="font-semibold text-foreground">Sales</p>
-          <p class="text-muted-foreground mt-0.5">sales1@sikons.com</p>
+          <p class="text-muted-foreground mt-0.5">rudi@sikons.com</p>
         </div>
-        <div class="p-2.5 rounded-lg bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 cursor-pointer hover:border-primary/40 transition-colors" @click="fillCredentials('supplier1@sikons.com', 'password123')">
+        <div class="p-2.5 rounded-lg bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 cursor-pointer hover:border-primary/40 transition-colors" @click="fillCredentials('wings@sikons.com', 'password123')">
           <p class="font-semibold text-foreground">Pemasok</p>
-          <p class="text-muted-foreground mt-0.5">supplier1@sikons.com</p>
+          <p class="text-muted-foreground mt-0.5">wings@sikons.com</p>
         </div>
-        <div class="p-2.5 rounded-lg bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 cursor-pointer hover:border-primary/40 transition-colors" @click="fillCredentials('mitra1@sikons.com', 'password123')">
+        <div class="p-2.5 rounded-lg bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 cursor-pointer hover:border-primary/40 transition-colors" @click="fillCredentials('budi@sikons.com', 'password123')">
           <p class="font-semibold text-foreground">Mitra</p>
-          <p class="text-muted-foreground mt-0.5">mitra1@sikons.com</p>
+          <p class="text-muted-foreground mt-0.5">budi@sikons.com</p>
         </div>
       </div>
     </div>

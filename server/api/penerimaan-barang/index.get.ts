@@ -1,14 +1,17 @@
 import { desc, eq } from 'drizzle-orm'
 import { penerimaanBarang, pemasok, gudang, pengguna } from '~~/server/database/schema'
 import { useDB } from '~~/server/utils/database'
+import { requireRole } from '~~/server/utils/rbac'
 
 export default defineEventHandler(async (event) => {
+  requireRole(event, ['penyalur', 'sales', 'pemasok'])
   const db = await useDB()
   const items = await db
     .select({
       id: penerimaanBarang.id,
       nomorPenerimaan: penerimaanBarang.nomorPenerimaan,
       tanggalPenerimaan: penerimaanBarang.tanggalPenerimaan,
+      status: penerimaanBarang.status,
       pemasok: pemasok.nama,
       gudang: gudang.nama,
       penerima: pengguna.nama,

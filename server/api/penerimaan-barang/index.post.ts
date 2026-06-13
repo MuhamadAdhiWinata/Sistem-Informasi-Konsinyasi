@@ -1,6 +1,6 @@
 import { z } from 'zod'
-import { eq, and, sql } from 'drizzle-orm'
-import { penerimaanBarang, itemPenerimaanBarang, stokGudang } from '~~/server/database/schema'
+import { sql } from 'drizzle-orm'
+import { penerimaanBarang, itemPenerimaanBarang } from '~~/server/database/schema'
 import { useDB } from '~~/server/utils/database'
 import { requireRole } from '~~/server/utils/rbac'
 
@@ -39,6 +39,7 @@ export default defineEventHandler(async (event) => {
       idGudang: body.idGudang,
       diterimaOleh: user.id,
       tanggalPenerimaan: body.tanggalPenerimaan,
+      status: 'draft',
     })
 
     const idPenerimaan = Number(result.insertId)
@@ -50,37 +51,10 @@ export default defineEventHandler(async (event) => {
         jumlah: item.jumlah,
         hargaTebusAktual: String(item.hargaTebusAktual),
       })
-
-      const existing = await tx
-        .select()
-        .from(stokGudang)
-        .where(
-          and(
-            eq(stokGudang.idGudang, body.idGudang),
-            eq(stokGudang.idProduk, item.idProduk),
-          ),
-        )
-        .limit(1)
-
-      if (existing.length) {
-        await tx
-          .update(stokGudang)
-          .set({
-            jumlah: sql`${stokGudang.jumlah} + ${item.jumlah}`,
-            diperbaruiPada: sql`CURRENT_TIMESTAMP`,
-          })
-          .where(eq(stokGudang.id, existing[0].id))
-      } else {
-        await tx.insert(stokGudang).values({
-          idGudang: body.idGudang,
-          idProduk: item.idProduk,
-          jumlah: item.jumlah,
-        })
-      }
     }
 
     return idPenerimaan
   })
 
-  return { data: { id: idPenerimaan }, message: 'Penerimaan barang berhasil' }
+  return { data: { id: idPenerimaan }, message: 'Penerimaan barang berhasil (menunggu konfirmasi)' }
 })

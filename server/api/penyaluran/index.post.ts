@@ -1,6 +1,6 @@
 import { z } from 'zod'
-import { eq, and, sql } from 'drizzle-orm'
-import { penyaluran, itemPenyaluran, stokGudang, faktur } from '~~/server/database/schema'
+import { sql } from 'drizzle-orm'
+import { penyaluran, itemPenyaluran, faktur } from '~~/server/database/schema'
 import { useDB } from '~~/server/utils/database'
 import { requireRole } from '~~/server/utils/rbac'
 
@@ -57,39 +57,6 @@ export default defineEventHandler(async (event) => {
         snapshotHargaJual: String(item.snapshotHargaJual),
         snapshotHargaTebus: String(item.snapshotHargaTebus),
       })
-
-      const existing = await tx
-        .select()
-        .from(stokGudang)
-        .where(
-          and(
-            eq(stokGudang.idGudang, body.idGudangAsal),
-            eq(stokGudang.idProduk, item.idProduk),
-          ),
-        )
-        .limit(1)
-
-      if (existing.length) {
-        const newJumlah = existing[0].jumlah - item.jumlahDikirim
-        if (newJumlah < 0) {
-          throw createError({
-            statusCode: 400,
-            statusMessage: `Stok tidak mencukupi untuk produk ID ${item.idProduk}`,
-          })
-        }
-        await tx
-          .update(stokGudang)
-          .set({
-            jumlah: sql`${stokGudang.jumlah} - ${item.jumlahDikirim}`,
-            diperbaruiPada: sql`CURRENT_TIMESTAMP`,
-          })
-          .where(eq(stokGudang.id, existing[0].id))
-      } else {
-        throw createError({
-          statusCode: 400,
-          statusMessage: `Produk ID ${item.idProduk} tidak memiliki stok di gudang ini`,
-        })
-      }
     }
 
     const year = new Date().getFullYear()
@@ -104,11 +71,12 @@ export default defineEventHandler(async (event) => {
       nomorFaktur,
       idPenyaluran,
       totalNilai: String(totalNilai),
+      urlPdf: `/penyaluran/${idPenyaluran}/print`,
       diterbitkanPada: new Date(),
     })
 
     return idPenyaluran
   })
 
-  return { data: { id: result }, message: 'Penyaluran berhasil dibuat' }
+  return { data: { id: result }, message: 'Penyaluran berhasil dibuat (menunggu konfirmasi)' }
 })

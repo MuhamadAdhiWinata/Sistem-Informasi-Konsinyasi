@@ -1,8 +1,10 @@
 import { eq, and } from 'drizzle-orm'
 import { penerimaanBarang, itemPenerimaanBarang, pemasok, gudang, pengguna, produk } from '~~/server/database/schema'
 import { useDB } from '~~/server/utils/database'
+import { requireRole } from '~~/server/utils/rbac'
 
 export default defineEventHandler(async (event) => {
+  requireRole(event, ['penyalur', 'sales', 'pemasok'])
   const id = Number(getRouterParam(event, 'id'))
   const db = await useDB()
 
@@ -11,6 +13,7 @@ export default defineEventHandler(async (event) => {
       id: penerimaanBarang.id,
       nomorPenerimaan: penerimaanBarang.nomorPenerimaan,
       tanggalPenerimaan: penerimaanBarang.tanggalPenerimaan,
+      status: penerimaanBarang.status,
       idPemasok: penerimaanBarang.idPemasok,
       pemasok: pemasok.nama,
       idGudang: penerimaanBarang.idGudang,

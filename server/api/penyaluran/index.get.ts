@@ -3,6 +3,7 @@ import { penyaluran, mitra, gudang, pengguna, faktur } from '~~/server/database/
 import { useDB } from '~~/server/utils/database'
 
 export default defineEventHandler(async (event) => {
+  const user = event.context.user
   const db = await useDB()
   const items = await db
     .select({
@@ -22,5 +23,11 @@ export default defineEventHandler(async (event) => {
     .leftJoin(pengguna, eq(penyaluran.idSales, pengguna.id))
     .leftJoin(faktur, eq(penyaluran.id, faktur.idPenyaluran))
     .orderBy(desc(penyaluran.tanggalPenyaluran))
-  return { data: items }
+
+  let result = items
+  if (user?.peran === 'pemasok') {
+    result = items.map(i => ({ ...i, totalNilai: null }))
+  }
+
+  return { data: result }
 })

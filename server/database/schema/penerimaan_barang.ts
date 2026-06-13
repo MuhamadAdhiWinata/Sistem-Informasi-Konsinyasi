@@ -1,4 +1,4 @@
-import { bigint, date, mysqlTable, varchar } from 'drizzle-orm/mysql-core';
+import { bigint, date, mysqlEnum, mysqlTable, varchar } from 'drizzle-orm/mysql-core';
 import { pemasok } from './pemasok';
 import { gudang } from './gudang';
 import { pengguna } from './pengguna';
@@ -12,4 +12,5 @@ export const penerimaanBarang = mysqlTable('penerimaan_barang', {
   idGudang:          bigint('id_gudang', { mode: 'number', unsigned: true }).notNull().references(() => gudang.id),
   diterimaOleh:      bigint('diterima_oleh', { mode: 'number', unsigned: true }).notNull().references(() => pengguna.id),
   tanggalPenerimaan: date('tanggal_penerimaan').notNull(),
+  status:            mysqlEnum('status', ['draft', 'completed']).notNull().default('draft'),
 });

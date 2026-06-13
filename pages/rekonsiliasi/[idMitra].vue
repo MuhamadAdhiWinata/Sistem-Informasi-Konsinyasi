@@ -7,10 +7,13 @@
     <template v-else-if="data">
       <div class="flex items-center gap-3 mb-6">
         <UButton icon="i-heroicons-arrow-left" color="gray" variant="ghost" size="sm" to="/rekonsiliasi" />
-        <div>
+        <div class="flex-1">
           <h1 class="text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">{{ data.mitra.nama }}</h1>
           <p class="text-sm text-muted-foreground mt-0.5">Detail rekonsiliasi keuangan</p>
         </div>
+        <UButton icon="i-heroicons-printer" size="sm" color="gray" variant="soft" @click="printPage">
+          Cetak Laporan
+        </UButton>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
@@ -96,6 +99,10 @@ const router = useRouter()
 
 const isLoading = ref(true)
 const data = ref<any>(null)
+
+function printPage() {
+  window.print()
+}
 
 const opnameItemColumns = [
   { key: 'sku', label: 'SKU' },

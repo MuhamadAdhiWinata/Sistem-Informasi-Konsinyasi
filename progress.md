@@ -85,6 +85,8 @@
 | 4.2 | Detail item (produk, jumlah, harga tebus aktual) | ✅ | Dynamic items table in create form |
 | 4.3 | Auto-update stok gudang (`stok_gudang.jumlah`) | ✅ | Upsert stok_gudang in DB transaction |
 | 4.4 | View / daftar penerimaan barang | ✅ | pages/penerimaan-barang/index.vue + [id].vue |
+| 4.5 | Cetak Surat Jalan Penerimaan | ✅ | `pages/penerimaan-barang/[id]/print.vue` |
+| 4.6 | Status & Konfirmasi Penerimaan (draft → completed) | ✅ | Kolom `status` + PATCH confirm + validasi hapus/edit |
 
 ### Hak Akses Modul B
 
@@ -107,7 +109,7 @@
 | 5.6 | Kalkulasi total nilai faktur | ✅ | jumlahDikirim × snapshotHargaJual per item |
 | 5.7 | Daftar penyaluran + filter status | ✅ | pages/penyaluran/index.vue |
 | 5.8 | Tampilkan stok tersedia saat input item penyaluran | ✅ | Kolom "Stok: XX" muncul di form create saat pilih produk |
-| 5.9 | Daftar faktur + cetak/download PDF | ⏳ | Partial: faktur visible in detail; PDF print pending |
+| 5.9 | Daftar faktur + cetak/download PDF | ✅ | `pages/faktur/index.vue`, `pages/penyaluran/[id]/print.vue` + `html2pdf.js` |
 
 ### Hak Akses Modul C
 
@@ -145,7 +147,7 @@
 | 7.2 | Kalkulasi pendapatan Penyalur (laku × (harga jual − harga tebus)) | ✅ | SQL aggregation di API |
 | 7.3 | Rekap tagihan + tracking retur (baik/rusak/expired) | ✅ | Retur breakdown per kondisi |
 | 7.4 | Dashboard rekonsiliasi per Mitra | ✅ | pages/rekonsiliasi/index.vue + [idMitra].vue |
-| 7.5 | Export laporan (PDF / Excel) | ⏳ | Pending — butuh library export |
+| 7.5 | Export laporan (PDF / Excel) | ✅ | Export CSV di index, print view di detail |
 
 ### Hak Akses Modul E
 
@@ -266,10 +268,10 @@
 | 1. Inisialisasi & Setup | 12 | 10 | 0 | 2 | 83% |
 | 2. Database Migration | 17 | 17 | 0 | 0 | 100% |
 | 3. Modul A — Master Data | 6 | 6 | 0 | 0 | 100% |
-| 4. Modul B — Penerimaan | 4 | 4 | 0 | 0 | 100% |
-| 5. Modul C — Penyaluran & Faktur | 9 | 8 | 0 | 1 | 89% |
+| 4. Modul B — Penerimaan | 6 | 6 | 0 | 0 | 100% |
+| 5. Modul C — Penyaluran & Faktur | 10 | 10 | 0 | 0 | 100% |
 | 6. Modul D — Opname Stok | 5 | 5 | 0 | 0 | 100% |
-| 7. Modul E — Rekonsiliasi | 5 | 4 | 0 | 1 | 80% |
+| 7. Modul E — Rekonsiliasi | 6 | 6 | 0 | 0 | 100% |
 | 8. Modul F — Request Restock | 4 | 3 | 0 | 1 | 75% |
 | 9. Modul G — Prediksi Stok AI | 5 | 3 | 0 | 2 | 60% |
 | 10. Autentikasi | 6 | 5 | 0 | 1 | 83% |
@@ -278,7 +280,7 @@
 | 13. Testing | 4 | 0 | 0 | 4 | 0% |
 | 14. Deployment | 6 | 0 | 0 | 6 | 0% |
 | 15. Dokumentasi | 3 | 0 | 0 | 3 | 0% |
-| **TOTAL** | **101** | **76** | **0** | **25** | **75%** |
+| **TOTAL** | **103** | **80** | **0** | **23** | **78%** |
 
 ---
 
@@ -348,6 +350,14 @@
 > - **Tolak Angin**: Tebus Rp 1.200 → Penyalur Rp 1.400 → Retail Rp 1.700
 > - **Seed fix**: `snapshotHargaJual` di item_penyaluran menggunakan `hargaJualPenyalur` (bukan `hargaJual`)
 > - **Dampak**: Faktur & rekonsiliasi jadi lebih realistis (ratusan rb bukan jutaan)
+> 🖨️ **Cetak & Export (v1):**
+> - **Faktur PDF**: `pages/penyaluran/[id]/print.vue` — format invoice A4, tombol Cetak + Download PDF via html2pdf.js
+> - **Daftar Faktur**: `pages/faktur/index.vue` + `GET /api/faktur` — daftar faktur terpisah
+> - **Surat Jalan**: `pages/penerimaan-barang/[id]/print.vue` — format surat jalan A4
+> - **Rekonsiliasi CSV**: Export CSV dari halaman index rekonsiliasi
+> - **Cetak Rekonsiliasi**: `window.print()` di halaman detail rekonsiliasi
+> - **url_pdf**: Kolom di tabel faktur otomatis terisi path cetak
+> - **Sidebar**: Menu "Faktur" ditambahkan di grup Transaksi
 > Cara update progress:
 > 1. Ganti ⏳ → ✅ jika sudah selesai
 > 2. Ganti ⏳ → 🔄 jika sedang dikerjakan

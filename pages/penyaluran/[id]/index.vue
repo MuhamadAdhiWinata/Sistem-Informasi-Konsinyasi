@@ -19,6 +19,12 @@
           <UButton v-if="data.status === 'sent'" size="sm" color="emerald" variant="soft" @click="confirmReceived">
             Tandai Diterima
           </UButton>
+          <UButton v-if="canEdit" icon="i-heroicons-pencil-square" size="sm" color="orange" variant="soft" :to="`/penyaluran/${data.id}/edit`">
+            Edit
+          </UButton>
+          <UButton v-if="canDelete" icon="i-heroicons-trash" size="sm" color="red" variant="soft" @click="confirmDelete">
+            Hapus
+          </UButton>
         </div>
       </div>
 
@@ -75,6 +81,11 @@
             <template #header>
               <div class="flex items-center justify-between">
                 <h3 class="text-sm font-semibold text-zinc-900 dark:text-white">Faktur Titip Jual</h3>
+                <div class="flex gap-1">
+                  <UTooltip text="Cetak Faktur" :popper="{ placement: 'top' }">
+                    <UButton icon="i-heroicons-printer" size="2xs" color="gray" variant="ghost" :to="`/penyaluran/${data.id}/print`" />
+                  </UTooltip>
+                </div>
               </div>
             </template>
             <div class="space-y-3">
@@ -116,6 +127,23 @@
         </template>
       </UCard>
     </UModal>
+
+    <UModal v-model="showConfirmDelete">
+      <UCard>
+        <template #header>
+          <h3 class="text-base font-semibold">Konfirmasi Hapus</h3>
+        </template>
+        <p class="text-sm text-muted-foreground">
+          Hapus penyaluran <strong>{{ data?.nomorPenyaluran }}</strong>? Tindakan ini tidak dapat dibatalkan.
+        </p>
+        <template #footer>
+          <div class="flex justify-end gap-3">
+            <UButton color="gray" variant="soft" @click="showConfirmDelete = false">Batal</UButton>
+            <UButton color="red" :loading="isUpdating" @click="handleDelete">Ya, Hapus</UButton>
+          </div>
+        </template>
+      </UCard>
+    </UModal>
   </div>
 </template>
 
@@ -125,11 +153,21 @@ definePageMeta({ layout: 'default' })
 const api = useApi()
 const route = useRoute()
 const toast = useToast()
+const { user } = useAuth()
 
 const isLoading = ref(true)
 const isUpdating = ref(false)
 const showConfirmReceived = ref(false)
+const showConfirmDelete = ref(false)
 const data = ref<any>(null)
+
+const role = computed(() => user.value?.peran)
+const canEdit = computed(() =>
+  data.value?.status === 'draft' && (role.value === 'penyalur' || role.value === 'sales'),
+)
+const canDelete = computed(() =>
+  data.value?.status === 'draft' && role.value === 'penyalur',
+)
 
 const itemColumns = [
   { key: 'gambar', label: 'Foto' },
@@ -180,9 +218,27 @@ function confirmReceived() {
   showConfirmReceived.value = true
 }
 
+function confirmDelete() {
+  showConfirmDelete.value = true
+}
+
 async function markReceived() {
   showConfirmReceived.value = false
   await updateStatus('received')
+}
+
+async function handleDelete() {
+  showConfirmDelete.value = false
+  isUpdating.value = true
+  try {
+    await api(`/api/penyaluran/${route.params.id}`, { method: 'DELETE' })
+    toast.add({ title: 'Berhasil', description: 'Penyaluran berhasil dihapus', color: 'green' })
+    navigateTo('/penyaluran')
+  } catch (err: any) {
+    toast.add({ title: 'Gagal', description: err.data?.statusMessage || err.message, color: 'red' })
+  } finally {
+    isUpdating.value = false
+  }
 }
 
 async function fetchDetail() {
