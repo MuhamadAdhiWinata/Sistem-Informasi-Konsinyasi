@@ -82,7 +82,7 @@
 | No | Fitur | Status | Catatan |
 | :-- | :---- | :----- | :------ |
 | 4.1 | Form penerimaan (header: pemasok, gudang, tanggal) | ✅ | pages/penerimaan-barang/create.vue |
-| 4.2 | Detail item (produk, jumlah, harga tebus aktual) | ✅ | Dynamic items table in create form |
+| 4.2 | Detail item (produk, jumlah, harga pabrik aktual) | ✅ | Dynamic items table in create form |
 | 4.3 | Auto-update stok gudang (`stok_gudang.jumlah`) | ✅ | Stok hanya bertambah saat konfirmasi (completed), bukan saat draft |
 | 4.4 | View / daftar penerimaan barang | ✅ | pages/penerimaan-barang/index.vue + [id].vue + edit/[id].vue |
 | 4.5 | Cetak Surat Jalan Penerimaan | ✅ | `pages/penerimaan-barang/[id]/print.vue` |
@@ -108,7 +108,7 @@
 | 5.3 | Auto-generate nomor penyaluran | ✅ | DEL-YYYYMMDD-NNNN in POST API |
 | 5.4 | Auto-decrement stok gudang | ✅ | Stok hanya berkurang saat konfirmasi (sent), bukan saat draft |
 | 5.5 | Auto-generate Faktur Titip Jual (INV-YYYY-NNNN) | ✅ | Auto-created in POST API |
-| 5.6 | Kalkulasi total nilai faktur | ✅ | jumlahDikirim × snapshotHargaJual per item |
+| 5.6 | Kalkulasi total nilai faktur | ✅ | jumlahDikirim × snapshotHargaRetail per item |
 | 5.7 | Daftar penyaluran + filter status | ✅ | pages/penyaluran/index.vue |
 | 5.8 | Tampilkan stok tersedia saat input item penyaluran | ✅ | Kolom "Stok: XX" muncul di form create saat pilih produk |
 | 5.9 | Daftar faktur + cetak/download PDF | ✅ | `pages/faktur/index.vue`, `pages/penyaluran/[id]/print.vue` + `html2pdf.js` |
@@ -289,7 +289,7 @@
 
 ---
 
-> ⏱ Terakhir diperbarui: Sabtu, 13 Juni 2026 — DB column rename: `snapshot_harga_pabrik` → `snapshot_harga_grosir` di `item_penyaluran`. Snapshot penyaluran kini menyimpan Harga Grosir + Harga Retail (bukan Harga Pabrik + Retail).
+> ⏱ Terakhir diperbarui: Sabtu, 13 Juni 2026 — Semua kolom harga menggunakan terminologi baru: `harga_pabrik`, `harga_grosir`, `harga_retail` (produk); `harga_pabrik_aktual` (item_penerimaan_barang); `snapshot_harga_retail`, `snapshot_harga_grosir` (item_penyaluran).
 >
 > 🚀 **Workflow Stok & Approval (v2):**
 > - **Penerimaan Barang**: Stok gudang hanya bertambah saat dikonfirmasi (`draft → completed`), bukan saat create. Edit/hapus hanya untuk draft. PUT endpoint + edit page.
@@ -334,7 +334,7 @@
 > - **API**: `GET /api/penyaluran`, `POST /api/penyaluran`, `GET /api/penyaluran/:id`, `PATCH /api/penyaluran/:id`
 > - **POST** dalam 1 transaksi: insert header + items + auto-decrement `stok_gudang` + auto-generate faktur `INV-YYYY-NNNN`
 > - **Stok validation**: Cek kecukupan stok sebelum decrement; tolak jika stok kurang
-> - **Faktur**: Auto-generated dengan total nilai (∑ jumlahDikirim × snapshotHargaJual)
+> - **Faktur**: Auto-generated dengan total nilai (∑ jumlahDikirim × snapshotHargaRetail)
 > - **Status workflow**: draft → sent → received (hanya penyalur bisa mark received)
 > - **Frontend**: `pages/penyaluran/` — list (index), create (form + dynamic items), detail (header cards + items + faktur card)
 > - **Sidebar**: menu "Penyaluran" ditambahkan
@@ -358,10 +358,10 @@
 > - **main.css**: HSL variables + utility classes (`bg-background`, `text-foreground`, dll)
 > 💰 **Harga Realistis (updated):**
 > - **Per-unit pricing**: Semua harga diubah ke harga per pcs/botol/kotak/sachet (bukan per karton)
-> - **Coca-Cola 390ml**: Tebus Rp 4.500 → Penyalur Rp 5.200 → Retail Rp 6.000
-> - **Yakult**: Tebus Rp 1.700 → Penyalur Rp 1.900 → Retail Rp 2.200
-> - **Tolak Angin**: Tebus Rp 1.200 → Penyalur Rp 1.400 → Retail Rp 1.700
-> - **Seed fix**: `snapshotHargaJual` di item_penyaluran menggunakan `hargaJualPenyalur` (bukan `hargaJual`)
+> - **Coca-Cola 390ml**: Pabrik Rp 4.500 → Grosir Rp 5.200 → Retail Rp 6.000
+> - **Yakult**: Pabrik Rp 1.700 → Grosir Rp 1.900 → Retail Rp 2.200
+> - **Tolak Angin**: Pabrik Rp 1.200 → Grosir Rp 1.400 → Retail Rp 1.700
+> - **Seed fix**: `snapshotHargaRetail` di item_penyaluran menggunakan `hargaGrosir`
 > - **Dampak**: Faktur & rekonsiliasi jadi lebih realistis (ratusan rb bukan jutaan)
 > 🖨️ **Cetak & Export (v1):**
 > - **Faktur PDF**: `pages/penyaluran/[id]/print.vue` — format invoice A4, tombol Cetak + Download PDF via html2pdf.js

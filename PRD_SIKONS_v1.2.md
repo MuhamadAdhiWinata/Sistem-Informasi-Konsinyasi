@@ -111,7 +111,7 @@ Sistem ini dibangun sebagai karya ilmiah (skripsi) dengan mempertimbangkan skala
 * ---
 
   Manajemen Pemasok: CRUD data pabrikan, kategori merek, kontak PIC.  
-* Manajemen Barang (SKU): kode lokal unik, nama, satuan, Harga Pabrik (tebus), Harga Grosir (penyalur), Harga Retail (jual), status aktif.  
+* Manajemen Barang (SKU): kode lokal unik, nama, satuan, Harga Pabrik, Harga Grosir, Harga Retail, status aktif.  
 * Manajemen Mitra: nama, nama pemilik, nomor telepon, koordinat GPS (lat, lng), Sales ditugaskan.  
 * Manajemen Gudang: kode gudang, nama gudang, alamat lengkap.  
 * Manajemen User & Roles: Pengaturan hak akses untuk 4 peran utama.
@@ -241,8 +241,9 @@ Database menggunakan MariaDB dengan desain relasional penuh dalam Bahasa Indones
 | nama | VARCHAR(150) |  | NOT NULL | Nama lengkap produk |
 | id\_pemasok | BIGINT UNSIGNED | FK | NOT NULL | Referensi ke pemasok.id |
 | satuan | VARCHAR(20) |  | NOT NULL | Satuan kemasan (pcs, botol, pack) |
-| harga\_tebus | DECIMAL(12,2) |  | NOT NULL | Harga beli penyalur dari Pemasok |
-| harga\_jual | DECIMAL(12,2) |  | NOT NULL | Harga jual resmi ke pihak Mitra |
+| harga\_pabrik | DECIMAL(12,2) |  | NOT NULL | Harga beli penyalur dari Pemasok |
+| harga\_grosir | DECIMAL(12,2) |  | NOT NULL | Harga jual penyalur ke Mitra |
+| harga\_retail | DECIMAL(12,2) |  | NOT NULL | Harga jual Mitra ke Konsumen |
 | apakah\_aktif | TINYINT(1) |  | NOT NULL | Default 1 |
 
 ### **Tabel: gudang (warehouses)**
@@ -298,7 +299,7 @@ Database menggunakan MariaDB dengan desain relasional penuh dalam Bahasa Indones
 | id\_penerimaan | BIGINT UNSIGNED | FK | NOT NULL | Referensi ke penerimaan\_barang.id |
 | id\_produk | BIGINT UNSIGNED | FK | NOT NULL | Referensi ke produk.id |
 | jumlah | INT |  | NOT NULL | Kuantitas barang yang diterima |
-| harga\_tebus\_aktual | DECIMAL(12,2) |  | NOT NULL | Harga tebus aktual saat transaksi |
+| harga\_pabrik\_aktual | DECIMAL(12,2) |  | NOT NULL | Harga pabrik aktual saat transaksi |
 
 ### **Tabel: penyaluran (distributions)**
 
@@ -321,8 +322,8 @@ Database menggunakan MariaDB dengan desain relasional penuh dalam Bahasa Indones
 | id\_penyaluran | BIGINT UNSIGNED | FK | NOT NULL | Referensi ke penyaluran.id |
 | id\_produk | BIGINT UNSIGNED | FK | NOT NULL | Referensi ke produk.id |
 | jumlah\_dikirim | INT |  | NOT NULL | Kuantitas barang dikirim |
-| snapshot\_harga\_jual | DECIMAL(12,2) |  | NOT NULL | Snapshot Harga Grosir saat penyaluran |
-| snapshot\_harga\_tebus | DECIMAL(12,2) |  | NOT NULL | Snapshot Harga Pabrik saat penyaluran |
+| snapshot\_harga\_retail | DECIMAL(12,2) |  | NOT NULL | Snapshot Harga Retail saat penyaluran |
+| snapshot\_harga\_grosir | DECIMAL(12,2) |  | NOT NULL | Snapshot Harga Grosir saat penyaluran |
 
 ### **Tabel: faktur (invoices)**
 
@@ -410,8 +411,8 @@ Database menggunakan MariaDB dengan desain relasional penuh dalam Bahasa Indones
 | 2 | Penyaluran | Penyalur/Sales membuat distribusi ke Mitra (draft) → tandai dikirim → stok gudang berkurang → Faktur Titip Jual diterbitkan. | Penyalur / Sales |
 | 3 | Konfirmasi Mitra | Mitra menerima barang dan mengkonfirmasi di sistem → status distribusi = received. | Mitra / Sales |
 | 4 | Opname per Kunjungan | Sales mengunjungi Mitra → input Laku & Retur → sistem validasi → anomali tertandai otomatis. | Sales / Mitra |
-| 5 | Rekonsiliasi Penyalur | Penyalur melihat laporan per Mitra → three-tier pricing (tebus/penyalur/retail) → kalkulasi laba mitra & laba penyalur otomatis → export. | Penyalur |
-| 6 | Rekonsiliasi Mitra | Mitra melihat laporan pendapatan sendiri → hanya laba mitra (retail − penyalur) → tanpa data distributor. | Mitra |
+| 5 | Rekonsiliasi Penyalur | Penyalur melihat laporan per Mitra → three-tier pricing (pabrik/grosir/retail) → kalkulasi laba mitra & laba penyalur otomatis → export. | Penyalur |
+| 6 | Rekonsiliasi Mitra | Mitra melihat laporan pendapatan sendiri → hanya laba mitra (retail − grosir) → tanpa data distributor. | Mitra |
 
 # **8\. Persyaratan Non-Fungsional**
 
