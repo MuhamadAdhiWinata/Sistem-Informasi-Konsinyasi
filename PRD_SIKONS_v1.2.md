@@ -69,7 +69,8 @@ Sistem ini dibangun sebagai karya ilmiah (skripsi) dengan mempertimbangkan skala
 | **Penyaluran** | CRUD | Create | Read | — |
 | **Faktur Titip Jual** | CRUD | Read | Read | — |
 | **Opname Stok** | CRUD | Create | Create | — |
-| **Rekonsiliasi** | Full | — | Read | — |
+| **Rekonsiliasi Penyalur** | Full | — | — | — |
+| **Rekonsiliasi Mitra** | — | — | Read | — |
 | **Request Restock** | Approve | Forward | Create | — |
 | **Prediksi Stok AI** | Full | Read | — | — |
 
@@ -83,8 +84,9 @@ Sistem ini dibangun sebagai karya ilmiah (skripsi) dengan mempertimbangkan skala
 | **Penyalur** | Distributor | Admin Pusat | Pengelola distribusi |
 | **Mitra** | Partner / Store | Warung Bu Ani | Titik retail konsinyasi |
 | **Barang** | Product / SKU | wg-f1-001 | Produk unik dengan kode lokal |
-| **Harga Tebus** | Buy Price | Rp 2.500 | Harga beli dari Pemasok |
-| **Harga Jual** | Sell Price | Rp 3.000 | Harga resmi di Mitra |
+| **Harga Pabrik** | Factory Price | Rp 2.500 | Harga beli dari Pemasok |
+| **Harga Grosir** | Wholesale Price | Rp 3.000 | Harga distributor ke Mitra |
+| **Harga Retail** | Retail Price | Rp 3.500 | Harga jual Mitra ke Konsumen |
 | **Laku** | Sold Quantity | 12 pcs | Jumlah terjual di Mitra |
 | **Retur** | Return Quantity | 3 pcs | Barang dikembalikan ke gudang |
 | **Faktur** | Invoice | INV-2026-0001 | Dokumen sah bukti tagihan atau tanda terima titip jual barang. |
@@ -109,7 +111,7 @@ Sistem ini dibangun sebagai karya ilmiah (skripsi) dengan mempertimbangkan skala
 * ---
 
   Manajemen Pemasok: CRUD data pabrikan, kategori merek, kontak PIC.  
-* Manajemen Barang (SKU): kode lokal unik, nama, satuan, Harga Tebus, Harga Jual, status aktif.  
+* Manajemen Barang (SKU): kode lokal unik, nama, satuan, Harga Pabrik (tebus), Harga Grosir (penyalur), Harga Retail (jual), status aktif.  
 * Manajemen Mitra: nama, nama pemilik, nomor telepon, koordinat GPS (lat, lng), Sales ditugaskan.  
 * Manajemen Gudang: kode gudang, nama gudang, alamat lengkap.  
 * Manajemen User & Roles: Pengaturan hak akses untuk 4 peran utama.
@@ -120,16 +122,17 @@ Sistem ini dibangun sebagai karya ilmiah (skripsi) dengan mempertimbangkan skala
 * ---
 
   Form input penerimaan: pilih Pemasok, pilih Gudang tujuan, tanggal penerimaan.  
-* Detail item: pilih Barang, jumlah diterima, Harga Tebus aktual nomor referensi PO.  
-* Otomatis menambahkan kuantitas stok di tabel stok\_gudang.
+* Detail item: pilih Barang, jumlah diterima, Harga Pabrik aktual nomor referensi PO.  
+* **Workflow**: Draft → Completed. Stok gudang hanya bertambah saat status dikonfirmasi (completed), bukan saat create. Edit/hapus hanya untuk status draft.
 
 ## **4.3 Modul C — Penyaluran & Faktur**
 
 * ---
 
   Form penyaluran: pilih gudang asal, pilih Mitra, tanggal kirim, Sales pengantar.  
-* Detail item: pilih Barang, jumlah kirim (auto-check validasi kecukupan stok gudang).
+* Detail item: pilih Barang, jumlah kirim (auto-check validasi kecukupan stok gudung saat konfirmasi).
 * **Visibility Stok**: Saat input penyaluran, sistem menampilkan sisa stok gudang untuk setiap produk yang dipilih agar user tidak perlu menebak-nebak ketersediaan.  
+* **Workflow**: Draft → Sent → Received. Stok gudang hanya berkurang saat status diubah ke Sent (dikirim), bukan saat create. Validasi kecukupan stok dilakukan saat konfirmasi. Edit/hapus hanya untuk status draft.  
 * Pembuatan Faktur Titip Jual otomatis dengan format penomoran INV-YYYY-NNNN.  
 * Kalkulasi total nilai titip jual (jumlah dikirim × snapshot\_harga\_jual).
 
@@ -146,8 +149,11 @@ Sistem ini dibangun sebagai karya ilmiah (skripsi) dengan mempertimbangkan skala
 
 * ---
 
-  Formula Pendapatan Mitra \= Jumlah Laku × Harga Jual.  
-* Formula Pendapatan Penyalur \= Jumlah Laku × (Harga Jual \- Harga Tebus).  
+  **Split menjadi dua view terpisah berdasarkan peran:**
+* **Rekonsiliasi Penyalur** (Penyalur only): Full three-tier pricing — Harga Pabrik, Harga Grosir, Harga Retail. Menampilkan laba mitra (retail − grosir) dan laba penyalur (grosir − pabrik).
+* **Rekonsiliasi Mitra** (Mitra only): Simplified — hanya Harga Grosir dan Harga Retail. Hanya menampilkan laba mitra (retail − grosir). Tidak menampilkan data harga pabrik atau laba penyalur.
+* Formula Pendapatan Mitra \= Jumlah Laku × (Harga Retail \- Harga Grosir).  
+* Formula Pendapatan Penyalur \= Jumlah Laku × (Harga Grosir \- Harga Pabrik).  
 * Laporan rekap tagihan dan pelacakan kondisi barang retur (baik / rusak / kedaluwarsa).
 
 ## **4.6 Modul F — Request Restock**
@@ -282,6 +288,7 @@ Database menggunakan MariaDB dengan desain relasional penuh dalam Bahasa Indones
 | id\_gudang | BIGINT UNSIGNED | FK | NOT NULL | Gudang tujuan masuk barang |
 | diterima\_oleh | BIGINT UNSIGNED | FK | NOT NULL | User penerima laporan (pengguna.id) |
 | tanggal\_penerimaan | DATE |  | NOT NULL | Tanggal fisik penerimaan barang |
+| status | ENUM('draft','completed') |  | NOT NULL | draft \| completed — stok hanya masuk saat completed |
 
 ### **Tabel: item\_penerimaan\_barang (goods\_receipt\_items)**
 
@@ -314,8 +321,8 @@ Database menggunakan MariaDB dengan desain relasional penuh dalam Bahasa Indones
 | id\_penyaluran | BIGINT UNSIGNED | FK | NOT NULL | Referensi ke penyaluran.id |
 | id\_produk | BIGINT UNSIGNED | FK | NOT NULL | Referensi ke produk.id |
 | jumlah\_dikirim | INT |  | NOT NULL | Kuantitas barang dikirim |
-| snapshot\_harga\_jual | DECIMAL(12,2) |  | NOT NULL | Snapshot Harga Jual saat penyaluran |
-| snapshot\_harga\_tebus | DECIMAL(12,2) |  | NOT NULL | Snapshot Harga Tebus saat penyaluran |
+| snapshot\_harga\_jual | DECIMAL(12,2) |  | NOT NULL | Snapshot Harga Grosir saat penyaluran |
+| snapshot\_harga\_tebus | DECIMAL(12,2) |  | NOT NULL | Snapshot Harga Pabrik saat penyaluran |
 
 ### **Tabel: faktur (invoices)**
 
@@ -399,11 +406,12 @@ Database menggunakan MariaDB dengan desain relasional penuh dalam Bahasa Indones
 
 | No | Tahap | Aktivitas | Aktor Utama |
 | :---- | :---- | :---- | :---- |
-| 1 | Penerimaan Barang | Penyalur mencatat barang masuk dari Pemasok → stok gudang bertambah → cetak surat jalan. | Penyalur |
-| 2 | Penyaluran | Penyalur/Sales membuat distribusi ke Mitra → stok gudang berkurang → Faktur Titip Jual diterbitkan. | Penyalur / Sales |
-| 3 | Konfirmasi Mitra | Mitra menerima barang dan mengkonfirmasi di sistem → status distribusi \= received. | Mitra / Sales |
+| 1 | Penerimaan Barang | Penyalur mencatat barang masuk dari Pemasok (draft) → konfirmasi penerimaan → stok gudang bertambah → cetak surat jalan. | Penyalur |
+| 2 | Penyaluran | Penyalur/Sales membuat distribusi ke Mitra (draft) → tandai dikirim → stok gudang berkurang → Faktur Titip Jual diterbitkan. | Penyalur / Sales |
+| 3 | Konfirmasi Mitra | Mitra menerima barang dan mengkonfirmasi di sistem → status distribusi = received. | Mitra / Sales |
 | 4 | Opname per Kunjungan | Sales mengunjungi Mitra → input Laku & Retur → sistem validasi → anomali tertandai otomatis. | Sales / Mitra |
-| 5 | Rekonsiliasi | Penyalur melihat laporan per Mitra → kalkulasi margin otomatis → export laporan. | Penyalur |
+| 5 | Rekonsiliasi Penyalur | Penyalur melihat laporan per Mitra → three-tier pricing (tebus/penyalur/retail) → kalkulasi laba mitra & laba penyalur otomatis → export. | Penyalur |
+| 6 | Rekonsiliasi Mitra | Mitra melihat laporan pendapatan sendiri → hanya laba mitra (retail − penyalur) → tanpa data distributor. | Mitra |
 
 # **8\. Persyaratan Non-Fungsional**
 

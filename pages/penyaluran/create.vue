@@ -36,36 +36,41 @@
                 <tr class="border-b border-zinc-200 dark:border-zinc-800">
                   <th class="text-left px-3 py-2 font-medium text-muted-foreground">Produk</th>
                   <th class="text-left px-3 py-2 font-medium text-muted-foreground">Jumlah Kirim</th>
-                  <th class="text-left px-3 py-2 font-medium text-muted-foreground">Harga Jual (/unit)</th>
-                  <th class="text-left px-3 py-2 font-medium text-muted-foreground">Harga Tebus (/unit)</th>
+                    <th class="text-left px-3 py-2 font-medium text-muted-foreground">Harga Retail</th>
+                  <th class="text-left px-3 py-2 font-medium text-muted-foreground">Harga Pabrik (acuan)</th>
+                  <th class="text-left px-3 py-2 font-medium text-muted-foreground">Harga Pabrik</th>
                   <th class="text-left px-3 py-2 font-medium text-muted-foreground">Subtotal</th>
                   <th class="w-10 px-3 py-2"></th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(item, idx) in formState.items" :key="idx" class="border-b border-zinc-100 dark:border-zinc-800/50">
-                  <td class="px-3 py-2">
+                  <tr v-for="(item, idx) in formState.items" :key="idx" class="border-b border-zinc-100 dark:border-zinc-800/50">
+                  <td class="px-3 py-2 align-top">
                     <USelect v-model="item.idProduk" :options="produkOptions" placeholder="Pilih produk" />
                   </td>
-                  <td class="px-3 py-2">
+                  <td class="px-3 py-2 align-top">
                     <UInput v-model="item.jumlahDikirim" type="number" min="1" />
                     <p v-if="item.idProduk" class="text-xs mt-0.5" :class="stokClass(item.idProduk, item.jumlahDikirim)">
                       Stok: {{ stokByProduk[item.idProduk] ?? '—' }}
                     </p>
                   </td>
-                  <td class="px-3 py-2">
+                  <td class="px-3 py-2 align-top">
                     <UInput v-model="item.snapshotHargaJual" type="number" min="0" step="500" />
                   </td>
-                  <td class="px-3 py-2">
+                  <td class="px-3 py-2 align-top">
+                    <span v-if="item.idProduk" class="font-mono text-xs text-zinc-500">Rp {{ hargaPabrikAcuan(item.idProduk) }}</span>
+                    <span v-else class="text-xs text-muted-foreground">—</span>
+                  </td>
+                  <td class="px-3 py-2 align-top">
                     <UInput v-model="item.snapshotHargaTebus" type="number" min="0" step="500" />
                   </td>
-                  <td class="px-3 py-2 font-mono text-sm">
+                  <td class="px-3 py-2 align-top font-mono text-sm">
                     <template v-if="item.jumlahDikirim && item.snapshotHargaJual">
                       Rp {{ (Number(item.jumlahDikirim) * Number(item.snapshotHargaJual)).toLocaleString('id-ID') }}
                     </template>
                     <span v-else class="text-muted-foreground">-</span>
                   </td>
-                  <td class="px-3 py-2">
+                  <td class="px-3 py-2 align-top">
                     <UButton icon="i-heroicons-trash" size="2xs" color="red" variant="ghost" @click="removeItem(idx)" />
                   </td>
                 </tr>
@@ -181,6 +186,11 @@ function stokClass(idProduk: number, jumlahDikirim: number | undefined) {
   return 'text-emerald-600 dark:text-emerald-400'
 }
 
+function hargaPabrikAcuan(idProduk: number) {
+  const stok = stokList.value.find((s: any) => Number(s.idProduk) === Number(idProduk))
+  return stok?.hargaTebusAcuan ? Number(stok.hargaTebusAcuan).toLocaleString('id-ID') : '—'
+}
+
 watch(() => formState.value.idGudangAsal, async (gudangId) => {
   if (!gudangId) { stokList.value = []; return }
   try {
@@ -190,15 +200,15 @@ watch(() => formState.value.idGudangAsal, async (gudangId) => {
 })
 
 // Auto-fill harga from produk when product is selected
-watch(() => formState.value.items.map(i => i.idProduk), (produkIds) => {
-  for (let idx = 0; idx < formState.value.items.length; idx++) {
-    const item = formState.value.items[idx]
-    if (!item.idProduk) continue
-    const prod = produkList.value.find((p: any) => p.id === item.idProduk)
-    if (!prod) continue
-    if (!item.snapshotHargaJual) item.snapshotHargaJual = Number(prod.hargaJualPenyalur)
-    if (!item.snapshotHargaTebus) item.snapshotHargaTebus = Number(prod.hargaTebus)
-  }
+watch(() => formState.value.items.map(i => i.idProduk), (newIds, oldIds) => {
+  formState.value.items.forEach((item, idx) => {
+    if (!item.idProduk) return
+    if (oldIds && oldIds[idx] === newIds[idx]) return
+    const prod = produkList.value.find((p: any) => Number(p.id) === Number(item.idProduk))
+    if (!prod) return
+    item.snapshotHargaJual = Number(prod.hargaJual)
+    item.snapshotHargaTebus = Number(prod.hargaTebus)
+  })
 }, { deep: true })
 
 function addItem() {

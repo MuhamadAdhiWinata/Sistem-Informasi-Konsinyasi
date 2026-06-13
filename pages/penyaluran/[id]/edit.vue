@@ -41,33 +41,38 @@
                   <tr class="border-b border-zinc-200 dark:border-zinc-800">
                     <th class="text-left px-3 py-2 font-medium text-muted-foreground">Produk</th>
                     <th class="text-left px-3 py-2 font-medium text-muted-foreground">Jumlah Kirim</th>
-                    <th class="text-left px-3 py-2 font-medium text-muted-foreground">Harga Jual (/unit)</th>
-                    <th class="text-left px-3 py-2 font-medium text-muted-foreground">Harga Tebus (/unit)</th>
+                    <th class="text-left px-3 py-2 font-medium text-muted-foreground">Harga Retail</th>
+                    <th class="text-left px-3 py-2 font-medium text-muted-foreground">Harga Pabrik (acuan)</th>
+                    <th class="text-left px-3 py-2 font-medium text-muted-foreground">Harga Pabrik</th>
                     <th class="text-left px-3 py-2 font-medium text-muted-foreground">Subtotal</th>
                     <th class="w-10 px-3 py-2"></th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr v-for="(item, idx) in formState.items" :key="idx" class="border-b border-zinc-100 dark:border-zinc-800/50">
-                    <td class="px-3 py-2">
+                    <td class="px-3 py-2 align-top">
                       <USelect v-model="item.idProduk" :options="produkOptions" placeholder="Pilih produk" />
                     </td>
-                    <td class="px-3 py-2">
+                    <td class="px-3 py-2 align-top">
                       <UInput v-model="item.jumlahDikirim" type="number" min="1" />
                     </td>
-                    <td class="px-3 py-2">
+                    <td class="px-3 py-2 align-top">
                       <UInput v-model="item.snapshotHargaJual" type="number" min="0" step="500" />
                     </td>
-                    <td class="px-3 py-2">
+                    <td class="px-3 py-2 align-top">
+                      <span v-if="item.idProduk" class="font-mono text-xs text-zinc-500">Rp {{ hargaPabrikAcuan(item.idProduk) }}</span>
+                      <span v-else class="text-xs text-muted-foreground">—</span>
+                    </td>
+                    <td class="px-3 py-2 align-top">
                       <UInput v-model="item.snapshotHargaTebus" type="number" min="0" step="500" />
                     </td>
-                    <td class="px-3 py-2 font-mono text-sm">
+                    <td class="px-3 py-2 align-top font-mono text-sm">
                       <template v-if="item.jumlahDikirim && item.snapshotHargaJual">
                         Rp {{ (Number(item.jumlahDikirim) * Number(item.snapshotHargaJual)).toLocaleString('id-ID') }}
                       </template>
                       <span v-else class="text-muted-foreground">-</span>
                     </td>
-                    <td class="px-3 py-2">
+                    <td class="px-3 py-2 align-top">
                       <UButton icon="i-heroicons-trash" size="2xs" color="red" variant="ghost" @click="removeItem(idx)" />
                     </td>
                   </tr>
@@ -106,6 +111,7 @@ const editData = ref<any>(null)
 const gudangList = ref<any[]>([])
 const mitraList = ref<any[]>([])
 const produkList = ref<any[]>([])
+const stokList = ref<any[]>([])
 
 function toNum(val: unknown) {
   if (val === null || val === '' || val === undefined) return undefined
@@ -169,6 +175,14 @@ const produkOptions = computed(() =>
       value: p.id,
     })),
 )
+
+watch(() => formState.value.idGudangAsal, async (gudangId) => {
+  if (!gudangId) { stokList.value = []; return }
+  try {
+    const res: any = await api(`/api/stok-gudang?idGudang=${gudangId}`)
+    stokList.value = res.data || []
+  } catch { stokList.value = [] }
+})
 
 function addItem() {
   formState.value.items.push(defaultItem())
@@ -239,6 +253,26 @@ async function saveEdit() {
   } finally {
     isSaving.value = false
   }
+}
+
+watch(
+  () => formState.value.items.map(i => i.idProduk),
+  (newIds, oldIds) => {
+    formState.value.items.forEach((item, idx) => {
+      if (!item.idProduk) return
+      if (oldIds && oldIds[idx] === newIds[idx]) return
+      const prod = produkList.value.find((p: any) => Number(p.id) === Number(item.idProduk))
+      if (!prod) return
+      item.snapshotHargaJual = Number(prod.hargaJual)
+      item.snapshotHargaTebus = Number(prod.hargaTebus)
+    })
+  },
+  { deep: true },
+)
+
+function hargaPabrikAcuan(idProduk: number) {
+  const stok = stokList.value.find((s: any) => Number(s.idProduk) === Number(idProduk))
+  return stok?.hargaTebusAcuan ? Number(stok.hargaTebusAcuan).toLocaleString('id-ID') : '—'
 }
 
 onMounted(() => loadData())

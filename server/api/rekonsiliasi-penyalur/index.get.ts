@@ -3,6 +3,7 @@ import { opnameStok, itemOpname, mitra, produk, penyaluran } from '~~/server/dat
 import { useDB } from '~~/server/utils/database'
 
 export default defineEventHandler(async (event) => {
+  requireRole(event, ['penyalur'])
   const db = await useDB()
 
   const rows = await db

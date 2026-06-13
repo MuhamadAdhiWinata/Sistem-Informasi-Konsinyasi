@@ -1,5 +1,5 @@
-import { eq, and, sql } from 'drizzle-orm'
-import { stokGudang, gudang, produk } from '~~/server/database/schema'
+import { eq, and, sql, desc } from 'drizzle-orm'
+import { stokGudang, gudang, produk, itemPenerimaanBarang, penerimaanBarang } from '~~/server/database/schema'
 import { useDB } from '~~/server/utils/database'
 
 export default defineEventHandler(async (event) => {
@@ -21,6 +21,15 @@ export default defineEventHandler(async (event) => {
       satuan: produk.satuan,
       jumlah: stokGudang.jumlah,
       diperbaruiPada: stokGudang.diperbaruiPada,
+      hargaTebusAcuan: sql<number>`(
+        select ipb.harga_tebus_aktual
+        from ${itemPenerimaanBarang} ipb
+        inner join ${penerimaanBarang} pb on pb.id = ipb.id_penerimaan
+        where ipb.id_produk = ${stokGudang.idProduk}
+          and pb.id_gudang = ${stokGudang.idGudang}
+        order by pb.tanggal_penerimaan desc
+        limit 1
+      )`,
     })
     .from(stokGudang)
     .leftJoin(gudang, eq(stokGudang.idGudang, gudang.id))

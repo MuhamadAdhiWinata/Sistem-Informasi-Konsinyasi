@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="mb-6">
-      <h1 class="text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">Rekonsiliasi Keuangan</h1>
-      <p class="text-sm text-muted-foreground mt-0.5">Ringkasan pendapatan per mitra</p>
+      <h1 class="text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">Rekonsiliasi Penyalur</h1>
+      <p class="text-sm text-muted-foreground mt-0.5">Ringkasan pendapatan per mitra — distributor</p>
     </div>
 
     <div class="mb-4 flex items-center gap-3">
@@ -17,7 +17,7 @@
     </div>
 
     <template v-else>
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6">
         <UCard>
           <p class="text-xs text-muted-foreground mb-1">Total Mitra Aktif</p>
           <p class="text-2xl font-bold text-zinc-900 dark:text-white">{{ items.length }}</p>
@@ -29,6 +29,10 @@
         <UCard>
           <p class="text-xs text-muted-foreground mb-1">Total Pendapatan Penyalur</p>
           <p class="text-2xl font-bold text-emerald-600 dark:text-emerald-400 font-mono">Rp {{ totalPendapatanPenyalur.toLocaleString('id-ID') }}</p>
+        </UCard>
+        <UCard>
+          <p class="text-xs text-muted-foreground mb-1">Total Laba Gabungan</p>
+          <p class="text-2xl font-bold text-violet-600 dark:text-violet-400 font-mono">Rp {{ totalGabungan.toLocaleString('id-ID') }}</p>
         </UCard>
       </div>
 
@@ -64,21 +68,19 @@
             <p class="text-sm font-medium">{{ Number(row.totalRetur).toLocaleString('id-ID') }} pcs</p>
           </div>
           <div>
-            <p class="text-xs text-muted-foreground">Pendapatan Mitra</p>
+            <p class="text-xs text-muted-foreground">Laba Mitra</p>
             <p class="text-sm font-semibold text-primary font-mono">Rp {{ Number(row.totalPendapatanMitra).toLocaleString('id-ID') }}</p>
           </div>
           <div>
-            <p class="text-xs text-muted-foreground">Pendapatan Penyalur</p>
+            <p class="text-xs text-muted-foreground">Laba Penyalur</p>
             <p class="text-sm font-semibold text-emerald-600 dark:text-emerald-400 font-mono">Rp {{ Number(row.totalPendapatanPenyalur).toLocaleString('id-ID') }}</p>
           </div>
           <div>
-            <p class="text-xs text-muted-foreground">Retur Baik/Rusak/Exp</p>
-            <p class="text-sm font-medium">
-              {{ row.returBaik }}/{{ row.returRusak }}/{{ row.returExpired }}
-            </p>
+            <p class="text-xs text-muted-foreground">Retur (B/R/E)</p>
+            <p class="text-sm font-medium">{{ row.returBaik }}/{{ row.returRusak }}/{{ row.returExpired }}</p>
           </div>
           <div>
-            <p class="text-xs text-muted-foreground">Margin</p>
+            <p class="text-xs text-muted-foreground">Rasio Laba (Penyalur/Mitra)</p>
             <p class="text-sm font-medium">{{ marginPercent(row) }}%</p>
           </div>
         </div>
@@ -118,6 +120,10 @@ const totalPendapatanPenyalur = computed(() =>
   items.value.reduce((sum: number, i: any) => sum + Number(i.totalPendapatanPenyalur), 0),
 )
 
+const totalGabungan = computed(() =>
+  totalPendapatanMitra.value + totalPendapatanPenyalur.value,
+)
+
 function marginPercent(row: any) {
   const total = Number(row.totalPendapatanMitra)
   if (!total) return 0
@@ -127,21 +133,21 @@ function marginPercent(row: any) {
 async function fetchData() {
   isLoading.value = true
   try {
-    const res: any = await api('/api/rekonsiliasi')
+    const res: any = await api('/api/rekonsiliasi-penyalur')
     items.value = res.data || []
   } catch (err: any) { console.error(err) }
   finally { isLoading.value = false }
 }
 
 function viewDetail(idMitra: number) {
-  router.push(`/rekonsiliasi/${idMitra}`)
+  router.push(`/rekonsiliasi-penyalur/${idMitra}`)
 }
 
 function exportCsv() {
   isExporting.value = true
   try {
     const rows = filteredItems.value
-    const header = 'Mitra,Telepon,Opname,Penyaluran,Total Laku,Total Retur,Pendapatan Mitra,Pendapatan Penyalur,Retur Baik,Retur Rusak,Retur Expired,Margin\n'
+    const header = 'Mitra,Telepon,Opname,Penyaluran,Total Laku,Total Retur,Laba Mitra,Laba Penyalur,Retur Baik,Retur Rusak,Retur Expired,Rasio\n'
     const csv = rows.map((r: any) =>
       `"${r.mitra}","${r.telepon || ''}",${r.totalOpname},${r.totalPenyaluran},${Number(r.totalLaku).toFixed(0)},${Number(r.totalRetur).toFixed(0)},${Number(r.totalPendapatanMitra).toFixed(2)},${Number(r.totalPendapatanPenyalur).toFixed(2)},${Number(r.returBaik).toFixed(0)},${Number(r.returRusak).toFixed(0)},${Number(r.returExpired).toFixed(0)},"${marginPercent(r)}"`,
     ).join('\n')
@@ -150,7 +156,7 @@ function exportCsv() {
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `rekonsiliasi-${new Date().toISOString().slice(0, 10)}.csv`
+    a.download = `rekonsiliasi-penyalur-${new Date().toISOString().slice(0, 10)}.csv`
     a.click()
     URL.revokeObjectURL(url)
   } finally {

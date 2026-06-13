@@ -137,7 +137,7 @@ const itemColumns = [
   { key: 'produk', label: 'Produk' },
   { key: 'satuan', label: 'Satuan' },
   { key: 'jumlah', label: 'Jumlah' },
-  { key: 'hargaTebusAktual', label: 'Harga Tebus (/unit)' },
+  { key: 'hargaTebusAktual', label: 'Harga Pabrik' },
   { key: 'subtotal', label: 'Subtotal' },
 ]
 

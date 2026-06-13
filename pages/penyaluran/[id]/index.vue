@@ -175,9 +175,9 @@ const itemColumns = [
   { key: 'produk', label: 'Produk' },
   { key: 'satuan', label: 'Satuan' },
   { key: 'jumlahDikirim', label: 'Jumlah Kirim' },
-  { key: 'snapshotHargaJual', label: 'Harga Jual (/unit)' },
-  { key: 'snapshotHargaTebus', label: 'Harga Tebus (/unit)' },
-  { key: 'subtotal', label: 'Subtotal (Jumlah × Harga Jual)' },
+  { key: 'snapshotHargaJual', label: 'Harga Retail' },
+  { key: 'snapshotHargaTebus', label: 'Harga Pabrik' },
+  { key: 'subtotal', label: 'Subtotal' },
 ]
 
 function statusColor(status: string) {

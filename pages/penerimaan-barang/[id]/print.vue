@@ -72,7 +72,7 @@
             <th style="text-align:left; padding:6px 4px; font-weight:bold;">Deskripsi Nama Barang</th>
             <th style="text-align:center; padding:6px 4px; font-weight:bold; width:70px;">Qty Diterima</th>
             <th style="text-align:center; padding:6px 4px; font-weight:bold; width:60px;">Satuan</th>
-            <th style="text-align:right; padding:6px 4px; font-weight:bold; width:100px;">Harga Tebus</th>
+            <th style="text-align:right; padding:6px 4px; font-weight:bold; width:100px;">Harga Pabrik</th>
             <th style="text-align:right; padding:6px 4px; font-weight:bold; width:110px;">Subtotal</th>
           </tr>
         </thead>

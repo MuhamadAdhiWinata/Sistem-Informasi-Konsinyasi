@@ -41,29 +41,29 @@
                   <tr class="border-b border-zinc-200 dark:border-zinc-800">
                     <th class="text-left px-3 py-2 font-medium text-muted-foreground">Produk</th>
                     <th class="text-left px-3 py-2 font-medium text-muted-foreground">Jumlah</th>
-                    <th class="text-left px-3 py-2 font-medium text-muted-foreground">Harga Tebus (/unit)</th>
+                    <th class="text-left px-3 py-2 font-medium text-muted-foreground">Harga Pabrik</th>
                     <th class="text-left px-3 py-2 font-medium text-muted-foreground">Subtotal</th>
                     <th class="w-10 px-3 py-2"></th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr v-for="(item, idx) in formState.items" :key="idx" class="border-b border-zinc-100 dark:border-zinc-800/50">
-                    <td class="px-3 py-2">
+                    <td class="px-3 py-2 align-top">
                       <USelect v-model="item.idProduk" :options="produkOptions" placeholder="Pilih produk" />
                     </td>
-                    <td class="px-3 py-2">
+                    <td class="px-3 py-2 align-top">
                       <UInput v-model="item.jumlah" type="number" min="1" />
                     </td>
-                    <td class="px-3 py-2">
+                    <td class="px-3 py-2 align-top">
                       <UInput v-model="item.hargaTebusAktual" type="number" min="0" step="0.01" />
                     </td>
-                    <td class="px-3 py-2 font-mono text-sm">
+                    <td class="px-3 py-2 align-top font-mono text-sm">
                       <template v-if="item.jumlah && item.hargaTebusAktual">
                         Rp {{ (Number(item.jumlah) * Number(item.hargaTebusAktual)).toLocaleString('id-ID') }}
                       </template>
                       <span v-else class="text-muted-foreground">-</span>
                     </td>
-                    <td class="px-3 py-2">
+                    <td class="px-3 py-2 align-top">
                       <UButton icon="i-heroicons-trash" size="2xs" color="red" variant="ghost" @click="removeItem(idx)" />
                     </td>
                   </tr>
@@ -229,6 +229,21 @@ async function saveEdit() {
     isSaving.value = false
   }
 }
+
+watch(
+  () => formState.value.items.map(i => i.idProduk),
+  (newIds, oldIds) => {
+    formState.value.items.forEach((item, idx) => {
+      if (item.idProduk && oldIds && oldIds[idx] !== newIds[idx]) {
+        const produk = produkList.value.find((p: any) => Number(p.id) === Number(item.idProduk))
+        if (produk) {
+          item.hargaTebusAktual = Number(produk.hargaTebus)
+        }
+      }
+    })
+  },
+  { deep: true },
+)
 
 onMounted(() => loadData())
 </script>

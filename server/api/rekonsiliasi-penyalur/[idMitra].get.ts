@@ -3,6 +3,7 @@ import { opnameStok, itemOpname, mitra, produk, pengguna } from '~~/server/datab
 import { useDB } from '~~/server/utils/database'
 
 export default defineEventHandler(async (event) => {
+  requireRole(event, ['penyalur'])
   const idMitra = Number(getRouterParam(event, 'idMitra'))
   const db = await useDB()
 
@@ -41,9 +42,11 @@ export default defineEventHandler(async (event) => {
       stokFisik: itemOpname.stokFisik,
       kondisiRetur: itemOpname.kondisiRetur,
       apakahAnomali: itemOpname.apakahAnomali,
+      hargaTebus: produk.hargaTebus,
       hargaJualPenyalur: produk.hargaJualPenyalur,
       hargaJual: produk.hargaJual,
-      hargaTebus: produk.hargaTebus,
+      marginMitra: sql<number>`${produk.hargaJual} - ${produk.hargaJualPenyalur}`,
+      marginPenyalur: sql<number>`${produk.hargaJualPenyalur} - ${produk.hargaTebus}`,
       pendapatanMitra: sql<number>`${itemOpname.jumlahLaku} * (${produk.hargaJual} - ${produk.hargaJualPenyalur})`,
       pendapatanPenyalur: sql<number>`${itemOpname.jumlahLaku} * (${produk.hargaJualPenyalur} - ${produk.hargaTebus})`,
     })

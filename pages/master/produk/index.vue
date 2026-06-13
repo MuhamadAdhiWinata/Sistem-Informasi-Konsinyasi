@@ -152,9 +152,9 @@ const columns = [
   { key: 'nama', label: 'Nama' },
   { key: 'namaPemasok', label: 'Pemasok' },
   { key: 'satuan', label: 'Satuan' },
-  { key: 'hargaTebus', label: 'Hrg Tebus (/unit)' },
-  { key: 'hargaJualPenyalur', label: 'Hrg Penyalur (/unit)' },
-  { key: 'hargaJual', label: 'Hrg Retail (/unit)' },
+  { key: 'hargaTebus', label: 'Harga Pabrik' },
+  { key: 'hargaJualPenyalur', label: 'Harga Grosir' },
+  { key: 'hargaJual', label: 'Harga Retail' },
   { key: 'apakahAktif', label: 'Status' },
   { key: 'actions', label: '' },
 ];

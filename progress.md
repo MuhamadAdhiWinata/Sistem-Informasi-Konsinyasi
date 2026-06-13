@@ -83,10 +83,12 @@
 | :-- | :---- | :----- | :------ |
 | 4.1 | Form penerimaan (header: pemasok, gudang, tanggal) | ✅ | pages/penerimaan-barang/create.vue |
 | 4.2 | Detail item (produk, jumlah, harga tebus aktual) | ✅ | Dynamic items table in create form |
-| 4.3 | Auto-update stok gudang (`stok_gudang.jumlah`) | ✅ | Upsert stok_gudang in DB transaction |
-| 4.4 | View / daftar penerimaan barang | ✅ | pages/penerimaan-barang/index.vue + [id].vue |
+| 4.3 | Auto-update stok gudang (`stok_gudang.jumlah`) | ✅ | Stok hanya bertambah saat konfirmasi (completed), bukan saat draft |
+| 4.4 | View / daftar penerimaan barang | ✅ | pages/penerimaan-barang/index.vue + [id].vue + edit/[id].vue |
 | 4.5 | Cetak Surat Jalan Penerimaan | ✅ | `pages/penerimaan-barang/[id]/print.vue` |
-| 4.6 | Status & Konfirmasi Penerimaan (draft → completed) | ✅ | Kolom `status` + PATCH confirm + validasi hapus/edit |
+| 4.6 | Status & Konfirmasi Penerimaan (draft → completed) | ✅ | Kolom `status` + PATCH confirm + stok gudang bertambah |
+| 4.7 | Edit penerimaan (draft only) | ✅ | PUT API + pages/penerimaan-barang/edit/[id].vue |
+| 4.8 | Hapus penerimaan (draft only) | ✅ | DELETE API + modal konfirmasi di list & detail |
 
 ### Hak Akses Modul B
 
@@ -104,12 +106,14 @@
 | 5.1 | Form penyaluran (gudang asal, mitra, sales, tanggal) | ✅ | pages/penyaluran/create.vue |
 | 5.2 | Detail item (produk, jumlah kirim, validasi stok) | ✅ | Dynamic items table + stok validation in transaction |
 | 5.3 | Auto-generate nomor penyaluran | ✅ | DEL-YYYYMMDD-NNNN in POST API |
-| 5.4 | Auto-decrement stok gudang | ✅ | In DB transaction with stok validation |
+| 5.4 | Auto-decrement stok gudang | ✅ | Stok hanya berkurang saat konfirmasi (sent), bukan saat draft |
 | 5.5 | Auto-generate Faktur Titip Jual (INV-YYYY-NNNN) | ✅ | Auto-created in POST API |
 | 5.6 | Kalkulasi total nilai faktur | ✅ | jumlahDikirim × snapshotHargaJual per item |
 | 5.7 | Daftar penyaluran + filter status | ✅ | pages/penyaluran/index.vue |
 | 5.8 | Tampilkan stok tersedia saat input item penyaluran | ✅ | Kolom "Stok: XX" muncul di form create saat pilih produk |
 | 5.9 | Daftar faktur + cetak/download PDF | ✅ | `pages/faktur/index.vue`, `pages/penyaluran/[id]/print.vue` + `html2pdf.js` |
+| 5.10 | Edit penyaluran (draft only) | ✅ | PUT API + pages/penyaluran/[id]/edit.vue |
+| 5.11 | Hapus penyaluran (draft only) | ✅ | DELETE API + modal konfirmasi di list & detail |
 
 ### Hak Akses Modul C
 
@@ -143,19 +147,20 @@
 
 | No | Fitur | Status | Catatan |
 | :-- | :---- | :----- | :------ |
-| 7.1 | Kalkulasi pendapatan Mitra (laku × harga jual) | ✅ | SQL aggregation di API |
-| 7.2 | Kalkulasi pendapatan Penyalur (laku × (harga jual − harga tebus)) | ✅ | SQL aggregation di API |
+| 7.1 | Kalkulasi pendapatan Mitra = laku × (harga retail − harga grosir) | ✅ | SQL aggregation di API |
+| 7.2 | Kalkulasi pendapatan Penyalur = laku × (harga grosir − harga pabrik) | ✅ | SQL aggregation di API |
 | 7.3 | Rekap tagihan + tracking retur (baik/rusak/expired) | ✅ | Retur breakdown per kondisi |
-| 7.4 | Dashboard rekonsiliasi per Mitra | ✅ | pages/rekonsiliasi/index.vue + [idMitra].vue |
-| 7.5 | Export laporan (PDF / Excel) | ✅ | Export CSV di index, print view di detail |
+| 7.4 | Dashboard Rekonsiliasi Penyalur — full three-tier pricing | ✅ | pages/rekonsiliasi-penyalur/ — harga pabrik, grosir, retail + margin/unit & ×qty |
+| 7.5 | Dashboard Rekonsiliasi Mitra — simplified, no penyalur profit | ✅ | pages/rekonsiliasi-mitra/ — hanya laba mitra, tanpa harga pabrik/laba penyalur |
+| 7.6 | Export laporan (CSV) + Cetak per view | ✅ | Export CSV + window.print() per masing-masing view |
 
 ### Hak Akses Modul E
 
 | Peran | Akses | Status |
 | :---- | :---- | :----- |
-| Penyalur | Full | ✅ |
+| Penyalur | Full (Rekonsiliasi Penyalur) | ✅ |
 | Sales Field | — | ⏳ |
-| Mitra | Read | ⏳ |
+| Mitra | Read-only (Rekonsiliasi Mitra) | ✅ |
 | Pemasok | — | ⏳ |
 
 ## 8. Modul F — Request Restock
@@ -268,8 +273,8 @@
 | 1. Inisialisasi & Setup | 12 | 10 | 0 | 2 | 83% |
 | 2. Database Migration | 17 | 17 | 0 | 0 | 100% |
 | 3. Modul A — Master Data | 6 | 6 | 0 | 0 | 100% |
-| 4. Modul B — Penerimaan | 6 | 6 | 0 | 0 | 100% |
-| 5. Modul C — Penyaluran & Faktur | 10 | 10 | 0 | 0 | 100% |
+| 4. Modul B — Penerimaan | 8 | 8 | 0 | 0 | 100% |
+| 5. Modul C — Penyaluran & Faktur | 11 | 11 | 0 | 0 | 100% |
 | 6. Modul D — Opname Stok | 5 | 5 | 0 | 0 | 100% |
 | 7. Modul E — Rekonsiliasi | 6 | 6 | 0 | 0 | 100% |
 | 8. Modul F — Request Restock | 4 | 3 | 0 | 1 | 75% |
@@ -280,11 +285,17 @@
 | 13. Testing | 4 | 0 | 0 | 4 | 0% |
 | 14. Deployment | 6 | 0 | 0 | 6 | 0% |
 | 15. Dokumentasi | 3 | 0 | 0 | 3 | 0% |
-| **TOTAL** | **103** | **80** | **0** | **23** | **78%** |
+| **TOTAL** | **107** | **84** | **0** | **23** | **79%** |
 
 ---
 
-> ⏱ Terakhir diperbarui: Sabtu, 13 Juni 2026 — Modul G Prediksi Stok AI selesai.
+> ⏱ Terakhir diperbarui: Sabtu, 13 Juni 2026 — Rekonsiliasi split: penyalur view (full three-tier) & mitra view (simplified, no penyalur profit).
+>
+> 🚀 **Workflow Stok & Approval (v2):**
+> - **Penerimaan Barang**: Stok gudang hanya bertambah saat dikonfirmasi (`draft → completed`), bukan saat create. Edit/hapus hanya untuk draft. PUT endpoint + edit page.
+> - **Penyaluran**: Stok gudang hanya berkurang saat ditandai Dikirim (`draft → sent`), bukan saat create. Edit/hapus hanya untuk draft. PUT endpoint + edit page.
+> - **Seed**: Disesuaikan — completed GR & sent/received DEL yang memengaruhi stok; draft GR/DEL tidak mengubah stok.
+> - **List actions**: Edit & Hapus buttons di index + detail page (penerimaan & penyaluran), dengan RBAC & status check.
 >
 > 🚀 **Modul G — Prediksi Stok AI (Moving Average) (v1):**
 > - **Algoritma**: Moving Average — untuk setiap (mitra, produk), ambil N=4 kunjungan terakhir, rata-rata jumlahLaku → ceil → prediksi
@@ -300,14 +311,16 @@
 > - **Frontend**: List + Create + Detail with approval panel
 > - **Sidebar**: menu "Restok" ditambahkan
 > - **Pending**: Notifikasi real-time, adjust jumlah disetujui per item
-> 🚀 **Modul E — Rekonsiliasi Keuangan (v1):**
-> - **API**: `GET /api/rekonsiliasi` (ringkasan per mitra), `GET /api/rekonsiliasi/:idMitra` (detail)
-> - **Pendapatan Mitra** = SUM(laku × produk.hargaJual)
-> - **Pendapatan Penyalur** = SUM(laku × (hargaJual − hargaTebus))
-> - **Tracking retur**: Breakdown per kondisi (baik/rusak/expired)
-> - **Frontend**: Dashboard overview dengan cards summary + per-mitra cards; Detail page dengan opname history + per-item breakdown
-> - **Sidebar**: menu "Rekonsiliasi" ditambahkan
-> - **Pending**: Export PDF/Excel
+> 🚀 **Modul E — Rekonsiliasi Keuangan (v2 — Split Penyalur & Mitra):**
+> - **Split**: Modul E dipecah menjadi dua view terpisah dengan API & halaman masing-masing
+> - **Rekonsiliasi Penyalur** (`/rekonsiliasi-penyalur`): Full three-tier pricing — Harga Pabrik, Harga Grosir, Harga Retail. Menampilkan laba mitra (retail - grosir) dan laba penyalur (grosir - pabrik). Ditambah margin/unit + laba ×qty. RBAC: penyalur only.
+> - **Rekonsiliasi Mitra** (`/rekonsiliasi-mitra`): Simplified — hanya menampilkan harga grosir & harga retail, laba mitra (retail - grosir). Tidak menampilkan harga pabrik, laba penyalur, atau margin ratio. RBAC: mitra only, data terfilter oleh `idMitra` user login.
+> - **API**: `GET /api/rekonsiliasi-penyalur` + `GET /api/rekonsiliasi-penyalur/:idMitra` (penyalur), `GET /api/rekonsiliasi-mitra` + `GET /api/rekonsiliasi-mitra/:idMitra` (mitra)
+> - **Pendapatan Mitra** = SUM(laku × (hargaJual − hargaJualPenyalur))
+> - **Pendapatan Penyalur** = SUM(laku × (hargaJualPenyalur − hargaTebus))
+> - **Rumus baru**: Harga tiga tingkat (tebus → penyalur → retail) diterapkan konsisten di kedua view
+> - **Sidebar**: menu "Rekonsiliasi Penyalur" (penyalur role) + "Rekonsiliasi Mitra" (mitra role)
+> - Old `pages/rekonsiliasi/` + `server/api/rekonsiliasi/` dihapus
 > 🚀 **Modul D — Opname Stok & Laporan Kunjungan (v1):**
 > - **API**: `GET /api/opname-stok`, `POST /api/opname-stok`, `GET /api/opname-stok/:id`, `PATCH /api/opname-stok/:id`
 > - **POST** dalam 1 transaksi: insert header + items + auto-hitung stokFisik + deteksi anomali

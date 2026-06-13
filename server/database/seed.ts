@@ -322,7 +322,7 @@ async function main() {
         const prod = produk[item.produkIdx];
         await db.insert(schema.itemPenyaluran).values([{
           idPenyaluran: header.id, idProduk: prod.id, jumlahDikirim: item.jumlahDikirim,
-          snapshotHargaJual: prod.hargaJualPenyalur, snapshotHargaTebus: prod.hargaTebus,
+          snapshotHargaJual: prod.hargaJual, snapshotHargaTebus: prod.hargaTebus,
         }]);
         if (del.status !== 'draft') {
           const stok = getStock(del.gudang.id, prod.id);
