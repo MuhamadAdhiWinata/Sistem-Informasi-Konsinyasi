@@ -21,8 +21,8 @@ export default defineEventHandler(async (event) => {
       satuan: produk.satuan,
       jumlah: stokGudang.jumlah,
       diperbaruiPada: stokGudang.diperbaruiPada,
-      hargaTebusAcuan: sql<number>`(
-        select ipb.harga_tebus_aktual
+      hargaPabrikAcuan: sql<number>`(
+        select ipb.harga_pabrik_aktual
         from ${itemPenerimaanBarang} ipb
         inner join ${penerimaanBarang} pb on pb.id = ipb.id_penerimaan
         where ipb.id_produk = ${stokGudang.idProduk}

@@ -95,20 +95,20 @@ export default defineEventHandler(async (event) => {
       const approvedQty = item.jumlahDisetujui || item.jumlahDiminta
 
       const [produkData] = await tx
-        .select({ hargaJual: produk.hargaJual, hargaTebus: produk.hargaTebus })
+        .select({ hargaRetail: produk.hargaRetail, hargaPabrik: produk.hargaPabrik })
         .from(produk)
         .where(eq(produk.id, item.idProduk))
         .limit(1)
 
-      const hargaJual = Number(produkData?.hargaJual || 0)
-      const hargaTebus = Number(produkData?.hargaTebus || 0)
+      const hargaRetail = Number(produkData?.hargaRetail || 0)
+      const hargaGrosir = Number(produkData?.hargaGrosir || 0)
 
       await tx.insert(itemPenyaluran).values({
         idPenyaluran,
         idProduk: item.idProduk,
         jumlahDikirim: approvedQty,
-        snapshotHargaJual: String(hargaJual),
-        snapshotHargaTebus: String(hargaTebus),
+        snapshotHargaRetail: String(hargaRetail),
+        snapshotHargaGrosir: String(hargaGrosir),
       })
 
       const existingStok = await tx
@@ -132,7 +132,7 @@ export default defineEventHandler(async (event) => {
           .where(eq(stokGudang.id, existingStok[0].id))
       }
 
-      totalNilai += approvedQty * hargaJual
+      totalNilai += approvedQty * hargaRetail
     }
 
     const year = new Date().getFullYear()

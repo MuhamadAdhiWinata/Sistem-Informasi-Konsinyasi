@@ -1,4 +1,7 @@
 import { verifyToken, type JwtPayload } from '../utils/auth';
+import { eq } from 'drizzle-orm';
+import { pengguna } from '../database/schema';
+import { useDB } from '../utils/database';
 
 declare module 'h3' {
   interface H3EventContext {
@@ -6,7 +9,7 @@ declare module 'h3' {
   }
 }
 
-export default defineEventHandler((event) => {
+export default defineEventHandler(async (event) => {
   const url = getRequestURL(event);
   
   // Hanya proses route API, skip untuk auth/login
@@ -27,6 +30,22 @@ export default defineEventHandler((event) => {
       throw createError({
         statusCode: 401,
         statusMessage: 'Unauthorized: Invalid or expired token',
+      });
+    }
+
+    // Verifikasi user masih ada di database
+    const db = await useDB();
+    const userExists = await db
+      .select({ id: pengguna.id })
+      .from(pengguna)
+      .where(eq(pengguna.id, decoded.id))
+      .limit(1)
+      .then(rows => rows.length > 0);
+
+    if (!userExists) {
+      throw createError({
+        statusCode: 401,
+        statusMessage: 'Unauthorized: User tidak ditemukan, silakan login ulang',
       });
     }
 

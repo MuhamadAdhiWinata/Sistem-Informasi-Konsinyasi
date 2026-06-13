@@ -60,11 +60,11 @@
               <UIcon name="i-heroicons-photo" class="w-5 h-5" />
             </div>
           </template>
-          <template #hargaTebusAktual-data="{ row }">
-            <span class="font-mono">Rp {{ Number(row.hargaTebusAktual).toLocaleString('id-ID') }}</span>
+          <template #hargaPabrikAktual-data="{ row }">
+            <span class="font-mono">Rp {{ Number(row.hargaPabrikAktual).toLocaleString('id-ID') }}</span>
           </template>
           <template #subtotal-data="{ row }">
-            <span class="font-mono">Rp {{ (Number(row.jumlah) * Number(row.hargaTebusAktual)).toLocaleString('id-ID') }}</span>
+            <span class="font-mono">Rp {{ (Number(row.jumlah) * Number(row.hargaPabrikAktual)).toLocaleString('id-ID') }}</span>
           </template>
         </UTable>
       </UCard>
@@ -137,7 +137,7 @@ const itemColumns = [
   { key: 'produk', label: 'Produk' },
   { key: 'satuan', label: 'Satuan' },
   { key: 'jumlah', label: 'Jumlah' },
-  { key: 'hargaTebusAktual', label: 'Harga Pabrik' },
+  { key: 'hargaPabrikAktual', label: 'Harga Pabrik' },
   { key: 'subtotal', label: 'Subtotal' },
 ]
 

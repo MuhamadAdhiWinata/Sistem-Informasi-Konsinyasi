@@ -9,5 +9,5 @@ export const itemPenerimaanBarang = mysqlTable('item_penerimaan_barang', {
   idPenerimaan:    bigint('id_penerimaan', { mode: 'number', unsigned: true }).notNull().references(() => penerimaanBarang.id),
   idProduk:        bigint('id_produk', { mode: 'number', unsigned: true }).notNull().references(() => produk.id),
   jumlah:          int('jumlah').notNull(),
-  hargaTebusAktual: decimal('harga_tebus_aktual', { precision: 12, scale: 2 }).notNull(),
+  hargaPabrikAktual: decimal('harga_pabrik_aktual', { precision: 12, scale: 2 }).notNull(),
 });

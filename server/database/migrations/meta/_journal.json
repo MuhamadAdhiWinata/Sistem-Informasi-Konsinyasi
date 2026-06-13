@@ -29,6 +29,20 @@
       "when": 1781336232418,
       "tag": "0003_unusual_texas_twister",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1782000000000,
+      "tag": "0004_rename_harga_columns",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1782100000000,
+      "tag": "0005_rename_snapshot_harga_grosir",
+      "breakpoints": true
     }
   ]
 }

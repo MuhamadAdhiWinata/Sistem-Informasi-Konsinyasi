@@ -43,8 +43,8 @@ export default defineEventHandler(async (event) => {
       satuan: produk.satuan,
       gambar: produk.gambar,
       jumlahDikirim: itemPenyaluran.jumlahDikirim,
-      snapshotHargaJual: itemPenyaluran.snapshotHargaJual,
-      snapshotHargaTebus: itemPenyaluran.snapshotHargaTebus,
+      snapshotHargaRetail: itemPenyaluran.snapshotHargaRetail,
+      snapshotHargaGrosir: itemPenyaluran.snapshotHargaGrosir,
     })
     .from(itemPenyaluran)
     .leftJoin(produk, eq(itemPenyaluran.idProduk, produk.id))
@@ -53,8 +53,8 @@ export default defineEventHandler(async (event) => {
   if (user.peran === 'pemasok') {
     items = items.map(i => ({
       ...i,
-      snapshotHargaJual: '0',
-      snapshotHargaTebus: '0',
+      snapshotHargaRetail: '0',
+      snapshotHargaGrosir: '0',
     }))
   }
 

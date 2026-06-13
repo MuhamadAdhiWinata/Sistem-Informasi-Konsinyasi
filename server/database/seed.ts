@@ -82,39 +82,39 @@ async function main() {
     console.log('Seeding produk...');
     const produkData = [
       // Wings — harga per botol
-      { sku: 'WNG-FLO-250', nama: 'Floridina Orange 250ml', idPemasok: pWings.id, satuan: 'Botol', hargaTebus: '4000', hargaJualPenyalur: '4700', hargaJual: '5500' },
-      { sku: 'WNG-FLL-250', nama: 'Floridina Lychee 250ml', idPemasok: pWings.id, satuan: 'Botol', hargaTebus: '4000', hargaJualPenyalur: '4700', hargaJual: '5500' },
-      { sku: 'WNG-FTR-350', nama: 'Freshtea Raslemon 350ml', idPemasok: pWings.id, satuan: 'Botol', hargaTebus: '3500', hargaJualPenyalur: '4200', hargaJual: '5000' },
+      { sku: 'WNG-FLO-250', nama: 'Floridina Orange 250ml', idPemasok: pWings.id, satuan: 'Botol', hargaPabrik: '4000', hargaGrosir: '4700', hargaRetail: '5500' },
+      { sku: 'WNG-FLL-250', nama: 'Floridina Lychee 250ml', idPemasok: pWings.id, satuan: 'Botol', hargaPabrik: '4000', hargaGrosir: '4700', hargaRetail: '5500' },
+      { sku: 'WNG-FTR-350', nama: 'Freshtea Raslemon 350ml', idPemasok: pWings.id, satuan: 'Botol', hargaPabrik: '3500', hargaGrosir: '4200', hargaRetail: '5000' },
       // Mayora — harga per botol
-      { sku: 'MYR-KP78-150', nama: 'Kopiko 78 Coffee 150ml', idPemasok: pMayora.id, satuan: 'Botol', hargaTebus: '4500', hargaJualPenyalur: '5200', hargaJual: '6000' },
-      { sku: 'MYR-KPB-200', nama: 'Kopiko Blister 200ml', idPemasok: pMayora.id, satuan: 'Botol', hargaTebus: '5000', hargaJualPenyalur: '5700', hargaJual: '6500' },
-      { sku: 'MYR-TRS-200', nama: 'Torres 200ml', idPemasok: pMayora.id, satuan: 'Botol', hargaTebus: '4200', hargaJualPenyalur: '4900', hargaJual: '5800' },
+      { sku: 'MYR-KP78-150', nama: 'Kopiko 78 Coffee 150ml', idPemasok: pMayora.id, satuan: 'Botol', hargaPabrik: '4500', hargaGrosir: '5200', hargaRetail: '6000' },
+      { sku: 'MYR-KPB-200', nama: 'Kopiko Blister 200ml', idPemasok: pMayora.id, satuan: 'Botol', hargaPabrik: '5000', hargaGrosir: '5700', hargaRetail: '6500' },
+      { sku: 'MYR-TRS-200', nama: 'Torres 200ml', idPemasok: pMayora.id, satuan: 'Botol', hargaPabrik: '4200', hargaGrosir: '4900', hargaRetail: '5800' },
       // Kalbe — harga per botol
-      { sku: 'KLB-KRT-250', nama: 'Kiranti 250ml', idPemasok: pKalbe.id, satuan: 'Botol', hargaTebus: '5000', hargaJualPenyalur: '5800', hargaJual: '6500' },
-      { sku: 'KLB-FTG-150', nama: 'Fatigon Spirit 150ml', idPemasok: pKalbe.id, satuan: 'Botol', hargaTebus: '3800', hargaJualPenyalur: '4500', hargaJual: '5200' },
-      { sku: 'KLB-PRM-100', nama: 'Promag Syrup 100ml', idPemasok: pKalbe.id, satuan: 'Botol', hargaTebus: '3200', hargaJualPenyalur: '3800', hargaJual: '4500' },
+      { sku: 'KLB-KRT-250', nama: 'Kiranti 250ml', idPemasok: pKalbe.id, satuan: 'Botol', hargaPabrik: '5000', hargaGrosir: '5800', hargaRetail: '6500' },
+      { sku: 'KLB-FTG-150', nama: 'Fatigon Spirit 150ml', idPemasok: pKalbe.id, satuan: 'Botol', hargaPabrik: '3800', hargaGrosir: '4500', hargaRetail: '5200' },
+      { sku: 'KLB-PRM-100', nama: 'Promag Syrup 100ml', idPemasok: pKalbe.id, satuan: 'Botol', hargaPabrik: '3200', hargaGrosir: '3800', hargaRetail: '4500' },
       // Coca-Cola — harga per botol
-      { sku: 'CCL-COLA-390', nama: 'Coca-Cola 390ml', idPemasok: pCoca.id, satuan: 'Botol', hargaTebus: '4500', hargaJualPenyalur: '5200', hargaJual: '6000' },
-      { sku: 'CCL-SPR-390', nama: 'Sprite 390ml', idPemasok: pCoca.id, satuan: 'Botol', hargaTebus: '4500', hargaJualPenyalur: '5200', hargaJual: '6000' },
-      { sku: 'CCL-FAN-390', nama: 'Fanta Strawberry 390ml', idPemasok: pCoca.id, satuan: 'Botol', hargaTebus: '4500', hargaJualPenyalur: '5200', hargaJual: '6000' },
+      { sku: 'CCL-COLA-390', nama: 'Coca-Cola 390ml', idPemasok: pCoca.id, satuan: 'Botol', hargaPabrik: '4500', hargaGrosir: '5200', hargaRetail: '6000' },
+      { sku: 'CCL-SPR-390', nama: 'Sprite 390ml', idPemasok: pCoca.id, satuan: 'Botol', hargaPabrik: '4500', hargaGrosir: '5200', hargaRetail: '6000' },
+      { sku: 'CCL-FAN-390', nama: 'Fanta Strawberry 390ml', idPemasok: pCoca.id, satuan: 'Botol', hargaPabrik: '4500', hargaGrosir: '5200', hargaRetail: '6000' },
       // Sosro — harga per botol
-      { sku: 'SOS-TBS-350', nama: 'Teh Botol Sosro 350ml', idPemasok: pSosro.id, satuan: 'Botol', hargaTebus: '3500', hargaJualPenyalur: '4200', hargaJual: '5000' },
-      { sku: 'SOS-FTM-350', nama: 'Fruit Tea Markisa 350ml', idPemasok: pSosro.id, satuan: 'Botol', hargaTebus: '3500', hargaJualPenyalur: '4200', hargaJual: '5000' },
+      { sku: 'SOS-TBS-350', nama: 'Teh Botol Sosro 350ml', idPemasok: pSosro.id, satuan: 'Botol', hargaPabrik: '3500', hargaGrosir: '4200', hargaRetail: '5000' },
+      { sku: 'SOS-FTM-350', nama: 'Fruit Tea Markisa 350ml', idPemasok: pSosro.id, satuan: 'Botol', hargaPabrik: '3500', hargaGrosir: '4200', hargaRetail: '5000' },
       // Ultra Jaya — harga per kotak
-      { sku: 'ULT-UMF-250', nama: 'Ultra Milk Full Cream 250ml', idPemasok: pUltra.id, satuan: 'Kotak', hargaTebus: '5000', hargaJualPenyalur: '5700', hargaJual: '6500' },
-      { sku: 'ULT-UMC-250', nama: 'Ultra Milk Coklat 250ml', idPemasok: pUltra.id, satuan: 'Kotak', hargaTebus: '5000', hargaJualPenyalur: '5700', hargaJual: '6500' },
-      { sku: 'ULT-SBJ-250', nama: 'Ultra Sari Buah Jambu 250ml', idPemasok: pUltra.id, satuan: 'Kotak', hargaTebus: '4500', hargaJualPenyalur: '5200', hargaJual: '6000' },
+      { sku: 'ULT-UMF-250', nama: 'Ultra Milk Full Cream 250ml', idPemasok: pUltra.id, satuan: 'Kotak', hargaPabrik: '5000', hargaGrosir: '5700', hargaRetail: '6500' },
+      { sku: 'ULT-UMC-250', nama: 'Ultra Milk Coklat 250ml', idPemasok: pUltra.id, satuan: 'Kotak', hargaPabrik: '5000', hargaGrosir: '5700', hargaRetail: '6500' },
+      { sku: 'ULT-SBJ-250', nama: 'Ultra Sari Buah Jambu 250ml', idPemasok: pUltra.id, satuan: 'Kotak', hargaPabrik: '4500', hargaGrosir: '5200', hargaRetail: '6000' },
       // Yakult — harga per botol
-      { sku: 'YKT-ORI-65', nama: 'Yakult Original 65ml', idPemasok: pYakult.id, satuan: 'Botol', hargaTebus: '1700', hargaJualPenyalur: '1900', hargaJual: '2200' },
+      { sku: 'YKT-ORI-65', nama: 'Yakult Original 65ml', idPemasok: pYakult.id, satuan: 'Botol', hargaPabrik: '1700', hargaGrosir: '1900', hargaRetail: '2200' },
       // Indofood — harga per botol
-      { sku: 'IND-ICO-350', nama: 'Ichi Ocha 350ml', idPemasok: pIndofood.id, satuan: 'Botol', hargaTebus: '3200', hargaJualPenyalur: '3800', hargaJual: '4500' },
-      { sku: 'IND-TSK-300', nama: 'Teh Sarikoe 300ml', idPemasok: pIndofood.id, satuan: 'Botol', hargaTebus: '2800', hargaJualPenyalur: '3300', hargaJual: '4000' },
+      { sku: 'IND-ICO-350', nama: 'Ichi Ocha 350ml', idPemasok: pIndofood.id, satuan: 'Botol', hargaPabrik: '3200', hargaGrosir: '3800', hargaRetail: '4500' },
+      { sku: 'IND-TSK-300', nama: 'Teh Sarikoe 300ml', idPemasok: pIndofood.id, satuan: 'Botol', hargaPabrik: '2800', hargaGrosir: '3300', hargaRetail: '4000' },
       // PepsiCo — harga per botol
-      { sku: 'PEP-COLA-390', nama: 'Pepsi Cola 390ml', idPemasok: pPepsi.id, satuan: 'Botol', hargaTebus: '4200', hargaJualPenyalur: '4900', hargaJual: '5800' },
-      { sku: 'PEP-MIR-390', nama: 'Mirinda Orange 390ml', idPemasok: pPepsi.id, satuan: 'Botol', hargaTebus: '4200', hargaJualPenyalur: '4900', hargaJual: '5800' },
+      { sku: 'PEP-COLA-390', nama: 'Pepsi Cola 390ml', idPemasok: pPepsi.id, satuan: 'Botol', hargaPabrik: '4200', hargaGrosir: '4900', hargaRetail: '5800' },
+      { sku: 'PEP-MIR-390', nama: 'Mirinda Orange 390ml', idPemasok: pPepsi.id, satuan: 'Botol', hargaPabrik: '4200', hargaGrosir: '4900', hargaRetail: '5800' },
       // Jamu Jago
-      { sku: 'JGO-KBE-100', nama: 'Kuku Bima Ener-G 100ml', idPemasok: pJago.id, satuan: 'Botol', hargaTebus: '2500', hargaJualPenyalur: '3000', hargaJual: '3500' },
-      { sku: 'JGO-TAG-15', nama: 'Tolak Angin 15ml', idPemasok: pJago.id, satuan: 'Sachet', hargaTebus: '1200', hargaJualPenyalur: '1400', hargaJual: '1700' },
+      { sku: 'JGO-KBE-100', nama: 'Kuku Bima Ener-G 100ml', idPemasok: pJago.id, satuan: 'Botol', hargaPabrik: '2500', hargaGrosir: '3000', hargaRetail: '3500' },
+      { sku: 'JGO-TAG-15', nama: 'Tolak Angin 15ml', idPemasok: pJago.id, satuan: 'Sachet', hargaPabrik: '1200', hargaGrosir: '1400', hargaRetail: '1700' },
     ];
     await db.insert(schema.produk).values(produkData.map(p => ({ ...p, apakahAktif: 1 })));
     const produk = await db.select().from(schema.produk).orderBy(sql`id`);
@@ -174,53 +174,53 @@ async function main() {
     // ═══════════════════════════════════════════
     console.log('Seeding penerimaan barang...');
 
-    interface GRItem { produkIdx: number; jumlah: number; hargaTebusAktual: string }
+    interface GRItem { produkIdx: number; jumlah: number; hargaPabrikAktual: string }
 
     const grData: { nomor: string; pemasok: typeof pWings; gudang: typeof gPusat; tgl: Date; items: GRItem[]; status: 'draft' | 'completed' }[] = [
       {
         nomor: 'GR-20260601-0001', pemasok: pWings, gudang: gPusat, tgl: new Date('2026-06-01'), status: 'completed',
         items: [
-          { produkIdx: 0, jumlah: 80, hargaTebusAktual: '4000' },
-          { produkIdx: 1, jumlah: 70, hargaTebusAktual: '4000' },
-          { produkIdx: 2, jumlah: 60, hargaTebusAktual: '3500' },
+          { produkIdx: 0, jumlah: 80, hargaPabrikAktual: '4000' },
+          { produkIdx: 1, jumlah: 70, hargaPabrikAktual: '4000' },
+          { produkIdx: 2, jumlah: 60, hargaPabrikAktual: '3500' },
         ],
       },
       {
         nomor: 'GR-20260602-0001', pemasok: pMayora, gudang: gPusat, tgl: new Date('2026-06-02'), status: 'completed',
         items: [
-          { produkIdx: 3, jumlah: 70, hargaTebusAktual: '4500' },
-          { produkIdx: 4, jumlah: 60, hargaTebusAktual: '5000' },
-          { produkIdx: 5, jumlah: 50, hargaTebusAktual: '4200' },
+          { produkIdx: 3, jumlah: 70, hargaPabrikAktual: '4500' },
+          { produkIdx: 4, jumlah: 60, hargaPabrikAktual: '5000' },
+          { produkIdx: 5, jumlah: 50, hargaPabrikAktual: '4200' },
         ],
       },
       {
         nomor: 'GR-20260605-0001', pemasok: pCoca, gudang: gBandung, tgl: new Date('2026-06-05'), status: 'completed',
         items: [
-          { produkIdx: 9, jumlah: 60, hargaTebusAktual: '4500' },
-          { produkIdx: 10, jumlah: 50, hargaTebusAktual: '4500' },
-          { produkIdx: 11, jumlah: 50, hargaTebusAktual: '4500' },
+          { produkIdx: 9, jumlah: 60, hargaPabrikAktual: '4500' },
+          { produkIdx: 10, jumlah: 50, hargaPabrikAktual: '4500' },
+          { produkIdx: 11, jumlah: 50, hargaPabrikAktual: '4500' },
         ],
       },
       {
         nomor: 'GR-20260607-0001', pemasok: pSosro, gudang: gBandung, tgl: new Date('2026-06-07'), status: 'draft',
         items: [
-          { produkIdx: 12, jumlah: 70, hargaTebusAktual: '3500' },
-          { produkIdx: 13, jumlah: 60, hargaTebusAktual: '3500' },
+          { produkIdx: 12, jumlah: 70, hargaPabrikAktual: '3500' },
+          { produkIdx: 13, jumlah: 60, hargaPabrikAktual: '3500' },
         ],
       },
       {
         nomor: 'GR-20260610-0001', pemasok: pUltra, gudang: gSurabaya, tgl: new Date('2026-06-10'), status: 'draft',
         items: [
-          { produkIdx: 14, jumlah: 60, hargaTebusAktual: '5000' },
-          { produkIdx: 15, jumlah: 50, hargaTebusAktual: '5000' },
-          { produkIdx: 16, jumlah: 40, hargaTebusAktual: '4500' },
+          { produkIdx: 14, jumlah: 60, hargaPabrikAktual: '5000' },
+          { produkIdx: 15, jumlah: 50, hargaPabrikAktual: '5000' },
+          { produkIdx: 16, jumlah: 40, hargaPabrikAktual: '4500' },
         ],
       },
       {
         nomor: 'GR-20260612-0001', pemasok: pIndofood, gudang: gPusat, tgl: new Date('2026-06-12'), status: 'draft',
         items: [
-          { produkIdx: 18, jumlah: 70, hargaTebusAktual: '3200' },
-          { produkIdx: 19, jumlah: 60, hargaTebusAktual: '2800' },
+          { produkIdx: 18, jumlah: 70, hargaPabrikAktual: '3200' },
+          { produkIdx: 19, jumlah: 60, hargaPabrikAktual: '2800' },
         ],
       },
     ];
@@ -235,7 +235,7 @@ async function main() {
         const prod = produk[item.produkIdx];
         await db.insert(schema.itemPenerimaanBarang).values([{
           idPenerimaan: header.id, idProduk: prod.id, jumlah: item.jumlah,
-          hargaTebusAktual: item.hargaTebusAktual,
+          hargaPabrikAktual: item.hargaPabrikAktual,
         }]);
         if (gr.status === 'completed') {
           await db.update(schema.stokGudang)
@@ -322,7 +322,7 @@ async function main() {
         const prod = produk[item.produkIdx];
         await db.insert(schema.itemPenyaluran).values([{
           idPenyaluran: header.id, idProduk: prod.id, jumlahDikirim: item.jumlahDikirim,
-          snapshotHargaJual: prod.hargaJual, snapshotHargaTebus: prod.hargaTebus,
+          snapshotHargaRetail: prod.hargaRetail,           snapshotHargaGrosir: prod.hargaGrosir,
         }]);
         if (del.status !== 'draft') {
           const stok = getStock(del.gudang.id, prod.id);
@@ -346,7 +346,7 @@ async function main() {
     ];
     for (const f of fakturItems) {
       const items = await db.select().from(schema.itemPenyaluran).where(sql`id_penyaluran = ${f.del.id}`);
-      const total = items.reduce((sum, it) => sum + Number(it.jumlahDikirim) * Number(it.snapshotHargaJual), 0);
+      const total = items.reduce((sum, it) => sum + Number(it.jumlahDikirim) * Number(it.snapshotHargaRetail), 0);
       await db.insert(schema.faktur).values([{
         nomorFaktur: f.nomor, idPenyaluran: f.del.id,
         totalNilai: String(total), diterbitkanPada: f.del.tanggalPenyaluran,

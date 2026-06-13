@@ -83,8 +83,8 @@
             <td style="text-align:left; padding:5px 4px;">{{ item.produk }}</td>
             <td style="text-align:center; padding:5px 4px;">{{ item.jumlah }}</td>
             <td style="text-align:center; padding:5px 4px;">{{ item.satuan }}</td>
-            <td style="text-align:right; padding:5px 4px; font-family:monospace;">Rp {{ Number(item.hargaTebusAktual).toLocaleString('id-ID') }}</td>
-            <td style="text-align:right; padding:5px 4px; font-family:monospace;">Rp {{ (Number(item.jumlah) * Number(item.hargaTebusAktual)).toLocaleString('id-ID') }}</td>
+            <td style="text-align:right; padding:5px 4px; font-family:monospace;">Rp {{ Number(item.hargaPabrikAktual).toLocaleString('id-ID') }}</td>
+            <td style="text-align:right; padding:5px 4px; font-family:monospace;">Rp {{ (Number(item.jumlah) * Number(item.hargaPabrikAktual)).toLocaleString('id-ID') }}</td>
           </tr>
         </tbody>
         <tfoot>

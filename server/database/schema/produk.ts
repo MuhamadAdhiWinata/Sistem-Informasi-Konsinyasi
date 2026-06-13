@@ -9,9 +9,9 @@ export const produk = mysqlTable('produk', {
   nama:        varchar('nama', { length: 150 }).notNull(),
   idPemasok:   bigint('id_pemasok', { mode: 'number', unsigned: true }).notNull().references(() => pemasok.id),
   satuan:      varchar('satuan', { length: 20 }).notNull(),
-  hargaTebus:  decimal('harga_tebus', { precision: 12, scale: 2 }).notNull(),
-  hargaJualPenyalur: decimal('harga_jual_penyalur', { precision: 12, scale: 2 }).notNull(),
-  hargaJual:   decimal('harga_jual', { precision: 12, scale: 2 }).notNull(),
+  hargaPabrik:  decimal('harga_pabrik', { precision: 12, scale: 2 }).notNull(),
+  hargaGrosir: decimal('harga_grosir', { precision: 12, scale: 2 }).notNull(),
+  hargaRetail:   decimal('harga_retail', { precision: 12, scale: 2 }).notNull(),
   gambar:      text('gambar', { length: 'medium' }),
   apakahAktif: tinyint('apakah_aktif').notNull().default(1),
 });

@@ -41,10 +41,11 @@
                   <tr class="border-b border-zinc-200 dark:border-zinc-800">
                     <th class="text-left px-3 py-2 font-medium text-muted-foreground">Produk</th>
                     <th class="text-left px-3 py-2 font-medium text-muted-foreground">Jumlah Kirim</th>
-                    <th class="text-left px-3 py-2 font-medium text-muted-foreground">Harga Retail</th>
                     <th class="text-left px-3 py-2 font-medium text-muted-foreground">Harga Pabrik (acuan)</th>
-                    <th class="text-left px-3 py-2 font-medium text-muted-foreground">Harga Pabrik</th>
-                    <th class="text-left px-3 py-2 font-medium text-muted-foreground">Subtotal</th>
+                    <th class="text-left px-3 py-2 font-medium text-muted-foreground">Harga Grosir</th>
+                    <th class="text-left px-3 py-2 font-medium text-muted-foreground">Harga Retail</th>
+                    <th class="text-left px-3 py-2 font-medium text-muted-foreground">Subtotal Grosir</th>
+                    <th class="text-left px-3 py-2 font-medium text-muted-foreground">Subtotal Retail</th>
                     <th class="w-10 px-3 py-2"></th>
                   </tr>
                 </thead>
@@ -57,18 +58,24 @@
                       <UInput v-model="item.jumlahDikirim" type="number" min="1" />
                     </td>
                     <td class="px-3 py-2 align-top">
-                      <UInput v-model="item.snapshotHargaJual" type="number" min="0" step="500" />
-                    </td>
-                    <td class="px-3 py-2 align-top">
                       <span v-if="item.idProduk" class="font-mono text-xs text-zinc-500">Rp {{ hargaPabrikAcuan(item.idProduk) }}</span>
                       <span v-else class="text-xs text-muted-foreground">—</span>
                     </td>
                     <td class="px-3 py-2 align-top">
-                      <UInput v-model="item.snapshotHargaTebus" type="number" min="0" step="500" />
+                      <UInput v-model="item.snapshotHargaGrosir" type="number" min="0" />
+                    </td>
+                    <td class="px-3 py-2 align-top">
+                      <UInput v-model="item.snapshotHargaRetail" type="number" min="0" />
                     </td>
                     <td class="px-3 py-2 align-top font-mono text-sm">
-                      <template v-if="item.jumlahDikirim && item.snapshotHargaJual">
-                        Rp {{ (Number(item.jumlahDikirim) * Number(item.snapshotHargaJual)).toLocaleString('id-ID') }}
+                      <template v-if="item.jumlahDikirim && item.snapshotHargaGrosir">
+                        Rp {{ (Number(item.jumlahDikirim) * Number(item.snapshotHargaGrosir)).toLocaleString('id-ID') }}
+                      </template>
+                      <span v-else class="text-muted-foreground">-</span>
+                    </td>
+                    <td class="px-3 py-2 align-top font-mono text-sm">
+                      <template v-if="item.jumlahDikirim && item.snapshotHargaRetail">
+                        Rp {{ (Number(item.jumlahDikirim) * Number(item.snapshotHargaRetail)).toLocaleString('id-ID') }}
                       </template>
                       <span v-else class="text-muted-foreground">-</span>
                     </td>
@@ -125,16 +132,16 @@ const formSchema = z.object({
   items: z.array(z.object({
     idProduk: z.preprocess(toNum, z.number().positive()),
     jumlahDikirim: z.preprocess(toNum, z.number().int().positive('Jumlah harus > 0')),
-    snapshotHargaJual: z.preprocess(toNum, z.number().positive('Harga harus > 0')),
-    snapshotHargaTebus: z.preprocess(toNum, z.number().positive('Harga harus > 0')),
+    snapshotHargaRetail: z.preprocess(toNum, z.number().positive('Harga harus > 0')),
+    snapshotHargaGrosir: z.preprocess(toNum, z.number().positive('Harga harus > 0')),
   })).min(1, 'Minimal 1 item'),
 })
 
 interface ItemForm {
   idProduk: number | undefined
   jumlahDikirim: number | undefined
-  snapshotHargaJual: number | undefined
-  snapshotHargaTebus: number | undefined
+  snapshotHargaRetail: number | undefined
+  snapshotHargaGrosir: number | undefined
 }
 
 interface FormData {
@@ -147,8 +154,8 @@ interface FormData {
 const defaultItem = (): ItemForm => ({
   idProduk: undefined,
   jumlahDikirim: undefined,
-  snapshotHargaJual: undefined,
-  snapshotHargaTebus: undefined,
+  snapshotHargaRetail: undefined,
+  snapshotHargaGrosir: undefined,
 })
 
 const formState = ref<FormData>({
@@ -214,8 +221,8 @@ async function loadData() {
       items: d.items.map((item: any) => ({
         idProduk: item.idProduk,
         jumlahDikirim: Number(item.jumlahDikirim),
-        snapshotHargaJual: Number(item.snapshotHargaJual),
-        snapshotHargaTebus: Number(item.snapshotHargaTebus),
+        snapshotHargaRetail: Number(item.snapshotHargaRetail),
+        snapshotHargaGrosir: Number(item.snapshotHargaGrosir),
       })),
     }
   } catch (err: any) {
@@ -236,8 +243,8 @@ async function saveEdit() {
       items: formState.value.items.map((item) => ({
         idProduk: Number(item.idProduk),
         jumlahDikirim: Number(item.jumlahDikirim),
-        snapshotHargaJual: Number(item.snapshotHargaJual),
-        snapshotHargaTebus: Number(item.snapshotHargaTebus),
+        snapshotHargaRetail: Number(item.snapshotHargaRetail),
+        snapshotHargaGrosir: Number(item.snapshotHargaGrosir),
       })),
     }
 
@@ -255,6 +262,7 @@ async function saveEdit() {
   }
 }
 
+// Auto-fill harga from produk when product is selected
 watch(
   () => formState.value.items.map(i => i.idProduk),
   (newIds, oldIds) => {
@@ -263,8 +271,8 @@ watch(
       if (oldIds && oldIds[idx] === newIds[idx]) return
       const prod = produkList.value.find((p: any) => Number(p.id) === Number(item.idProduk))
       if (!prod) return
-      item.snapshotHargaJual = Number(prod.hargaJual)
-      item.snapshotHargaTebus = Number(prod.hargaTebus)
+      item.snapshotHargaRetail = Number(prod.hargaRetail)
+      item.snapshotHargaGrosir = Number(prod.hargaGrosir)
     })
   },
   { deep: true },
@@ -272,7 +280,7 @@ watch(
 
 function hargaPabrikAcuan(idProduk: number) {
   const stok = stokList.value.find((s: any) => Number(s.idProduk) === Number(idProduk))
-  return stok?.hargaTebusAcuan ? Number(stok.hargaTebusAcuan).toLocaleString('id-ID') : '—'
+  return stok?.hargaPabrikAcuan ? Number(stok.hargaPabrikAcuan).toLocaleString('id-ID') : '—'
 }
 
 onMounted(() => loadData())

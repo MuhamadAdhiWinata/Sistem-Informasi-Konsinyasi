@@ -9,9 +9,9 @@ const bodySchema = z.object({
   nama: z.string().min(1).max(150).optional(),
   idPemasok: z.number().optional(),
   satuan: z.string().min(1).max(20).optional(),
-  hargaTebus: z.string().optional(),
-  hargaJualPenyalur: z.string().optional(),
-  hargaJual: z.string().optional(),
+  hargaPabrik: z.string().optional(),
+  hargaGrosir: z.string().optional(),
+  hargaRetail: z.string().optional(),
   gambar: z.string().optional(),
   apakahAktif: z.number().int().min(0).max(1).optional(),
 });

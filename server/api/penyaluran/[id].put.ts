@@ -7,8 +7,8 @@ import { requireRole } from '~~/server/utils/rbac'
 const itemSchema = z.object({
   idProduk: z.number().int().positive(),
   jumlahDikirim: z.number().int().positive(),
-  snapshotHargaJual: z.number().positive(),
-  snapshotHargaTebus: z.number().positive(),
+  snapshotHargaRetail: z.number().positive(),
+  snapshotHargaGrosir: z.number().positive(),
 })
 
 const bodySchema = z.object({
@@ -57,8 +57,8 @@ export default defineEventHandler(async (event) => {
         idPenyaluran: id,
         idProduk: item.idProduk,
         jumlahDikirim: item.jumlahDikirim,
-        snapshotHargaJual: String(item.snapshotHargaJual),
-        snapshotHargaTebus: String(item.snapshotHargaTebus),
+        snapshotHargaRetail: String(item.snapshotHargaRetail),
+        snapshotHargaGrosir: String(item.snapshotHargaGrosir),
       })
     }
   })

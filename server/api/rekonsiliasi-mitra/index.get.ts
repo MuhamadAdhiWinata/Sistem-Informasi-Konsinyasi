@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
       returBaik: sql<number>`coalesce(sum(case when ${itemOpname.kondisiRetur} = 'good' then ${itemOpname.jumlahRetur} else 0 end), 0)`,
       returRusak: sql<number>`coalesce(sum(case when ${itemOpname.kondisiRetur} = 'damaged' then ${itemOpname.jumlahRetur} else 0 end), 0)`,
       returExpired: sql<number>`coalesce(sum(case when ${itemOpname.kondisiRetur} = 'expired' then ${itemOpname.jumlahRetur} else 0 end), 0)`,
-      totalPendapatan: sql<number>`coalesce(sum(${itemOpname.jumlahLaku} * (${produk.hargaJual} - ${produk.hargaJualPenyalur})), 0)`,
+      totalPendapatan: sql<number>`coalesce(sum(${itemOpname.jumlahLaku} * (${produk.hargaRetail} - ${produk.hargaGrosir})), 0)`,
     })
     .from(opnameStok)
     .innerJoin(mitra, eq(opnameStok.idMitra, mitra.id))

@@ -71,10 +71,12 @@
             <th style="text-align:center; padding:6px 4px; font-weight:bold; width:40px;">No</th>
             <th style="text-align:center; padding:6px 4px; font-weight:bold; width:100px;">Kode / SKU</th>
             <th style="text-align:left; padding:6px 4px; font-weight:bold;">Deskripsi Nama Barang</th>
-            <th style="text-align:center; padding:6px 4px; font-weight:bold; width:70px;">Qty Kirim</th>
-            <th style="text-align:center; padding:6px 4px; font-weight:bold; width:60px;">Satuan</th>
-            <th style="text-align:right; padding:6px 4px; font-weight:bold; width:100px;">Harga (/unit)</th>
-            <th style="text-align:right; padding:6px 4px; font-weight:bold; width:110px;">Subtotal</th>
+            <th style="text-align:center; padding:6px 4px; font-weight:bold; width:55px;">Qty</th>
+            <th style="text-align:center; padding:6px 4px; font-weight:bold; width:50px;">Satuan</th>
+            <th style="text-align:right; padding:6px 4px; font-weight:bold; width:95px;">Harga Grosir</th>
+            <th style="text-align:right; padding:6px 4px; font-weight:bold; width:95px;">Harga Retail</th>
+            <th style="text-align:right; padding:6px 4px; font-weight:bold; width:100px;">Subtotal Grosir</th>
+            <th style="text-align:right; padding:6px 4px; font-weight:bold; width:100px;">Subtotal Retail</th>
           </tr>
         </thead>
         <tbody>
@@ -84,13 +86,19 @@
             <td style="text-align:left; padding:5px 4px;">{{ item.produk }}</td>
             <td style="text-align:center; padding:5px 4px;">{{ item.jumlahDikirim }}</td>
             <td style="text-align:center; padding:5px 4px;">{{ item.satuan }}</td>
-            <td style="text-align:right; padding:5px 4px; font-family:monospace;">Rp {{ Number(item.snapshotHargaJual).toLocaleString('id-ID') }}</td>
-            <td style="text-align:right; padding:5px 4px; font-family:monospace;">Rp {{ (Number(item.jumlahDikirim) * Number(item.snapshotHargaJual)).toLocaleString('id-ID') }}</td>
+            <td style="text-align:right; padding:5px 4px; font-family:monospace;">Rp {{ Number(item.snapshotHargaGrosir).toLocaleString('id-ID') }}</td>
+            <td style="text-align:right; padding:5px 4px; font-family:monospace;">Rp {{ Number(item.snapshotHargaRetail).toLocaleString('id-ID') }}</td>
+            <td style="text-align:right; padding:5px 4px; font-family:monospace;">Rp {{ (Number(item.jumlahDikirim) * Number(item.snapshotHargaGrosir)).toLocaleString('id-ID') }}</td>
+            <td style="text-align:right; padding:5px 4px; font-family:monospace;">Rp {{ (Number(item.jumlahDikirim) * Number(item.snapshotHargaRetail)).toLocaleString('id-ID') }}</td>
           </tr>
         </tbody>
         <tfoot>
           <tr style="border-top:2px solid #222;">
-            <td colspan="6" style="text-align:right; padding:6px 4px; font-weight:bold; font-size:11pt;">Total Nilai Titip Jual</td>
+            <td colspan="8" style="text-align:right; padding:6px 4px; font-weight:bold; font-size:11pt;">Total Nilai Setor (Grosir)</td>
+            <td style="text-align:right; padding:6px 4px; font-weight:bold; font-size:11pt; font-family:monospace;">Rp {{ (data.items || []).reduce((s: number, i: any) => s + Number(i.jumlahDikirim) * Number(i.snapshotHargaGrosir), 0).toLocaleString('id-ID') }}</td>
+          </tr>
+          <tr style="border-bottom:2px solid #222;">
+            <td colspan="8" style="text-align:right; padding:6px 4px; font-weight:bold; font-size:11pt;">Total Nilai Titip Jual (Retail)</td>
             <td style="text-align:right; padding:6px 4px; font-weight:bold; font-size:11pt; font-family:monospace;">Rp {{ Number(data.faktur?.totalNilai || 0).toLocaleString('id-ID') }}</td>
           </tr>
         </tfoot>

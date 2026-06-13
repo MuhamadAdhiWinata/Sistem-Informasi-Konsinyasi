@@ -55,11 +55,11 @@
                       <UInput v-model="item.jumlah" type="number" min="1" />
                     </td>
                     <td class="px-3 py-2 align-top">
-                      <UInput v-model="item.hargaTebusAktual" type="number" min="0" step="0.01" />
+                      <UInput v-model="item.hargaPabrikAktual" type="number" min="0" step="0.01" />
                     </td>
                     <td class="px-3 py-2 align-top font-mono text-sm">
-                      <template v-if="item.jumlah && item.hargaTebusAktual">
-                        Rp {{ (Number(item.jumlah) * Number(item.hargaTebusAktual)).toLocaleString('id-ID') }}
+                      <template v-if="item.jumlah && item.hargaPabrikAktual">
+                        Rp {{ (Number(item.jumlah) * Number(item.hargaPabrikAktual)).toLocaleString('id-ID') }}
                       </template>
                       <span v-else class="text-muted-foreground">-</span>
                     </td>
@@ -115,14 +115,14 @@ const formSchema = z.object({
   items: z.array(z.object({
     idProduk: z.preprocess(toNum, z.number().positive()),
     jumlah: z.preprocess(toNum, z.number().int().positive('Jumlah harus > 0')),
-    hargaTebusAktual: z.preprocess(toNum, z.number().positive('Harga harus > 0')),
+    hargaPabrikAktual: z.preprocess(toNum, z.number().positive('Harga harus > 0')),
   })).min(1, 'Minimal 1 item'),
 })
 
 interface ItemForm {
   idProduk: number | null
   jumlah: number | null
-  hargaTebusAktual: number | null
+  hargaPabrikAktual: number | null
 }
 
 interface FormData {
@@ -135,7 +135,7 @@ interface FormData {
 const defaultItem = (): ItemForm => ({
   idProduk: null,
   jumlah: null,
-  hargaTebusAktual: null,
+  hargaPabrikAktual: null,
 })
 
 const formState = ref<FormData>({
@@ -191,7 +191,7 @@ async function loadData() {
       items: d.items.map((item: any) => ({
         idProduk: item.idProduk,
         jumlah: Number(item.jumlah),
-        hargaTebusAktual: Number(item.hargaTebusAktual),
+        hargaPabrikAktual: Number(item.hargaPabrikAktual),
       })),
     }
   } catch (err: any) {
@@ -212,7 +212,7 @@ async function saveEdit() {
       items: formState.value.items.map((item) => ({
         idProduk: Number(item.idProduk),
         jumlah: Number(item.jumlah),
-        hargaTebusAktual: Number(item.hargaTebusAktual),
+        hargaPabrikAktual: Number(item.hargaPabrikAktual),
       })),
     }
 
@@ -237,7 +237,7 @@ watch(
       if (item.idProduk && oldIds && oldIds[idx] !== newIds[idx]) {
         const produk = produkList.value.find((p: any) => Number(p.id) === Number(item.idProduk))
         if (produk) {
-          item.hargaTebusAktual = Number(produk.hargaTebus)
+          item.hargaPabrikAktual = Number(produk.hargaPabrik)
         }
       }
     })

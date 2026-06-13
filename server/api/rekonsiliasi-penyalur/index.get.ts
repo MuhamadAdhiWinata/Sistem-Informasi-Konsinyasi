@@ -18,15 +18,15 @@ export default defineEventHandler(async (event) => {
       returBaik: sql<number>`coalesce(sum(case when ${itemOpname.kondisiRetur} = 'good' then ${itemOpname.jumlahRetur} else 0 end), 0)`,
       returRusak: sql<number>`coalesce(sum(case when ${itemOpname.kondisiRetur} = 'damaged' then ${itemOpname.jumlahRetur} else 0 end), 0)`,
       returExpired: sql<number>`coalesce(sum(case when ${itemOpname.kondisiRetur} = 'expired' then ${itemOpname.jumlahRetur} else 0 end), 0)`,
-      totalPendapatanMitra: sql<number>`coalesce(sum(${itemOpname.jumlahLaku} * (${produk.hargaJual} - ${produk.hargaJualPenyalur})), 0)`,
-      totalPendapatanPenyalur: sql<number>`coalesce(sum(${itemOpname.jumlahLaku} * (${produk.hargaJualPenyalur} - ${produk.hargaTebus})), 0)`,
+      totalPendapatanMitra: sql<number>`coalesce(sum(${itemOpname.jumlahLaku} * (${produk.hargaRetail} - ${produk.hargaGrosir})), 0)`,
+      totalPendapatanPenyalur: sql<number>`coalesce(sum(${itemOpname.jumlahLaku} * (${produk.hargaGrosir} - ${produk.hargaPabrik})), 0)`,
     })
     .from(opnameStok)
     .innerJoin(mitra, eq(opnameStok.idMitra, mitra.id))
     .innerJoin(itemOpname, eq(itemOpname.idOpname, opnameStok.id))
     .innerJoin(produk, eq(itemOpname.idProduk, produk.id))
     .groupBy(opnameStok.idMitra, mitra.nama, mitra.telepon)
-    .orderBy(sql`coalesce(sum(${itemOpname.jumlahLaku} * (${produk.hargaJual} - ${produk.hargaJualPenyalur})), 0) desc`)
+    .orderBy(sql`coalesce(sum(${itemOpname.jumlahLaku} * (${produk.hargaRetail} - ${produk.hargaGrosir})), 0) desc`)
 
   return { data: rows }
 })

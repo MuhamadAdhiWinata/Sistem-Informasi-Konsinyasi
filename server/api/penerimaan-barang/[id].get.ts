@@ -40,7 +40,7 @@ export default defineEventHandler(async (event) => {
       satuan: produk.satuan,
       gambar: produk.gambar,
       jumlah: itemPenerimaanBarang.jumlah,
-      hargaTebusAktual: itemPenerimaanBarang.hargaTebusAktual,
+      hargaPabrikAktual: itemPenerimaanBarang.hargaPabrikAktual,
     })
     .from(itemPenerimaanBarang)
     .leftJoin(produk, eq(itemPenerimaanBarang.idProduk, produk.id))

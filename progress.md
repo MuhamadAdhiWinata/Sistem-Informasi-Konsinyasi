@@ -289,7 +289,7 @@
 
 ---
 
-> ⏱ Terakhir diperbarui: Sabtu, 13 Juni 2026 — Rekonsiliasi split: penyalur view (full three-tier) & mitra view (simplified, no penyalur profit).
+> ⏱ Terakhir diperbarui: Sabtu, 13 Juni 2026 — DB column rename: `snapshot_harga_pabrik` → `snapshot_harga_grosir` di `item_penyaluran`. Snapshot penyaluran kini menyimpan Harga Grosir + Harga Retail (bukan Harga Pabrik + Retail).
 >
 > 🚀 **Workflow Stok & Approval (v2):**
 > - **Penerimaan Barang**: Stok gudang hanya bertambah saat dikonfirmasi (`draft → completed`), bukan saat create. Edit/hapus hanya untuk draft. PUT endpoint + edit page.
@@ -316,9 +316,9 @@
 > - **Rekonsiliasi Penyalur** (`/rekonsiliasi-penyalur`): Full three-tier pricing — Harga Pabrik, Harga Grosir, Harga Retail. Menampilkan laba mitra (retail - grosir) dan laba penyalur (grosir - pabrik). Ditambah margin/unit + laba ×qty. RBAC: penyalur only.
 > - **Rekonsiliasi Mitra** (`/rekonsiliasi-mitra`): Simplified — hanya menampilkan harga grosir & harga retail, laba mitra (retail - grosir). Tidak menampilkan harga pabrik, laba penyalur, atau margin ratio. RBAC: mitra only, data terfilter oleh `idMitra` user login.
 > - **API**: `GET /api/rekonsiliasi-penyalur` + `GET /api/rekonsiliasi-penyalur/:idMitra` (penyalur), `GET /api/rekonsiliasi-mitra` + `GET /api/rekonsiliasi-mitra/:idMitra` (mitra)
-> - **Pendapatan Mitra** = SUM(laku × (hargaJual − hargaJualPenyalur))
-> - **Pendapatan Penyalur** = SUM(laku × (hargaJualPenyalur − hargaTebus))
-> - **Rumus baru**: Harga tiga tingkat (tebus → penyalur → retail) diterapkan konsisten di kedua view
+> - **Pendapatan Mitra** = SUM(laku × (hargaRetail − hargaGrosir))
+> - **Pendapatan Penyalur** = SUM(laku × (hargaGrosir − hargaPabrik))
+> - **Rumus baru**: Harga tiga tingkat (pabrik → grosir → retail) diterapkan konsisten di kedua view
 > - **Sidebar**: menu "Rekonsiliasi Penyalur" (penyalur role) + "Rekonsiliasi Mitra" (mitra role)
 > - Old `pages/rekonsiliasi/` + `server/api/rekonsiliasi/` dihapus
 > 🚀 **Modul D — Opname Stok & Laporan Kunjungan (v1):**

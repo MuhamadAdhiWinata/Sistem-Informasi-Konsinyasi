@@ -8,9 +8,9 @@ const bodySchema = z.object({
   nama: z.string().min(1, 'Nama wajib diisi').max(150),
   idPemasok: z.number({ required_error: 'Pemasok wajib dipilih' }),
   satuan: z.string().min(1, 'Satuan wajib diisi').max(20),
-  hargaTebus: z.string({ required_error: 'Harga tebus wajib diisi' }),
-  hargaJualPenyalur: z.string({ required_error: 'Harga jual penyalur wajib diisi' }),
-  hargaJual: z.string({ required_error: 'Harga jual retail wajib diisi' }),
+  hargaPabrik: z.string({ required_error: 'Harga tebus wajib diisi' }),
+  hargaGrosir: z.string({ required_error: 'Harga jual penyalur wajib diisi' }),
+  hargaRetail: z.string({ required_error: 'Harga jual retail wajib diisi' }),
   gambar: z.string().optional(),
   apakahAktif: z.number().int().min(0).max(1).default(1),
 });

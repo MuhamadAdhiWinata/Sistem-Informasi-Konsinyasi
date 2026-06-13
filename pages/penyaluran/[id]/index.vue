@@ -63,14 +63,17 @@
                   <UIcon name="i-heroicons-photo" class="w-5 h-5" />
                 </div>
               </template>
-              <template #snapshotHargaJual-data="{ row }">
-                <span class="font-mono">Rp {{ Number(row.snapshotHargaJual).toLocaleString('id-ID') }}</span>
+              <template #snapshotHargaRetail-data="{ row }">
+                <span class="font-mono">Rp {{ Number(row.snapshotHargaRetail).toLocaleString('id-ID') }}</span>
               </template>
-              <template #snapshotHargaTebus-data="{ row }">
-                <span class="font-mono">Rp {{ Number(row.snapshotHargaTebus).toLocaleString('id-ID') }}</span>
+              <template #snapshotHargaGrosir-data="{ row }">
+                <span class="font-mono">Rp {{ Number(row.snapshotHargaGrosir).toLocaleString('id-ID') }}</span>
               </template>
-              <template #subtotal-data="{ row }">
-                <span class="font-mono">Rp {{ (Number(row.jumlahDikirim) * Number(row.snapshotHargaJual)).toLocaleString('id-ID') }}</span>
+              <template #subtotal-grosir-data="{ row }">
+                <span class="font-mono">Rp {{ (Number(row.jumlahDikirim) * Number(row.snapshotHargaGrosir)).toLocaleString('id-ID') }}</span>
+              </template>
+              <template #subtotal-retail-data="{ row }">
+                <span class="font-mono">Rp {{ (Number(row.jumlahDikirim) * Number(row.snapshotHargaRetail)).toLocaleString('id-ID') }}</span>
               </template>
             </UTable>
           </UCard>
@@ -175,9 +178,10 @@ const itemColumns = [
   { key: 'produk', label: 'Produk' },
   { key: 'satuan', label: 'Satuan' },
   { key: 'jumlahDikirim', label: 'Jumlah Kirim' },
-  { key: 'snapshotHargaJual', label: 'Harga Retail' },
-  { key: 'snapshotHargaTebus', label: 'Harga Pabrik' },
-  { key: 'subtotal', label: 'Subtotal' },
+  { key: 'snapshotHargaGrosir', label: 'Harga Grosir' },
+  { key: 'snapshotHargaRetail', label: 'Harga Retail' },
+  { key: 'subtotal-grosir', label: 'Subtotal Grosir' },
+  { key: 'subtotal-retail', label: 'Subtotal Retail' },
 ]
 
 function statusColor(status: string) {

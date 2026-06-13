@@ -21,14 +21,14 @@
             <UIcon name="i-heroicons-photo" class="w-5 h-5" />
           </div>
         </template>
-        <template #hargaTebus-data="{ row }">
-          <span class="font-mono">Rp {{ Number(row.hargaTebus).toLocaleString('id-ID') }}</span>
+        <template #hargaPabrik-data="{ row }">
+          <span class="font-mono">Rp {{ Number(row.hargaPabrik).toLocaleString('id-ID') }}</span>
         </template>
-        <template #hargaJualPenyalur-data="{ row }">
-          <span class="font-mono">Rp {{ Number(row.hargaJualPenyalur).toLocaleString('id-ID') }}</span>
+        <template #hargaGrosir-data="{ row }">
+          <span class="font-mono">Rp {{ Number(row.hargaGrosir).toLocaleString('id-ID') }}</span>
         </template>
-        <template #hargaJual-data="{ row }">
-          <span class="font-mono">Rp {{ Number(row.hargaJual).toLocaleString('id-ID') }}</span>
+        <template #hargaRetail-data="{ row }">
+          <span class="font-mono">Rp {{ Number(row.hargaRetail).toLocaleString('id-ID') }}</span>
         </template>
         <template #apakahAktif-data="{ row }">
           <UBadge :color="(row.apakahAktif ? 'emerald' : 'gray') as any" variant="soft" size="xs">
@@ -86,16 +86,16 @@
             <UFormGroup label="Satuan" name="satuan" required>
               <UInput v-model="formState.satuan" placeholder="e.g. Kardus" />
             </UFormGroup>
-            <UFormGroup label="Harga Tebus (Rp/unit)" name="hargaTebus" required>
-              <UInput v-model="formState.hargaTebus" placeholder="Supplier → Penyalur" type="number" />
+            <UFormGroup label="Harga Pabrik (Rp/unit)" name="hargaPabrik" required>
+              <UInput v-model="formState.hargaPabrik" placeholder="Supplier → Penyalur" type="number" />
             </UFormGroup>
           </div>
           <div class="grid grid-cols-2 gap-4">
-            <UFormGroup label="Hrg Jual Penyalur (Rp/unit)" name="hargaJualPenyalur" required>
-              <UInput v-model="formState.hargaJualPenyalur" placeholder="Penyalur → Mitra" type="number" />
+            <UFormGroup label="Harga Grosir (Rp/unit)" name="hargaGrosir" required>
+              <UInput v-model="formState.hargaGrosir" placeholder="Penyalur → Mitra" type="number" />
             </UFormGroup>
-            <UFormGroup label="Hrg Jual Retail (Rp/unit)" name="hargaJual" required>
-              <UInput v-model="formState.hargaJual" placeholder="Mitra → Konsumen" type="number" />
+            <UFormGroup label="Harga Retail (Rp/unit)" name="hargaRetail" required>
+              <UInput v-model="formState.hargaRetail" placeholder="Mitra → Konsumen" type="number" />
             </UFormGroup>
           </div>
           <UFormGroup label="Status" name="apakahAktif">
@@ -152,9 +152,9 @@ const columns = [
   { key: 'nama', label: 'Nama' },
   { key: 'namaPemasok', label: 'Pemasok' },
   { key: 'satuan', label: 'Satuan' },
-  { key: 'hargaTebus', label: 'Harga Pabrik' },
-  { key: 'hargaJualPenyalur', label: 'Harga Grosir' },
-  { key: 'hargaJual', label: 'Harga Retail' },
+  { key: 'hargaPabrik', label: 'Harga Pabrik' },
+  { key: 'hargaGrosir', label: 'Harga Grosir' },
+  { key: 'hargaRetail', label: 'Harga Retail' },
   { key: 'apakahAktif', label: 'Status' },
   { key: 'actions', label: '' },
 ];
@@ -169,15 +169,15 @@ const formSchema = z.object({
   nama: z.string().min(1, 'Nama wajib diisi'),
   idPemasok: z.preprocess(toNum, z.number({ required_error: 'Pemasok wajib dipilih' })),
   satuan: z.string().min(1, 'Satuan wajib diisi'),
-  hargaTebus: z.string().min(1, 'Harga tebus wajib diisi'),
-  hargaJualPenyalur: z.string().min(1, 'Harga jual penyalur wajib diisi'),
-  hargaJual: z.string().min(1, 'Harga jual retail wajib diisi'),
+  hargaPabrik: z.string().min(1, 'Harga tebus wajib diisi'),
+  hargaGrosir: z.string().min(1, 'Harga jual penyalur wajib diisi'),
+  hargaRetail: z.string().min(1, 'Harga jual retail wajib diisi'),
   gambar: z.string().optional().default(''),
   apakahAktif: z.number().min(0).max(1),
 });
 
-interface FormData { id?: number; sku: string; nama: string; idPemasok: number | null; satuan: string; hargaTebus: string; hargaJualPenyalur: string; hargaJual: string; gambar: string; apakahAktif: number }
-const defaultForm = (): FormData => ({ sku: '', nama: '', idPemasok: null, satuan: '', hargaTebus: '', hargaJualPenyalur: '', hargaJual: '', gambar: '', apakahAktif: 1 });
+interface FormData { id?: number; sku: string; nama: string; idPemasok: number | null; satuan: string; hargaPabrik: string; hargaGrosir: string; hargaRetail: string; gambar: string; apakahAktif: number }
+const defaultForm = (): FormData => ({ sku: '', nama: '', idPemasok: null, satuan: '', hargaPabrik: '', hargaGrosir: '', hargaRetail: '', gambar: '', apakahAktif: 1 });
 const formState = ref<FormData>(defaultForm());
 const statusOptions = [{ label: 'Aktif', value: 1 }, { label: 'Nonaktif', value: 0 }];
 

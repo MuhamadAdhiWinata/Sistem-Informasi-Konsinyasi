@@ -69,14 +69,14 @@
             <span v-if="row.kondisiRetur" class="text-sm">{{ kondisiLabel(row.kondisiRetur) }}</span>
             <span v-else class="text-xs text-muted-foreground">-</span>
           </template>
-          <template #hargaTebus-data="{ row }">
-            <span class="font-mono">Rp {{ Number(row.hargaTebus).toLocaleString('id-ID') }}</span>
+          <template #hargaPabrik-data="{ row }">
+            <span class="font-mono">Rp {{ Number(row.hargaPabrik).toLocaleString('id-ID') }}</span>
           </template>
-          <template #hargaJualPenyalur-data="{ row }">
-            <span class="font-mono">Rp {{ Number(row.hargaJualPenyalur).toLocaleString('id-ID') }}</span>
+          <template #hargaGrosir-data="{ row }">
+            <span class="font-mono">Rp {{ Number(row.hargaGrosir).toLocaleString('id-ID') }}</span>
           </template>
-          <template #hargaJual-data="{ row }">
-            <span class="font-mono">Rp {{ Number(row.hargaJual).toLocaleString('id-ID') }}</span>
+          <template #hargaRetail-data="{ row }">
+            <span class="font-mono">Rp {{ Number(row.hargaRetail).toLocaleString('id-ID') }}</span>
           </template>
           <template #marginPenyalur-data="{ row }">
             <span class="font-mono text-emerald-600 dark:text-emerald-400">Rp {{ Number(row.marginPenyalur).toLocaleString('id-ID') }}</span>
@@ -125,11 +125,11 @@ const itemColumns = [
   { key: 'jumlahLaku', label: 'Laku' },
   { key: 'jumlahRetur', label: 'Retur' },
   { key: 'kondisiRetur', label: 'Kondisi Retur' },
-  { key: 'hargaTebus', label: 'Harga Pabrik' },
+  { key: 'hargaPabrik', label: 'Harga Pabrik' },
   { key: 'marginPenyalur', label: 'Margin Penyalur' },
-  { key: 'hargaJualPenyalur', label: 'Harga Grosir' },
+  { key: 'hargaGrosir', label: 'Harga Grosir' },
   { key: 'marginMitra', label: 'Margin Mitra' },
-  { key: 'hargaJual', label: 'Harga Retail' },
+  { key: 'hargaRetail', label: 'Harga Retail' },
   { key: 'pendapatanMitra', label: 'Laba Mitra (×qty)' },
   { key: 'pendapatanPenyalur', label: 'Laba Penyalur (×qty)' },
 ]
