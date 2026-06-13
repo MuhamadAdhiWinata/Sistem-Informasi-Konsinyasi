@@ -12,6 +12,7 @@ export default defineEventHandler(async (event) => {
     namaPemasok: pemasok.nama,
     satuan: produk.satuan,
     hargaTebus: produk.hargaTebus,
+    hargaJualPenyalur: produk.hargaJualPenyalur,
     hargaJual: produk.hargaJual,
     gambar: produk.gambar,
     apakahAktif: produk.apakahAktif,

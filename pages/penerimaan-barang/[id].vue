@@ -44,6 +44,9 @@
           <template #hargaTebusAktual-data="{ row }">
             <span class="font-mono">Rp {{ Number(row.hargaTebusAktual).toLocaleString('id-ID') }}</span>
           </template>
+          <template #subtotal-data="{ row }">
+            <span class="font-mono">Rp {{ (Number(row.jumlah) * Number(row.hargaTebusAktual)).toLocaleString('id-ID') }}</span>
+          </template>
         </UTable>
       </UCard>
     </template>
@@ -69,7 +72,8 @@ const itemColumns = [
   { key: 'produk', label: 'Produk' },
   { key: 'satuan', label: 'Satuan' },
   { key: 'jumlah', label: 'Jumlah' },
-  { key: 'hargaTebusAktual', label: 'Harga Tebus' },
+  { key: 'hargaTebusAktual', label: 'Harga Tebus (/unit)' },
+  { key: 'subtotal', label: 'Subtotal' },
 ]
 
 async function fetchDetail() {

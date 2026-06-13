@@ -66,6 +66,8 @@
 | 3.4 | **Manajemen Gudang (Warehouses)** — CRUD | ✅ | Backend API + Frontend pages |
 | 3.5 | **Manajemen User & Roles** — CRUD (4 peran) | ✅ | Backend API + Frontend pages (excl. password hash exposure) |
 
+| 3.6 | **Lihat Stok Gudang** — pantau stok per gudang | ✅ | `pages/stok-gudang/index.vue` + `GET /api/stok-gudang` |
+
 ### Hak Akses Modul A
 
 | Peran | Akses | Status |
@@ -97,21 +99,22 @@
 
 | No | Fitur | Status | Catatan |
 | :-- | :---- | :----- | :------ |
-| 5.1 | Form penyaluran (gudang asal, mitra, sales, tanggal) | ⏳ | |
-| 5.2 | Detail item (produk, jumlah kirim, validasi stok) | ⏳ | |
-| 5.3 | Auto-generate nomor penyaluran | ⏳ | |
-| 5.4 | Auto-decrement stok gudang | ⏳ | |
-| 5.5 | Auto-generate Faktur Titip Jual (INV-YYYY-NNNN) | ⏳ | |
-| 5.6 | Kalkulasi total nilai faktur | ⏳ | |
-| 5.7 | Daftar penyaluran + filter status | ⏳ | |
-| 5.8 | Daftar faktur + cetak/download PDF | ⏳ | |
+| 5.1 | Form penyaluran (gudang asal, mitra, sales, tanggal) | ✅ | pages/penyaluran/create.vue |
+| 5.2 | Detail item (produk, jumlah kirim, validasi stok) | ✅ | Dynamic items table + stok validation in transaction |
+| 5.3 | Auto-generate nomor penyaluran | ✅ | DEL-YYYYMMDD-NNNN in POST API |
+| 5.4 | Auto-decrement stok gudang | ✅ | In DB transaction with stok validation |
+| 5.5 | Auto-generate Faktur Titip Jual (INV-YYYY-NNNN) | ✅ | Auto-created in POST API |
+| 5.6 | Kalkulasi total nilai faktur | ✅ | jumlahDikirim × snapshotHargaJual per item |
+| 5.7 | Daftar penyaluran + filter status | ✅ | pages/penyaluran/index.vue |
+| 5.8 | Tampilkan stok tersedia saat input item penyaluran | ✅ | Kolom "Stok: XX" muncul di form create saat pilih produk |
+| 5.9 | Daftar faktur + cetak/download PDF | ⏳ | Partial: faktur visible in detail; PDF print pending |
 
 ### Hak Akses Modul C
 
 | Peran | Akses | Status |
 | :---- | :---- | :----- |
-| Penyalur | CRUD | ⏳ |
-| Sales Field | Create | ⏳ |
+| Penyalur | CRUD | ✅ |
+| Sales Field | Create | ✅ |
 | Mitra | Read | ⏳ |
 | Pemasok | — | ⏳ |
 
@@ -119,36 +122,36 @@
 
 | No | Fitur | Status | Catatan |
 | :-- | :---- | :----- | :------ |
-| 6.1 | Header opname (mitra, sales, tanggal kunjungan) | ⏳ | |
-| 6.2 | Detail item (stok awal, laku, retur, kondisi retur) | ⏳ | |
-| 6.3 | Auto-hitung stok fisik = stok awal − laku − retur | ⏳ | |
-| 6.4 | Validasi anomali (flag `memiliki_anomali`) | ⏳ | |
-| 6.5 | Daftar opname + filter status/mitra | ⏳ | |
+| 6.1 | Header opname (mitra, sales, tanggal kunjungan) | ✅ | pages/opname-stok/create.vue |
+| 6.2 | Detail item (stok awal, laku, retur, kondisi retur) | ✅ | Dynamic items table with live preview |
+| 6.3 | Auto-hitung stok fisik = stok awal − laku − retur | ✅ | Live calc in form + server-side |
+| 6.4 | Validasi anomali (flag `memiliki_anomali`) | ✅ | Auto-detect: stok fisik < 0 → anomaly flag |
+| 6.5 | Daftar opname + filter status/mitra | ✅ | pages/opname-stok/index.vue |
 
 ### Hak Akses Modul D
 
 | Peran | Akses | Status |
 | :---- | :---- | :----- |
-| Penyalur | CRUD | ⏳ |
-| Sales Field | Create | ⏳ |
-| Mitra | Create | ⏳ |
+| Penyalur | CRUD | ✅ |
+| Sales Field | Create | ✅ |
+| Mitra | Create | ✅ |
 | Pemasok | — | ⏳ |
 
 ## 7. Modul E — Rekonsiliasi Keuangan
 
 | No | Fitur | Status | Catatan |
 | :-- | :---- | :----- | :------ |
-| 7.1 | Kalkulasi pendapatan Mitra (laku × harga jual) | ⏳ | |
-| 7.2 | Kalkulasi pendapatan Penyalur (laku × (harga jual − harga tebus)) | ⏳ | |
-| 7.3 | Rekap tagihan + tracking retur (baik/rusak/expired) | ⏳ | |
-| 7.4 | Dashboard rekonsiliasi per Mitra | ⏳ | |
-| 7.5 | Export laporan (PDF / Excel) | ⏳ | |
+| 7.1 | Kalkulasi pendapatan Mitra (laku × harga jual) | ✅ | SQL aggregation di API |
+| 7.2 | Kalkulasi pendapatan Penyalur (laku × (harga jual − harga tebus)) | ✅ | SQL aggregation di API |
+| 7.3 | Rekap tagihan + tracking retur (baik/rusak/expired) | ✅ | Retur breakdown per kondisi |
+| 7.4 | Dashboard rekonsiliasi per Mitra | ✅ | pages/rekonsiliasi/index.vue + [idMitra].vue |
+| 7.5 | Export laporan (PDF / Excel) | ⏳ | Pending — butuh library export |
 
 ### Hak Akses Modul E
 
 | Peran | Akses | Status |
 | :---- | :---- | :----- |
-| Penyalur | Full | ⏳ |
+| Penyalur | Full | ✅ |
 | Sales Field | — | ⏳ |
 | Mitra | Read | ⏳ |
 | Pemasok | — | ⏳ |
@@ -157,35 +160,35 @@
 
 | No | Fitur | Status | Catatan |
 | :-- | :---- | :----- | :------ |
-| 8.1 | Form permintaan stok (mitra, produk, jumlah diminta) | ⏳ | |
-| 8.2 | Dashboard approval Penyalur (approve/reject) | ⏳ | |
-| 8.3 | Auto-convert approved → draft penyaluran | ⏳ | |
-| 8.4 | Notifikasi status ke Mitra/Sales | ⏳ | |
+| 8.1 | Form permintaan stok (mitra, produk, jumlah diminta) | ✅ | pages/permintaan-stok/create.vue |
+| 8.2 | Dashboard approval Penyalur (approve/reject) | ✅ | pages/permintaan-stok/[id].vue + PATCH API |
+| 8.3 | Auto-convert approved → draft penyaluran | ✅ | Transaksi: approve → create penyaluran + faktur + update stok |
+| 8.4 | Notifikasi status ke Mitra/Sales | ⏳ | Pending — perlu real-time notification system |
 
 ### Hak Akses Modul F
 
 | Peran | Akses | Status |
 | :---- | :---- | :----- |
-| Penyalur | Approve | ⏳ |
+| Penyalur | Approve | ✅ |
 | Sales Field | Forward | ⏳ |
-| Mitra | Create | ⏳ |
+| Mitra | Create | ✅ |
 | Pemasok | — | ⏳ |
 
 ## 9. Modul G — Analitik & Prediksi Stok (AI)
 
 | No | Fitur | Status | Catatan |
 | :-- | :---- | :----- | :------ |
-| 9.1 | Grafik tren performa penjualan per produk | ⏳ | |
-| 9.2 | Grafik keaktifan Mitra | ⏳ | |
-| 9.3 | Algoritma Moving Average (N kunjungan terakhir) | ⏳ | |
-| 9.4 | Rekomendasi jumlah pengiriman berikutnya | ⏳ | |
-| 9.5 | Tampilan prediksi di halaman detail Mitra | ⏳ | |
+| 9.1 | Grafik tren performa penjualan per produk | ⏳ | Pending — butuh chart library |
+| 9.2 | Grafik keaktifan Mitra | ⏳ | Pending — butuh chart library |
+| 9.3 | Algoritma Moving Average (N kunjungan terakhir) | ✅ | Server-side dengan N=4 default |
+| 9.4 | Rekomendasi jumlah pengiriman berikutnya | ✅ | Math.ceil(rata-rata) prediksi |
+| 9.5 | Tampilan prediksi di halaman detail Mitra | ✅ | pages/prediksi-stok + grouped by mitra |
 
 ### Hak Akses Modul G
 
 | Peran | Akses | Status |
 | :---- | :---- | :----- |
-| Penyalur | Full | ⏳ |
+| Penyalur | Full | ✅ |
 | Sales Field | Read | ⏳ |
 | Mitra | — | ⏳ |
 | Pemasok | — | ⏳ |
@@ -262,35 +265,66 @@
 | :------- | :---------: | :---------: | :---------: | :---------: | :--------: |
 | 1. Inisialisasi & Setup | 12 | 10 | 0 | 2 | 83% |
 | 2. Database Migration | 17 | 17 | 0 | 0 | 100% |
-| 3. Modul A — Master Data | 5 | 5 | 0 | 0 | 100% |
+| 3. Modul A — Master Data | 6 | 6 | 0 | 0 | 100% |
 | 4. Modul B — Penerimaan | 4 | 4 | 0 | 0 | 100% |
-| 5. Modul C — Penyaluran & Faktur | 8 | 0 | 0 | 8 | 0% |
-| 6. Modul D — Opname Stok | 5 | 0 | 0 | 5 | 0% |
-| 7. Modul E — Rekonsiliasi | 5 | 0 | 0 | 5 | 0% |
-| 8. Modul F — Request Restock | 4 | 0 | 0 | 4 | 0% |
-| 9. Modul G — Prediksi Stok AI | 5 | 0 | 0 | 5 | 0% |
+| 5. Modul C — Penyaluran & Faktur | 9 | 8 | 0 | 1 | 89% |
+| 6. Modul D — Opname Stok | 5 | 5 | 0 | 0 | 100% |
+| 7. Modul E — Rekonsiliasi | 5 | 4 | 0 | 1 | 80% |
+| 8. Modul F — Request Restock | 4 | 3 | 0 | 1 | 75% |
+| 9. Modul G — Prediksi Stok AI | 5 | 3 | 0 | 2 | 60% |
 | 10. Autentikasi | 6 | 5 | 0 | 1 | 83% |
 | 11. UI/UX Global | 9 | 8 | 0 | 1 | 88% |
 | 12. Non-Fungsional | 6 | 2 | 0 | 4 | 33% |
 | 13. Testing | 4 | 0 | 0 | 4 | 0% |
 | 14. Deployment | 6 | 0 | 0 | 6 | 0% |
 | 15. Dokumentasi | 3 | 0 | 0 | 3 | 0% |
-| **TOTAL** | **99** | **51** | **0** | **48** | **51%** |
+| **TOTAL** | **101** | **76** | **0** | **25** | **75%** |
 
 ---
 
-> ⏱ Terakhir diperbarui: Jumat, 12 Juni 2026 — Image produk, Zod fix, filter produk by pemasok.
+> ⏱ Terakhir diperbarui: Sabtu, 13 Juni 2026 — Modul G Prediksi Stok AI selesai.
 >
-> 🚀 **Modul B — Penerimaan Barang (v2):**
-> - **Image produk**: Kolom `gambar` (MEDIUMTEXT/base64) di tabel produk + upload via form + thumbnail di tabel & detail penerimaan
-> - **Fix Zod**: `z.preprocess(toNum)` untuk coerce string→number dari USelect (validasi false positive)
-> - **Filter produk**: Dropdown item di form penerimaan cuma nampilin produk sesuai pemasok yg dipilih
-> - **API**: `GET /api/penerimaan-barang`, `GET /api/penerimaan-barang/:id`, `POST /api/penerimaan-barang`
-> - **POST** dalam 1 transaksi: insert header + items + auto-upsert `stok_gudang`
-> - **Frontend**: `pages/penerimaan-barang/` — list, create (form + dynamic items table), detail
-> - **Sidebar**: menu "Penerimaan" ditambahkan
-> - **RBAC**: Penyalur & Sales bisa create
->
+> 🚀 **Modul G — Prediksi Stok AI (Moving Average) (v1):**
+> - **Algoritma**: Moving Average — untuk setiap (mitra, produk), ambil N=4 kunjungan terakhir, rata-rata jumlahLaku → ceil → prediksi
+> - **API**: `POST /api/prediksi-stok/generate` (run algorithm), `GET /api/prediksi-stok` (list), `GET /api/prediksi-stok/:idMitra` (per mitra)
+> - **Frontend**: Dashboard grouped by mitra dengan tabel produk + prediksi
+> - **Sidebar**: menu "Prediksi" ditambahkan
+> - **Pending**: Grafik tren (butuh chart library), integrasi prediksi di halaman mitra
+> 🚀 **Modul F — Request Restock (v1):**
+> - **API**: `GET /api/permintaan-stok`, `POST /api/permintaan-stok`, `GET /api/permintaan-stok/:id`, `PATCH /api/permintaan-stok/:id`
+> - **Create**: Mitra/Sales bisa buat permintaan (RR-YYYYMMDD-NNNN)
+> - **Approval**: Penyalur approve (pilih gudang asal) → auto-create penyaluran + faktur + decrement stok
+> - **Reject**: Penyalur tolak → status 'rejected'
+> - **Frontend**: List + Create + Detail with approval panel
+> - **Sidebar**: menu "Restok" ditambahkan
+> - **Pending**: Notifikasi real-time, adjust jumlah disetujui per item
+> 🚀 **Modul E — Rekonsiliasi Keuangan (v1):**
+> - **API**: `GET /api/rekonsiliasi` (ringkasan per mitra), `GET /api/rekonsiliasi/:idMitra` (detail)
+> - **Pendapatan Mitra** = SUM(laku × produk.hargaJual)
+> - **Pendapatan Penyalur** = SUM(laku × (hargaJual − hargaTebus))
+> - **Tracking retur**: Breakdown per kondisi (baik/rusak/expired)
+> - **Frontend**: Dashboard overview dengan cards summary + per-mitra cards; Detail page dengan opname history + per-item breakdown
+> - **Sidebar**: menu "Rekonsiliasi" ditambahkan
+> - **Pending**: Export PDF/Excel
+> 🚀 **Modul D — Opname Stok & Laporan Kunjungan (v1):**
+> - **API**: `GET /api/opname-stok`, `POST /api/opname-stok`, `GET /api/opname-stok/:id`, `PATCH /api/opname-stok/:id`
+> - **POST** dalam 1 transaksi: insert header + items + auto-hitung stokFisik + deteksi anomali
+> - **Stok Fisik** = stokAwal − jumlahLaku − jumlahRetur (Math.max 0)
+> - **Anomali**: Auto-flag item jika stokFisik < 0, header `memilikiAnomali` = 1 jika ada item anomali
+> - **Status workflow**: draft → submitted → verified (hanya penyalur bisa verify)
+> - **Frontend**: `pages/opname-stok/` — list (index), create (form + dynamic items + live stokFisik preview + anomaly highlight), detail (header cards + full item table)
+> - **Sidebar**: menu "Opname" ditambahkan
+> - **RBAC**: Penyalur CRUD, Sales & Mitra Create
+> 🚀 **Modul C — Penyaluran & Faktur (v1):**
+> - **API**: `GET /api/penyaluran`, `POST /api/penyaluran`, `GET /api/penyaluran/:id`, `PATCH /api/penyaluran/:id`
+> - **POST** dalam 1 transaksi: insert header + items + auto-decrement `stok_gudang` + auto-generate faktur `INV-YYYY-NNNN`
+> - **Stok validation**: Cek kecukupan stok sebelum decrement; tolak jika stok kurang
+> - **Faktur**: Auto-generated dengan total nilai (∑ jumlahDikirim × snapshotHargaJual)
+> - **Status workflow**: draft → sent → received (hanya penyalur bisa mark received)
+> - **Frontend**: `pages/penyaluran/` — list (index), create (form + dynamic items), detail (header cards + items + faktur card)
+> - **Sidebar**: menu "Penyaluran" ditambahkan
+> - **RBAC**: Penyalur CRUD, Sales Field Create
+> - **Pending**: Cetak/download PDF faktur, daftar faktur terpisah
 > 🔧 **Bug Fix v1 (solved):**
 > - **useApi.ts**: Ganti `new Headers()` → plain object spread agar bearer token benar-benar terkirim di header (ofetch Nuxt 3.16 overwrite Headers instance)
 > - **AppSidebar**: Fix akses `user.value` di computed (sebelumnya akses `user.nama` di object Ref)
@@ -307,6 +341,13 @@
 > - **AppSidebar.vue**: Redesign — logo header, nav items, user dropdown (profile, dark mode toggle, logout)
 > - **AppTopbar.vue**: Dibuat ulang — minimal header dengan hamburger (mobile), page title, search
 > - **main.css**: HSL variables + utility classes (`bg-background`, `text-foreground`, dll)
+> 💰 **Harga Realistis (updated):**
+> - **Per-unit pricing**: Semua harga diubah ke harga per pcs/botol/kotak/sachet (bukan per karton)
+> - **Coca-Cola 390ml**: Tebus Rp 4.500 → Penyalur Rp 5.200 → Retail Rp 6.000
+> - **Yakult**: Tebus Rp 1.700 → Penyalur Rp 1.900 → Retail Rp 2.200
+> - **Tolak Angin**: Tebus Rp 1.200 → Penyalur Rp 1.400 → Retail Rp 1.700
+> - **Seed fix**: `snapshotHargaJual` di item_penyaluran menggunakan `hargaJualPenyalur` (bukan `hargaJual`)
+> - **Dampak**: Faktur & rekonsiliasi jadi lebih realistis (ratusan rb bukan jutaan)
 > Cara update progress:
 > 1. Ganti ⏳ → ✅ jika sudah selesai
 > 2. Ganti ⏳ → 🔄 jika sedang dikerjakan

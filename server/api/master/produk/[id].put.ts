@@ -10,6 +10,7 @@ const bodySchema = z.object({
   idPemasok: z.number().optional(),
   satuan: z.string().min(1).max(20).optional(),
   hargaTebus: z.string().optional(),
+  hargaJualPenyalur: z.string().optional(),
   hargaJual: z.string().optional(),
   gambar: z.string().optional(),
   apakahAktif: z.number().int().min(0).max(1).optional(),

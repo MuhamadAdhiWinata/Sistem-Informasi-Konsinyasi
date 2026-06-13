@@ -1,0 +1,1 @@
+ALTER TABLE `produk` ADD `harga_jual_penyalur` decimal(12,2) NOT NULL;

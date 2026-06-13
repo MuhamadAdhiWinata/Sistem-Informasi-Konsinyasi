@@ -63,6 +63,7 @@ Sistem ini dibangun sebagai karya ilmiah (skripsi) dengan mempertimbangkan skala
 | Modul | Penyalur | Sales Field | Mitra | Pemasok |
 | :---- | :---- | :---- | :---- | :---- |
 | **Master Data** | CRUD | Read | — | Read |
+| **Stok Gudang** | Read | Read | — | — |
 | **Manajemen Gudang** | CRUD | Read | — | — |
 | **Penerimaan** | CRUD | Create | — | Read |
 | **Penyaluran** | CRUD | Create | Read | — |
@@ -112,6 +113,7 @@ Sistem ini dibangun sebagai karya ilmiah (skripsi) dengan mempertimbangkan skala
 * Manajemen Mitra: nama, nama pemilik, nomor telepon, koordinat GPS (lat, lng), Sales ditugaskan.  
 * Manajemen Gudang: kode gudang, nama gudang, alamat lengkap.  
 * Manajemen User & Roles: Pengaturan hak akses untuk 4 peran utama.
+* **Monitoring Stok Gudang**: Dashboard untuk melihat ketersediaan stok per gudang per produk secara real-time, termasuk filter gudang, pencarian produk, dan status stok (tersedia/habis).
 
 ## **4.2 Modul B — Penerimaan Barang**
 
@@ -126,7 +128,8 @@ Sistem ini dibangun sebagai karya ilmiah (skripsi) dengan mempertimbangkan skala
 * ---
 
   Form penyaluran: pilih gudang asal, pilih Mitra, tanggal kirim, Sales pengantar.  
-* Detail item: pilih Barang, jumlah kirim (auto-check validasi kecukupan stok gudang).  
+* Detail item: pilih Barang, jumlah kirim (auto-check validasi kecukupan stok gudang).
+* **Visibility Stok**: Saat input penyaluran, sistem menampilkan sisa stok gudang untuk setiap produk yang dipilih agar user tidak perlu menebak-nebak ketersediaan.  
 * Pembuatan Faktur Titip Jual otomatis dengan format penomoran INV-YYYY-NNNN.  
 * Kalkulasi total nilai titip jual (jumlah dikirim × snapshot\_harga\_jual).
 

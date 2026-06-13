@@ -23,23 +23,28 @@
     </div>
 
     <!-- Navigation -->
-    <nav class="flex-1 overflow-y-auto py-4 px-2 space-y-1">
-      <NuxtLink
-        v-for="item in navItems"
-        :key="item.path"
-        :to="item.path"
-        :class="[
-          'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200',
-          'hover:bg-zinc-100 dark:hover:bg-zinc-800',
-          isActive(item.path)
-            ? 'bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary'
-            : 'text-zinc-600 dark:text-zinc-400',
-          !open && 'justify-center px-0',
-        ]"
-      >
-        <Icon :name="item.icon" class="w-5 h-5 shrink-0" />
-        <span v-if="open" class="truncate">{{ item.name }}</span>
-      </NuxtLink>
+    <nav class="flex-1 overflow-y-auto py-4 px-2 space-y-2">
+      <template v-for="group in navGroups" :key="group.label">
+        <p v-if="open && group.items.length" class="px-3 pt-1 pb-0.5 text-[10px] font-semibold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
+          {{ group.label }}
+        </p>
+        <NuxtLink
+          v-for="item in group.items"
+          :key="item.path"
+          :to="item.path"
+          :class="[
+            'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200',
+            'hover:bg-zinc-100 dark:hover:bg-zinc-800',
+            isActive(item.path)
+              ? 'bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary'
+              : 'text-zinc-600 dark:text-zinc-400',
+            !open && 'justify-center px-0',
+          ]"
+        >
+          <Icon :name="item.icon" class="w-5 h-5 shrink-0" />
+          <span v-if="open" class="truncate">{{ item.name }}</span>
+        </NuxtLink>
+      </template>
     </nav>
 
     <!-- User Footer -->
@@ -85,14 +90,35 @@ const colorMode = useColorMode()
 
 const isDark = computed(() => colorMode.value === 'dark')
 
-const navItems = [
-  { name: 'Dashboard', path: '/', icon: 'i-heroicons-home' },
-  { name: 'Penerimaan', path: '/penerimaan-barang', icon: 'i-heroicons-document-arrow-down' },
-  { name: 'Pemasok', path: '/master/pemasok', icon: 'i-heroicons-truck' },
-  { name: 'Produk', path: '/master/produk', icon: 'i-heroicons-cube' },
-  { name: 'Mitra', path: '/master/mitra', icon: 'i-heroicons-building-storefront' },
-  { name: 'Gudang', path: '/master/gudang', icon: 'i-heroicons-building-office-2' },
-  { name: 'Pengguna', path: '/master/pengguna', icon: 'i-heroicons-users' },
+const navGroups = [
+  {
+    label: 'Umum',
+    items: [
+      { name: 'Dashboard', path: '/', icon: 'i-heroicons-home' },
+    ],
+  },
+  {
+    label: 'Data Master',
+    items: [
+      { name: 'Pemasok', path: '/master/pemasok', icon: 'i-heroicons-building-library' },
+      { name: 'Produk', path: '/master/produk', icon: 'i-heroicons-cube' },
+      { name: 'Mitra', path: '/master/mitra', icon: 'i-heroicons-building-storefront' },
+      { name: 'Gudang', path: '/master/gudang', icon: 'i-heroicons-building-office-2' },
+      { name: 'Pengguna', path: '/master/pengguna', icon: 'i-heroicons-users' },
+      { name: 'Stok Gudang', path: '/stok-gudang', icon: 'i-heroicons-cube' },
+    ],
+  },
+  {
+    label: 'Transaksi',
+    items: [
+      { name: 'Penerimaan', path: '/penerimaan-barang', icon: 'i-heroicons-document-arrow-down' },
+      { name: 'Penyaluran', path: '/penyaluran', icon: 'i-heroicons-truck' },
+      { name: 'Opname', path: '/opname-stok', icon: 'i-heroicons-clipboard-document-check' },
+      { name: 'Rekonsiliasi', path: '/rekonsiliasi', icon: 'i-heroicons-receipt-percent' },
+      { name: 'Restok', path: '/permintaan-stok', icon: 'i-heroicons-shopping-cart' },
+      { name: 'Prediksi', path: '/prediksi-stok', icon: 'i-heroicons-chart-bar-square' },
+    ],
+  },
 ]
 
 const userName = computed(() => user.value?.nama || 'User')

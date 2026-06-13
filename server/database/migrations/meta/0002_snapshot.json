@@ -1,0 +1,1507 @@
+{
+  "version": "5",
+  "dialect": "mysql",
+  "id": "9b068f82-1697-49f8-869a-8b8177254348",
+  "prevId": "09959fad-df03-4a65-8b37-4afc5da93930",
+  "tables": {
+    "faktur": {
+      "name": "faktur",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "nomor_faktur": {
+          "name": "nomor_faktur",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id_penyaluran": {
+          "name": "id_penyaluran",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "total_nilai": {
+          "name": "total_nilai",
+          "type": "decimal(14,2)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "diterbitkan_pada": {
+          "name": "diterbitkan_pada",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "url_pdf": {
+          "name": "url_pdf",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "faktur_id_penyaluran_penyaluran_id_fk": {
+          "name": "faktur_id_penyaluran_penyaluran_id_fk",
+          "tableFrom": "faktur",
+          "tableTo": "penyaluran",
+          "columnsFrom": [
+            "id_penyaluran"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "faktur_id": {
+          "name": "faktur_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "faktur_nomor_faktur_unique": {
+          "name": "faktur_nomor_faktur_unique",
+          "columns": [
+            "nomor_faktur"
+          ]
+        }
+      },
+      "checkConstraint": {}
+    },
+    "gudang": {
+      "name": "gudang",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "kode": {
+          "name": "kode",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "nama": {
+          "name": "nama",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "alamat": {
+          "name": "alamat",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "apakah_aktif": {
+          "name": "apakah_aktif",
+          "type": "tinyint",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 1
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "gudang_id": {
+          "name": "gudang_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "gudang_kode_unique": {
+          "name": "gudang_kode_unique",
+          "columns": [
+            "kode"
+          ]
+        }
+      },
+      "checkConstraint": {}
+    },
+    "pengguna": {
+      "name": "pengguna",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "nama": {
+          "name": "nama",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(150)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "password_hash": {
+          "name": "password_hash",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "peran": {
+          "name": "peran",
+          "type": "enum('penyalur','sales','mitra','pemasok')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id_mitra": {
+          "name": "id_mitra",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "id_pemasok": {
+          "name": "id_pemasok",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "apakah_aktif": {
+          "name": "apakah_aktif",
+          "type": "tinyint",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 1
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "pengguna_id": {
+          "name": "pengguna_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "pengguna_email_unique": {
+          "name": "pengguna_email_unique",
+          "columns": [
+            "email"
+          ]
+        }
+      },
+      "checkConstraint": {}
+    },
+    "pemasok": {
+      "name": "pemasok",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "nama": {
+          "name": "nama",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "kategori_merek": {
+          "name": "kategori_merek",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "narahubung": {
+          "name": "narahubung",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "apakah_aktif": {
+          "name": "apakah_aktif",
+          "type": "tinyint",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 1
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "pemasok_id": {
+          "name": "pemasok_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "produk": {
+      "name": "produk",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "sku": {
+          "name": "sku",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "nama": {
+          "name": "nama",
+          "type": "varchar(150)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id_pemasok": {
+          "name": "id_pemasok",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "satuan": {
+          "name": "satuan",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "harga_tebus": {
+          "name": "harga_tebus",
+          "type": "decimal(12,2)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "harga_jual_penyalur": {
+          "name": "harga_jual_penyalur",
+          "type": "decimal(12,2)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "harga_jual": {
+          "name": "harga_jual",
+          "type": "decimal(12,2)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "gambar": {
+          "name": "gambar",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "apakah_aktif": {
+          "name": "apakah_aktif",
+          "type": "tinyint",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 1
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "produk_id_pemasok_pemasok_id_fk": {
+          "name": "produk_id_pemasok_pemasok_id_fk",
+          "tableFrom": "produk",
+          "tableTo": "pemasok",
+          "columnsFrom": [
+            "id_pemasok"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "produk_id": {
+          "name": "produk_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "produk_sku_unique": {
+          "name": "produk_sku_unique",
+          "columns": [
+            "sku"
+          ]
+        }
+      },
+      "checkConstraint": {}
+    },
+    "mitra": {
+      "name": "mitra",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "nama": {
+          "name": "nama",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "nama_pemilik": {
+          "name": "nama_pemilik",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "telepon": {
+          "name": "telepon",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "lat": {
+          "name": "lat",
+          "type": "decimal(10,8)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "lng": {
+          "name": "lng",
+          "type": "decimal(11,8)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "id_sales_ditugaskan": {
+          "name": "id_sales_ditugaskan",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "apakah_aktif": {
+          "name": "apakah_aktif",
+          "type": "tinyint",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 1
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "mitra_id_sales_ditugaskan_pengguna_id_fk": {
+          "name": "mitra_id_sales_ditugaskan_pengguna_id_fk",
+          "tableFrom": "mitra",
+          "tableTo": "pengguna",
+          "columnsFrom": [
+            "id_sales_ditugaskan"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "mitra_id": {
+          "name": "mitra_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "stok_gudang": {
+      "name": "stok_gudang",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "id_gudang": {
+          "name": "id_gudang",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id_produk": {
+          "name": "id_produk",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "jumlah": {
+          "name": "jumlah",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "diperbarui_pada": {
+          "name": "diperbarui_pada",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "onUpdate": true,
+          "default": "(now())"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "stok_gudang_id_gudang_gudang_id_fk": {
+          "name": "stok_gudang_id_gudang_gudang_id_fk",
+          "tableFrom": "stok_gudang",
+          "tableTo": "gudang",
+          "columnsFrom": [
+            "id_gudang"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "stok_gudang_id_produk_produk_id_fk": {
+          "name": "stok_gudang_id_produk_produk_id_fk",
+          "tableFrom": "stok_gudang",
+          "tableTo": "produk",
+          "columnsFrom": [
+            "id_produk"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "stok_gudang_id": {
+          "name": "stok_gudang_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "penerimaan_barang": {
+      "name": "penerimaan_barang",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "nomor_penerimaan": {
+          "name": "nomor_penerimaan",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id_pemasok": {
+          "name": "id_pemasok",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id_gudang": {
+          "name": "id_gudang",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "diterima_oleh": {
+          "name": "diterima_oleh",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "tanggal_penerimaan": {
+          "name": "tanggal_penerimaan",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "penerimaan_barang_id_pemasok_pemasok_id_fk": {
+          "name": "penerimaan_barang_id_pemasok_pemasok_id_fk",
+          "tableFrom": "penerimaan_barang",
+          "tableTo": "pemasok",
+          "columnsFrom": [
+            "id_pemasok"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "penerimaan_barang_id_gudang_gudang_id_fk": {
+          "name": "penerimaan_barang_id_gudang_gudang_id_fk",
+          "tableFrom": "penerimaan_barang",
+          "tableTo": "gudang",
+          "columnsFrom": [
+            "id_gudang"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "penerimaan_barang_diterima_oleh_pengguna_id_fk": {
+          "name": "penerimaan_barang_diterima_oleh_pengguna_id_fk",
+          "tableFrom": "penerimaan_barang",
+          "tableTo": "pengguna",
+          "columnsFrom": [
+            "diterima_oleh"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "penerimaan_barang_id": {
+          "name": "penerimaan_barang_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "penerimaan_barang_nomor_penerimaan_unique": {
+          "name": "penerimaan_barang_nomor_penerimaan_unique",
+          "columns": [
+            "nomor_penerimaan"
+          ]
+        }
+      },
+      "checkConstraint": {}
+    },
+    "item_penerimaan_barang": {
+      "name": "item_penerimaan_barang",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "id_penerimaan": {
+          "name": "id_penerimaan",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id_produk": {
+          "name": "id_produk",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "jumlah": {
+          "name": "jumlah",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "harga_tebus_aktual": {
+          "name": "harga_tebus_aktual",
+          "type": "decimal(12,2)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "item_penerimaan_barang_id_penerimaan_penerimaan_barang_id_fk": {
+          "name": "item_penerimaan_barang_id_penerimaan_penerimaan_barang_id_fk",
+          "tableFrom": "item_penerimaan_barang",
+          "tableTo": "penerimaan_barang",
+          "columnsFrom": [
+            "id_penerimaan"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "item_penerimaan_barang_id_produk_produk_id_fk": {
+          "name": "item_penerimaan_barang_id_produk_produk_id_fk",
+          "tableFrom": "item_penerimaan_barang",
+          "tableTo": "produk",
+          "columnsFrom": [
+            "id_produk"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "item_penerimaan_barang_id": {
+          "name": "item_penerimaan_barang_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "penyaluran": {
+      "name": "penyaluran",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "nomor_penyaluran": {
+          "name": "nomor_penyaluran",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id_gudang_asal": {
+          "name": "id_gudang_asal",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id_mitra": {
+          "name": "id_mitra",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id_sales": {
+          "name": "id_sales",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "tanggal_penyaluran": {
+          "name": "tanggal_penyaluran",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "enum('draft','sent','received')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'draft'"
+        },
+        "dibuat_oleh": {
+          "name": "dibuat_oleh",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "penyaluran_id_gudang_asal_gudang_id_fk": {
+          "name": "penyaluran_id_gudang_asal_gudang_id_fk",
+          "tableFrom": "penyaluran",
+          "tableTo": "gudang",
+          "columnsFrom": [
+            "id_gudang_asal"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "penyaluran_id_mitra_mitra_id_fk": {
+          "name": "penyaluran_id_mitra_mitra_id_fk",
+          "tableFrom": "penyaluran",
+          "tableTo": "mitra",
+          "columnsFrom": [
+            "id_mitra"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "penyaluran_id_sales_pengguna_id_fk": {
+          "name": "penyaluran_id_sales_pengguna_id_fk",
+          "tableFrom": "penyaluran",
+          "tableTo": "pengguna",
+          "columnsFrom": [
+            "id_sales"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "penyaluran_dibuat_oleh_pengguna_id_fk": {
+          "name": "penyaluran_dibuat_oleh_pengguna_id_fk",
+          "tableFrom": "penyaluran",
+          "tableTo": "pengguna",
+          "columnsFrom": [
+            "dibuat_oleh"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "penyaluran_id": {
+          "name": "penyaluran_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "penyaluran_nomor_penyaluran_unique": {
+          "name": "penyaluran_nomor_penyaluran_unique",
+          "columns": [
+            "nomor_penyaluran"
+          ]
+        }
+      },
+      "checkConstraint": {}
+    },
+    "item_penyaluran": {
+      "name": "item_penyaluran",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "id_penyaluran": {
+          "name": "id_penyaluran",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id_produk": {
+          "name": "id_produk",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "jumlah_dikirim": {
+          "name": "jumlah_dikirim",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "snapshot_harga_jual": {
+          "name": "snapshot_harga_jual",
+          "type": "decimal(12,2)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "snapshot_harga_tebus": {
+          "name": "snapshot_harga_tebus",
+          "type": "decimal(12,2)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "item_penyaluran_id_penyaluran_penyaluran_id_fk": {
+          "name": "item_penyaluran_id_penyaluran_penyaluran_id_fk",
+          "tableFrom": "item_penyaluran",
+          "tableTo": "penyaluran",
+          "columnsFrom": [
+            "id_penyaluran"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "item_penyaluran_id_produk_produk_id_fk": {
+          "name": "item_penyaluran_id_produk_produk_id_fk",
+          "tableFrom": "item_penyaluran",
+          "tableTo": "produk",
+          "columnsFrom": [
+            "id_produk"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "item_penyaluran_id": {
+          "name": "item_penyaluran_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "opname_stok": {
+      "name": "opname_stok",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "nomor_opname": {
+          "name": "nomor_opname",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id_mitra": {
+          "name": "id_mitra",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id_sales": {
+          "name": "id_sales",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "tanggal_kunjungan": {
+          "name": "tanggal_kunjungan",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "enum('draft','submitted','verified')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'draft'"
+        },
+        "memiliki_anomali": {
+          "name": "memiliki_anomali",
+          "type": "tinyint",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "dibuat_oleh": {
+          "name": "dibuat_oleh",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "opname_stok_id_mitra_mitra_id_fk": {
+          "name": "opname_stok_id_mitra_mitra_id_fk",
+          "tableFrom": "opname_stok",
+          "tableTo": "mitra",
+          "columnsFrom": [
+            "id_mitra"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "opname_stok_id_sales_pengguna_id_fk": {
+          "name": "opname_stok_id_sales_pengguna_id_fk",
+          "tableFrom": "opname_stok",
+          "tableTo": "pengguna",
+          "columnsFrom": [
+            "id_sales"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "opname_stok_dibuat_oleh_pengguna_id_fk": {
+          "name": "opname_stok_dibuat_oleh_pengguna_id_fk",
+          "tableFrom": "opname_stok",
+          "tableTo": "pengguna",
+          "columnsFrom": [
+            "dibuat_oleh"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "opname_stok_id": {
+          "name": "opname_stok_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "opname_stok_nomor_opname_unique": {
+          "name": "opname_stok_nomor_opname_unique",
+          "columns": [
+            "nomor_opname"
+          ]
+        }
+      },
+      "checkConstraint": {}
+    },
+    "item_opname": {
+      "name": "item_opname",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "id_opname": {
+          "name": "id_opname",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id_produk": {
+          "name": "id_produk",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "stok_awal": {
+          "name": "stok_awal",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "jumlah_laku": {
+          "name": "jumlah_laku",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "jumlah_retur": {
+          "name": "jumlah_retur",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "stok_fisik": {
+          "name": "stok_fisik",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "kondisi_retur": {
+          "name": "kondisi_retur",
+          "type": "enum('good','damaged','expired')",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "apakah_anomali": {
+          "name": "apakah_anomali",
+          "type": "tinyint",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "item_opname_id_opname_opname_stok_id_fk": {
+          "name": "item_opname_id_opname_opname_stok_id_fk",
+          "tableFrom": "item_opname",
+          "tableTo": "opname_stok",
+          "columnsFrom": [
+            "id_opname"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "item_opname_id_produk_produk_id_fk": {
+          "name": "item_opname_id_produk_produk_id_fk",
+          "tableFrom": "item_opname",
+          "tableTo": "produk",
+          "columnsFrom": [
+            "id_produk"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "item_opname_id": {
+          "name": "item_opname_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "permintaan_stok": {
+      "name": "permintaan_stok",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "nomor_permintaan": {
+          "name": "nomor_permintaan",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id_mitra": {
+          "name": "id_mitra",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "diminta_oleh": {
+          "name": "diminta_oleh",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "enum('pending','approved','rejected','fulfilled')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'pending'"
+        },
+        "disetujui_oleh": {
+          "name": "disetujui_oleh",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "id_penyaluran": {
+          "name": "id_penyaluran",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "permintaan_stok_id_mitra_mitra_id_fk": {
+          "name": "permintaan_stok_id_mitra_mitra_id_fk",
+          "tableFrom": "permintaan_stok",
+          "tableTo": "mitra",
+          "columnsFrom": [
+            "id_mitra"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "permintaan_stok_diminta_oleh_pengguna_id_fk": {
+          "name": "permintaan_stok_diminta_oleh_pengguna_id_fk",
+          "tableFrom": "permintaan_stok",
+          "tableTo": "pengguna",
+          "columnsFrom": [
+            "diminta_oleh"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "permintaan_stok_disetujui_oleh_pengguna_id_fk": {
+          "name": "permintaan_stok_disetujui_oleh_pengguna_id_fk",
+          "tableFrom": "permintaan_stok",
+          "tableTo": "pengguna",
+          "columnsFrom": [
+            "disetujui_oleh"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "permintaan_stok_id_penyaluran_penyaluran_id_fk": {
+          "name": "permintaan_stok_id_penyaluran_penyaluran_id_fk",
+          "tableFrom": "permintaan_stok",
+          "tableTo": "penyaluran",
+          "columnsFrom": [
+            "id_penyaluran"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "permintaan_stok_id": {
+          "name": "permintaan_stok_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "permintaan_stok_nomor_permintaan_unique": {
+          "name": "permintaan_stok_nomor_permintaan_unique",
+          "columns": [
+            "nomor_permintaan"
+          ]
+        }
+      },
+      "checkConstraint": {}
+    },
+    "item_permintaan_stok": {
+      "name": "item_permintaan_stok",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "id_permintaan": {
+          "name": "id_permintaan",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id_produk": {
+          "name": "id_produk",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "jumlah_diminta": {
+          "name": "jumlah_diminta",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "jumlah_disetujui": {
+          "name": "jumlah_disetujui",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "item_permintaan_stok_id_permintaan_permintaan_stok_id_fk": {
+          "name": "item_permintaan_stok_id_permintaan_permintaan_stok_id_fk",
+          "tableFrom": "item_permintaan_stok",
+          "tableTo": "permintaan_stok",
+          "columnsFrom": [
+            "id_permintaan"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "item_permintaan_stok_id_produk_produk_id_fk": {
+          "name": "item_permintaan_stok_id_produk_produk_id_fk",
+          "tableFrom": "item_permintaan_stok",
+          "tableTo": "produk",
+          "columnsFrom": [
+            "id_produk"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "item_permintaan_stok_id": {
+          "name": "item_permintaan_stok_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "prediksi_stok": {
+      "name": "prediksi_stok",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "id_mitra": {
+          "name": "id_mitra",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id_produk": {
+          "name": "id_produk",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "jumlah_prediksi": {
+          "name": "jumlah_prediksi",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "rata_rata_laku": {
+          "name": "rata_rata_laku",
+          "type": "decimal(8,2)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "berdasarkan_kunjungan": {
+          "name": "berdasarkan_kunjungan",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "dihasilkan_pada": {
+          "name": "dihasilkan_pada",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "prediksi_stok_id_mitra_mitra_id_fk": {
+          "name": "prediksi_stok_id_mitra_mitra_id_fk",
+          "tableFrom": "prediksi_stok",
+          "tableTo": "mitra",
+          "columnsFrom": [
+            "id_mitra"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "prediksi_stok_id_produk_produk_id_fk": {
+          "name": "prediksi_stok_id_produk_produk_id_fk",
+          "tableFrom": "prediksi_stok",
+          "tableTo": "produk",
+          "columnsFrom": [
+            "id_produk"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "prediksi_stok_id": {
+          "name": "prediksi_stok_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    }
+  },
+  "views": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
+    "tables": {},
+    "indexes": {}
+  }
+}
