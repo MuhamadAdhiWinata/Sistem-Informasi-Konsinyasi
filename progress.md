@@ -279,9 +279,12 @@
 
 ---
 
-> ⏱ Terakhir diperbarui: Kamis, 11 Juni 2026 — Modul B (Penerimaan Barang) selesai.
+> ⏱ Terakhir diperbarui: Jumat, 12 Juni 2026 — Image produk, Zod fix, filter produk by pemasok.
 >
-> 🚀 **Modul B — Penerimaan Barang (NEW):**
+> 🚀 **Modul B — Penerimaan Barang (v2):**
+> - **Image produk**: Kolom `gambar` (MEDIUMTEXT/base64) di tabel produk + upload via form + thumbnail di tabel & detail penerimaan
+> - **Fix Zod**: `z.preprocess(toNum)` untuk coerce string→number dari USelect (validasi false positive)
+> - **Filter produk**: Dropdown item di form penerimaan cuma nampilin produk sesuai pemasok yg dipilih
 > - **API**: `GET /api/penerimaan-barang`, `GET /api/penerimaan-barang/:id`, `POST /api/penerimaan-barang`
 > - **POST** dalam 1 transaksi: insert header + items + auto-upsert `stok_gudang`
 > - **Frontend**: `pages/penerimaan-barang/` — list, create (form + dynamic items table), detail
