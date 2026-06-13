@@ -120,7 +120,6 @@ const navGroups = computed(() => {
         { name: 'Opname', path: '/opname-stok', icon: 'i-heroicons-clipboard-document-check' },
         { name: 'Rekonsiliasi Penyalur', path: '/rekonsiliasi-penyalur', icon: 'i-heroicons-receipt-percent' },
         { name: 'Restok', path: '/permintaan-stok', icon: 'i-heroicons-shopping-cart' },
-        { name: 'Prediksi', path: '/prediksi-stok', icon: 'i-heroicons-chart-bar-square' },
       ],
     },
   ]
@@ -163,7 +162,6 @@ const navGroups = computed(() => {
         { name: 'Penyaluran', path: '/penyaluran', icon: 'i-heroicons-truck' },
         { name: 'Opname', path: '/opname-stok', icon: 'i-heroicons-clipboard-document-check' },
         { name: 'Restok', path: '/permintaan-stok', icon: 'i-heroicons-shopping-cart' },
-        { name: 'Prediksi', path: '/prediksi-stok', icon: 'i-heroicons-chart-bar-square' },
       ]},
     ]
   }
