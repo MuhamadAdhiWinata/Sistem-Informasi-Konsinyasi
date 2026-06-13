@@ -134,8 +134,8 @@ const formSchema = z.object({
   apakahAktif: z.number().min(0).max(1),
 });
 
-interface FormData { id?: number; nama: string; namaPemilik: string; telepon: string; idSalesDitugaskan: number | null; lat: string; lng: string; apakahAktif: number }
-const defaultForm = (): FormData => ({ nama: '', namaPemilik: '', telepon: '', idSalesDitugaskan: null, lat: '', lng: '', apakahAktif: 1 });
+interface FormData { id?: number; nama: string; namaPemilik: string; telepon: string; idSalesDitugaskan: number | undefined; lat: string; lng: string; apakahAktif: number }
+const defaultForm = (): FormData => ({ nama: '', namaPemilik: '', telepon: '', idSalesDitugaskan: undefined, lat: '', lng: '', apakahAktif: 1 });
 const formState = ref<FormData>(defaultForm());
 const statusOptions = [{ label: 'Aktif', value: 1 }, { label: 'Nonaktif', value: 0 }];
 const salesOptions = computed(() => salesList.value.map((s: any) => ({ label: `${s.nama} (${s.email})`, value: s.id })));

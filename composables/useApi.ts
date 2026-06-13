@@ -5,10 +5,8 @@ export function useApi() {
     onRequest({ options }) {
       const token = auth.token.value;
       if (token) {
-        options.headers = {
-          ...(options.headers as Record<string, string>),
-          Authorization: `Bearer ${token}`,
-        };
+        options.headers = new Headers(options.headers);
+        (options.headers as Headers).set('Authorization', `Bearer ${token}`);
       }
     },
     onResponseError({ response }) {

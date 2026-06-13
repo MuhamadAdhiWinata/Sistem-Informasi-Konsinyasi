@@ -16,7 +16,7 @@
       <UTable :rows="filteredItems" :columns="columns" :loading="isLoading"
         :empty-state="{ icon: 'i-heroicons-users', label: 'Belum ada pengguna' }" sort-mode="manual" class="w-full">
         <template #peran-data="{ row }">
-          <UBadge :color="badgeColor(row.peran)" variant="soft" size="xs">{{ row.peran }}</UBadge>
+          <UBadge :color="(badgeColor(row.peran) as any)" variant="soft" size="xs">{{ row.peran }}</UBadge>
         </template>
         <template #apakahAktif-data="{ row }">
           <UBadge :color="(row.apakahAktif ? 'emerald' : 'gray') as any" variant="soft" size="xs">
