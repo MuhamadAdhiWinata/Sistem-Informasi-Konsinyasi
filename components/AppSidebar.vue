@@ -183,6 +183,11 @@ const userMenuItems = computed(() => [
     disabled: true,
   }],
   [{
+    label: 'Profile',
+    icon: 'i-heroicons-user',
+    click: () => navigateTo('/auth/profile'),
+  }],
+  [{
     label: isDark.value ? 'Light mode' : 'Dark mode',
     icon: isDark.value ? 'i-heroicons-sun' : 'i-heroicons-moon',
     click: () => {

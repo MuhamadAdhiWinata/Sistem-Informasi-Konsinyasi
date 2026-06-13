@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
   const url = getRequestURL(event);
   
   // Hanya proses route API, skip untuk auth/login
-  if (url.pathname.startsWith('/api/') && !url.pathname.startsWith('/api/auth')) {
+  if (url.pathname.startsWith('/api/') && url.pathname !== '/api/auth/login') {
     const authHeader = getHeader(event, 'authorization');
     
     if (!authHeader || !authHeader.startsWith('Bearer ')) {

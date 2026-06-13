@@ -9,6 +9,8 @@ const itemSchema = z.object({
   stokAwal: z.number().int().min(0),
   jumlahLaku: z.number().int().min(0),
   jumlahRetur: z.number().int().min(0),
+  hilang: z.number().int().min(0).default(0),
+  penanggungHilang: z.enum(['penyalur', 'mitra']).default('penyalur'),
   kondisiRetur: z.enum(['good', 'damaged', 'expired']).optional(),
 })
 
@@ -46,7 +48,7 @@ export default defineEventHandler(async (event) => {
     let hasAnomaly = false
 
     for (const item of body.items) {
-      const stokFisik = item.stokAwal - item.jumlahLaku - item.jumlahRetur
+      const stokFisik = item.stokAwal - item.jumlahLaku - item.jumlahRetur - (item.hilang || 0)
       const isAnomaly = stokFisik < 0 ? 1 : 0
       if (isAnomaly) hasAnomaly = true
 
@@ -56,6 +58,8 @@ export default defineEventHandler(async (event) => {
         stokAwal: item.stokAwal,
         jumlahLaku: item.jumlahLaku,
         jumlahRetur: item.jumlahRetur,
+        hilang: item.hilang || 0,
+        penanggungHilang: item.penanggungHilang || 'penyalur',
         stokFisik: Math.max(0, stokFisik),
         kondisiRetur: item.kondisiRetur || null,
         apakahAnomali: isAnomaly,

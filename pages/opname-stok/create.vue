@@ -13,7 +13,7 @@
         <UForm :state="formState" :schema="formSchema" @submit="saveOpname" class="space-y-4">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <UFormGroup label="Mitra" name="idMitra" required>
-              <USelect v-model="formState.idMitra" :options="mitraOptions" placeholder="Pilih mitra" />
+              <USelect v-model="formState.idMitra" :options="mitraOptions" placeholder="Pilih mitra" :loading="isLoadingItems" />
             </UFormGroup>
             <UFormGroup label="Tanggal Kunjungan" name="tanggalKunjungan" required>
               <UInput v-model="formState.tanggalKunjungan" type="date" />
@@ -22,32 +22,46 @@
 
           <div class="pt-4 border-t border-zinc-200 dark:border-zinc-800">
             <div class="flex items-center justify-between mb-3">
-              <h3 class="text-sm font-semibold text-zinc-900 dark:text-white">Item Opname</h3>
-              <UButton icon="i-heroicons-plus-circle" size="2xs" color="gray" variant="soft" @click="addItem">
-                Tambah Item
-              </UButton>
+              <h3 class="text-sm font-semibold text-zinc-900 dark:text-white">
+                Item Opname
+                <span v-if="isLoadingItems" class="ml-2 text-xs text-muted-foreground">Memuat data penyaluran...</span>
+                <span v-else-if="formState.items.length" class="ml-2 text-xs text-muted-foreground">{{ formState.items.length }} item</span>
+              </h3>
+              <div class="flex gap-2">
+                <UButton v-if="formState.idMitra" icon="i-heroicons-arrow-path" size="2xs" color="gray" variant="soft" :loading="isLoadingItems" @click="fetchExpectedItems(Number(formState.idMitra))">
+                  Muat Ulang
+                </UButton>
+                <UButton icon="i-heroicons-plus-circle" size="2xs" color="gray" variant="soft" @click="addItem">
+                  Tambah Item
+                </UButton>
+              </div>
             </div>
 
             <table v-if="formState.items.length" class="w-full text-sm">
               <thead>
                 <tr class="border-b border-zinc-200 dark:border-zinc-800">
                   <th class="text-left px-3 py-2 font-medium text-muted-foreground">Produk</th>
+                  <th class="text-left px-3 py-2 font-medium text-muted-foreground">Total Dikirim</th>
+                  <th class="text-left px-3 py-2 font-medium text-muted-foreground">Terakhir Kirim</th>
                   <th class="text-left px-3 py-2 font-medium text-muted-foreground">Stok Awal</th>
-                  <th class="text-left px-3 py-2 font-medium text-muted-foreground">Laku</th>
-                  <th class="text-left px-3 py-2 font-medium text-muted-foreground">Retur</th>
-                  <th class="text-left px-3 py-2 font-medium text-muted-foreground">Stok Fisik</th>
+                  <th class="text-left px-3 py-2 font-medium text-muted-foreground">Laku *</th>
+                  <th class="text-left px-3 py-2 font-medium text-muted-foreground">Retur *</th>
+                  <th class="text-left px-3 py-2 font-medium text-muted-foreground">Hilang</th>
+                  <th class="text-left px-3 py-2 font-medium text-muted-foreground">Ditanggung</th>
                   <th class="text-left px-3 py-2 font-medium text-muted-foreground">Kondisi Retur</th>
                   <th class="w-10 px-3 py-2"></th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="(item, idx) in formState.items" :key="idx"
-                  :class="['border-b border-zinc-100 dark:border-zinc-800/50', item._stokFisik < 0 ? 'bg-red-50 dark:bg-red-900/10' : '']">
+                  class="border-b border-zinc-100 dark:border-zinc-800/50">
                   <td class="px-3 py-2">
                     <USelect v-model="item.idProduk" :options="produkOptions" placeholder="Pilih produk" />
                   </td>
+                  <td class="px-3 py-2 text-muted-foreground">{{ item._totalDikirim ?? '-' }}</td>
+                  <td class="px-3 py-2 text-muted-foreground text-xs">{{ item._lastKirim || '-' }}</td>
                   <td class="px-3 py-2">
-                    <UInput v-model="item.stokAwal" type="number" min="0" @update:model-value="recalc(idx)" />
+                    <span class="font-mono text-sm text-zinc-900 dark:text-white">{{ item.stokAwal ?? 0 }}</span>
                   </td>
                   <td class="px-3 py-2">
                     <UInput v-model="item.jumlahLaku" type="number" min="0" @update:model-value="recalc(idx)" />
@@ -56,9 +70,10 @@
                     <UInput v-model="item.jumlahRetur" type="number" min="0" @update:model-value="recalc(idx)" />
                   </td>
                   <td class="px-3 py-2">
-                    <span :class="['font-mono font-medium', item._stokFisik < 0 ? 'text-red-600 dark:text-red-400' : 'text-zinc-900 dark:text-white']">
-                      {{ item._stokFisik }}
-                    </span>
+                    <UInput v-model="item.hilang" type="number" min="0" @update:model-value="recalc(idx)" />
+                  </td>
+                  <td class="px-3 py-2">
+                    <USelect v-model="item.penanggungHilang" :options="penanggungOptions" />
                   </td>
                   <td class="px-3 py-2">
                     <USelect v-model="item.kondisiRetur" :options="kondisiOptions" placeholder="(opsional)" />
@@ -71,7 +86,16 @@
             </table>
 
             <p v-else class="text-sm text-muted-foreground text-center py-6">
-              Belum ada item. Klik "Tambah Item" untuk menambahkan produk.
+              <template v-if="isLoadingItems">
+                <UIcon name="i-heroicons-arrow-path" class="animate-spin inline-block mr-1" />
+                Memuat data produk dari penyaluran...
+              </template>
+              <template v-else-if="formState.idMitra">
+                Belum ada data penyaluran untuk mitra ini. Klik "Tambah Item" untuk menambahkan produk secara manual.
+              </template>
+              <template v-else>
+                Pilih mitra terlebih dahulu untuk memuat produk yang pernah dikirim.
+              </template>
             </p>
           </div>
 
@@ -95,6 +119,7 @@ const router = useRouter()
 const toast = useToast()
 
 const isSaving = ref(false)
+const isLoadingItems = ref(false)
 const mitraList = ref<any[]>([])
 const produkList = ref<any[]>([])
 
@@ -111,6 +136,8 @@ const formSchema = z.object({
     stokAwal: z.preprocess(toNum, z.number().int().min(0)),
     jumlahLaku: z.preprocess(toNum, z.number().int().min(0)),
     jumlahRetur: z.preprocess(toNum, z.number().int().min(0)),
+    hilang: z.preprocess(toNum, z.number().int().min(0).default(0)),
+    penanggungHilang: z.enum(['penyalur', 'mitra']).default('penyalur'),
     kondisiRetur: z.string().optional(),
   })).min(1, 'Minimal 1 item'),
 })
@@ -120,8 +147,12 @@ interface ItemForm {
   stokAwal: number | undefined
   jumlahLaku: number | undefined
   jumlahRetur: number | undefined
+  hilang: number | undefined
+  penanggungHilang: string
   kondisiRetur: string | undefined
   _stokFisik: number
+  _totalDikirim: number | null
+  _lastKirim: string
 }
 
 interface FormData {
@@ -130,13 +161,22 @@ interface FormData {
   items: ItemForm[]
 }
 
+const penanggungOptions = [
+  { label: 'Penyalur', value: 'penyalur' },
+  { label: 'Mitra', value: 'mitra' },
+]
+
 const defaultItem = (): ItemForm => ({
   idProduk: undefined,
   stokAwal: undefined,
   jumlahLaku: undefined,
   jumlahRetur: undefined,
+  hilang: undefined,
+  penanggungHilang: 'penyalur',
   kondisiRetur: undefined,
   _stokFisik: 0,
+  _totalDikirim: null,
+  _lastKirim: '',
 })
 
 const formState = ref<FormData>({
@@ -168,7 +208,8 @@ function recalc(idx: number) {
   const awal = Number(item.stokAwal) || 0
   const laku = Number(item.jumlahLaku) || 0
   const retur = Number(item.jumlahRetur) || 0
-  item._stokFisik = awal - laku - retur
+  const hilang = Number(item.hilang) || 0
+  item._stokFisik = awal - laku - retur - hilang
 }
 
 function addItem() {
@@ -178,6 +219,39 @@ function addItem() {
 function removeItem(idx: number) {
   formState.value.items.splice(idx, 1)
 }
+
+async function fetchExpectedItems(idMitra: number) {
+  if (!idMitra) {
+    formState.value.items = []
+    return
+  }
+  isLoadingItems.value = true
+  try {
+    const res = await api(`/api/opname-stok/expected-items?idMitra=${idMitra}`)
+    const data = (res as any).data || []
+    formState.value.items = data.map((d: any) => ({
+      idProduk: d.idProduk,
+      stokAwal: d.expectedStock,
+      jumlahLaku: undefined as number | undefined,
+      jumlahRetur: undefined as number | undefined,
+      hilang: undefined as number | undefined,
+      penanggungHilang: 'penyalur',
+      kondisiRetur: undefined as string | undefined,
+      _stokFisik: d.expectedStock,
+      _totalDikirim: d.totalDistributed,
+      _lastKirim: d.lastPenyaluranTanggal ? `${d.lastPenyaluranTanggal.replace(/-/g, '/')} (${d.lastPenyaluranNomor})` : '-',
+    }))
+  } catch (err: any) {
+    console.error(err)
+    toast.add({ title: 'Gagal memuat data', description: err.data?.statusMessage || err.message, color: 'red' })
+  } finally {
+    isLoadingItems.value = false
+  }
+}
+
+watch(() => formState.value.idMitra, (val) => {
+  fetchExpectedItems(Number(val))
+})
 
 async function loadReferences() {
   try {
@@ -203,6 +277,8 @@ async function saveOpname() {
         stokAwal: Number(item.stokAwal),
         jumlahLaku: Number(item.jumlahLaku),
         jumlahRetur: Number(item.jumlahRetur),
+        hilang: Number(item.hilang) || 0,
+        penanggungHilang: item.penanggungHilang || 'penyalur',
         kondisiRetur: item.kondisiRetur || undefined,
       })),
     }

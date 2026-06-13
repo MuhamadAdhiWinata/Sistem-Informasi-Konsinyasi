@@ -129,8 +129,8 @@
 | No | Fitur | Status | Catatan |
 | :-- | :---- | :----- | :------ |
 | 6.1 | Header opname (mitra, sales, tanggal kunjungan) | ✅ | pages/opname-stok/create.vue |
-| 6.2 | Detail item (stok awal, laku, retur, kondisi retur) | ✅ | Dynamic items table with live preview |
-| 6.3 | Auto-hitung stok fisik = stok awal − laku − retur | ✅ | Live calc in form + server-side |
+| 6.2 | Detail item (stok awal, laku, retur, hilang, kondisi retur) | ✅ | Dynamic items table with live preview; stok awal read-only (dari expectedStock) |
+| 6.3 | Auto-hitung stok fisik = stok awal − laku − retur − hilang | ✅ | Live calc in form + server-side; hilang input manual |
 | 6.4 | Validasi anomali (flag `memiliki_anomali`) | ✅ | Auto-detect: stok fisik < 0 → anomaly flag |
 | 6.5 | Daftar opname + filter status/mitra | ✅ | pages/opname-stok/index.vue |
 
@@ -153,6 +153,7 @@
 | 7.4 | Dashboard Rekonsiliasi Penyalur — full three-tier pricing | ✅ | pages/rekonsiliasi-penyalur/ — harga pabrik, grosir, retail + margin/unit & ×qty |
 | 7.5 | Dashboard Rekonsiliasi Mitra — simplified, no penyalur profit | ✅ | pages/rekonsiliasi-mitra/ — hanya laba mitra, tanpa harga pabrik/laba penyalur |
 | 7.6 | Export laporan (CSV) + Cetak per view | ✅ | Export CSV + window.print() per masing-masing view |
+| 7.7 | Field hilang + penanggung_hilang di opname & rekonsiliasi | ✅ | Hilang = barang tidak laku & tidak diretur; penanggung = penyalur/mitra. Rekonsiliasi formulas: laba mitra dikurangi `hilang × grosir` jika ditanggung mitra; laba penyalur dikurangi `hilang × pabrik` jika ditanggung penyalur, ditambah `hilang × (grosir − pabrik)` jika ditanggung mitra. |
 
 ### Hak Akses Modul E
 
@@ -209,7 +210,7 @@
 | 10.3 | JWT token (access + refresh) | ✅ | Access token generated via util |
 | 10.4 | Middleware RBAC per route | ✅ | Middleware checks token |
 | 10.5 | Logout + session management | ✅ | Sidebar logout + composable |
-| 10.6 | Profile & ganti password | ⏳ | |
+| 10.6 | Profile & ganti password | ✅ | `pages/auth/profile.vue`, `POST /api/auth/change-password`, sidebar profile link, protected from anonymous | |
 
 ## 11. UI/UX — Layout & Komponen Global
 
@@ -276,20 +277,20 @@
 | 4. Modul B — Penerimaan | 8 | 8 | 0 | 0 | 100% |
 | 5. Modul C — Penyaluran & Faktur | 11 | 11 | 0 | 0 | 100% |
 | 6. Modul D — Opname Stok | 5 | 5 | 0 | 0 | 100% |
-| 7. Modul E — Rekonsiliasi | 6 | 6 | 0 | 0 | 100% |
+| 7. Modul E — Rekonsiliasi | 7 | 7 | 0 | 0 | 100% |
 | 8. Modul F — Request Restock | 4 | 3 | 0 | 1 | 75% |
 | 9. Modul G — Prediksi Stok AI | 5 | 3 | 0 | 2 | 60% |
-| 10. Autentikasi | 6 | 5 | 0 | 1 | 83% |
+| 10. Autentikasi | 6 | 6 | 0 | 0 | 100% |
 | 11. UI/UX Global | 9 | 8 | 0 | 1 | 88% |
 | 12. Non-Fungsional | 6 | 2 | 0 | 4 | 33% |
 | 13. Testing | 4 | 0 | 0 | 4 | 0% |
 | 14. Deployment | 6 | 0 | 0 | 6 | 0% |
 | 15. Dokumentasi | 3 | 0 | 0 | 3 | 0% |
-| **TOTAL** | **107** | **84** | **0** | **23** | **79%** |
+| **TOTAL** | **108** | **86** | **0** | **22** | **80%** |
 
 ---
 
-> ⏱ Terakhir diperbarui: Sabtu, 13 Juni 2026 — Semua kolom harga menggunakan terminologi baru: `harga_pabrik`, `harga_grosir`, `harga_retail` (produk); `harga_pabrik_aktual` (item_penerimaan_barang); `snapshot_harga_retail`, `snapshot_harga_grosir` (item_penyaluran).
+> ⏱ Terakhir diperbarui: Sabtu, 13 Juni 2026 — Kolom `hilang` + `penanggung_hilang` di `item_opname` (migrations 0006 + 0007). Stok Awal di opname read-only. Formula stok fisik: `stokAwal − laku − retur − hilang`. Rekonsiliasi menghitung pendapatan dengan case `penanggungHilang`. Profile page + change password API selesai (10.6). (produk); `harga_pabrik_aktual` (item_penerimaan_barang); `snapshot_harga_retail`, `snapshot_harga_grosir` (item_penyaluran).
 >
 > 🚀 **Workflow Stok & Approval (v2):**
 > - **Penerimaan Barang**: Stok gudang hanya bertambah saat dikonfirmasi (`draft → completed`), bukan saat create. Edit/hapus hanya untuk draft. PUT endpoint + edit page.

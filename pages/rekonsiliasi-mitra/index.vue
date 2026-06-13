@@ -53,6 +53,10 @@
             <p class="text-sm font-medium">{{ Number(row.totalRetur).toLocaleString('id-ID') }} pcs</p>
           </div>
           <div>
+            <p class="text-xs text-muted-foreground">Total Hilang</p>
+            <p class="text-sm font-medium">{{ Number(row.totalHilang || 0).toLocaleString('id-ID') }} pcs</p>
+          </div>
+          <div>
             <p class="text-xs text-muted-foreground">Pendapatan</p>
             <p class="text-sm font-semibold text-emerald-600 dark:text-emerald-400 font-mono">Rp {{ Number(row.totalPendapatan).toLocaleString('id-ID') }}</p>
           </div>

@@ -39,6 +39,8 @@ export default defineEventHandler(async (event) => {
       stokAwal: itemOpname.stokAwal,
       jumlahLaku: itemOpname.jumlahLaku,
       jumlahRetur: itemOpname.jumlahRetur,
+      hilang: itemOpname.hilang,
+      penanggungHilang: itemOpname.penanggungHilang,
       stokFisik: itemOpname.stokFisik,
       kondisiRetur: itemOpname.kondisiRetur,
       apakahAnomali: itemOpname.apakahAnomali,

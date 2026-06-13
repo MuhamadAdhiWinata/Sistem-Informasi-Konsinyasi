@@ -39,6 +39,8 @@ export default defineEventHandler(async (event) => {
       stokAwal: itemOpname.stokAwal,
       jumlahLaku: itemOpname.jumlahLaku,
       jumlahRetur: itemOpname.jumlahRetur,
+      hilang: itemOpname.hilang,
+      penanggungHilang: itemOpname.penanggungHilang,
       stokFisik: itemOpname.stokFisik,
       kondisiRetur: itemOpname.kondisiRetur,
       apakahAnomali: itemOpname.apakahAnomali,
@@ -47,8 +49,8 @@ export default defineEventHandler(async (event) => {
       hargaRetail: produk.hargaRetail,
       marginMitra: sql<number>`${produk.hargaRetail} - ${produk.hargaGrosir}`,
       marginPenyalur: sql<number>`${produk.hargaGrosir} - ${produk.hargaPabrik}`,
-      pendapatanMitra: sql<number>`${itemOpname.jumlahLaku} * (${produk.hargaRetail} - ${produk.hargaGrosir})`,
-      pendapatanPenyalur: sql<number>`${itemOpname.jumlahLaku} * (${produk.hargaGrosir} - ${produk.hargaPabrik})`,
+      pendapatanMitra: sql<number>`${itemOpname.jumlahLaku} * (${produk.hargaRetail} - ${produk.hargaGrosir}) - case when ${itemOpname.penanggungHilang} = 'mitra' then ${itemOpname.hilang} * ${produk.hargaGrosir} else 0 end`,
+      pendapatanPenyalur: sql<number>`${itemOpname.jumlahLaku} * (${produk.hargaGrosir} - ${produk.hargaPabrik}) - case when ${itemOpname.penanggungHilang} = 'penyalur' then ${itemOpname.hilang} * ${produk.hargaPabrik} else 0 end + case when ${itemOpname.penanggungHilang} = 'mitra' then ${itemOpname.hilang} * (${produk.hargaGrosir} - ${produk.hargaPabrik}) else 0 end`,
     })
     .from(itemOpname)
     .innerJoin(produk, eq(itemOpname.idProduk, produk.id))
@@ -67,11 +69,12 @@ export default defineEventHandler(async (event) => {
     .select({
       totalLaku: sql<number>`coalesce(sum(${itemOpname.jumlahLaku}), 0)`,
       totalRetur: sql<number>`coalesce(sum(${itemOpname.jumlahRetur}), 0)`,
+      totalHilang: sql<number>`coalesce(sum(${itemOpname.hilang}), 0)`,
       returBaik: sql<number>`coalesce(sum(case when ${itemOpname.kondisiRetur} = 'good' then ${itemOpname.jumlahRetur} else 0 end), 0)`,
       returRusak: sql<number>`coalesce(sum(case when ${itemOpname.kondisiRetur} = 'damaged' then ${itemOpname.jumlahRetur} else 0 end), 0)`,
       returExpired: sql<number>`coalesce(sum(case when ${itemOpname.kondisiRetur} = 'expired' then ${itemOpname.jumlahRetur} else 0 end), 0)`,
-      totalPendapatanMitra: sql<number>`coalesce(sum(${itemOpname.jumlahLaku} * (${produk.hargaRetail} - ${produk.hargaGrosir})), 0)`,
-      totalPendapatanPenyalur: sql<number>`coalesce(sum(${itemOpname.jumlahLaku} * (${produk.hargaGrosir} - ${produk.hargaPabrik})), 0)`,
+      totalPendapatanMitra: sql<number>`coalesce(sum(${itemOpname.jumlahLaku} * (${produk.hargaRetail} - ${produk.hargaGrosir}) - case when ${itemOpname.penanggungHilang} = 'mitra' then ${itemOpname.hilang} * ${produk.hargaGrosir} else 0 end), 0)`,
+      totalPendapatanPenyalur: sql<number>`coalesce(sum(${itemOpname.jumlahLaku} * (${produk.hargaGrosir} - ${produk.hargaPabrik}) - case when ${itemOpname.penanggungHilang} = 'penyalur' then ${itemOpname.hilang} * ${produk.hargaPabrik} else 0 end + case when ${itemOpname.penanggungHilang} = 'mitra' then ${itemOpname.hilang} * (${produk.hargaGrosir} - ${produk.hargaPabrik}) else 0 end), 0)`,
     })
     .from(itemOpname)
     .innerJoin(produk, eq(itemOpname.idProduk, produk.id))

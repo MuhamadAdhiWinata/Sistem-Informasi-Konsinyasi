@@ -16,10 +16,11 @@ export default defineEventHandler(async (event) => {
       totalOpname: sql<number>`count(distinct ${opnameStok.id})`,
       totalLaku: sql<number>`coalesce(sum(${itemOpname.jumlahLaku}), 0)`,
       totalRetur: sql<number>`coalesce(sum(${itemOpname.jumlahRetur}), 0)`,
+      totalHilang: sql<number>`coalesce(sum(${itemOpname.hilang}), 0)`,
       returBaik: sql<number>`coalesce(sum(case when ${itemOpname.kondisiRetur} = 'good' then ${itemOpname.jumlahRetur} else 0 end), 0)`,
       returRusak: sql<number>`coalesce(sum(case when ${itemOpname.kondisiRetur} = 'damaged' then ${itemOpname.jumlahRetur} else 0 end), 0)`,
       returExpired: sql<number>`coalesce(sum(case when ${itemOpname.kondisiRetur} = 'expired' then ${itemOpname.jumlahRetur} else 0 end), 0)`,
-      totalPendapatan: sql<number>`coalesce(sum(${itemOpname.jumlahLaku} * (${produk.hargaRetail} - ${produk.hargaGrosir})), 0)`,
+      totalPendapatan: sql<number>`coalesce(sum(${itemOpname.jumlahLaku} * (${produk.hargaRetail} - ${produk.hargaGrosir}) - case when ${itemOpname.penanggungHilang} = 'mitra' then ${itemOpname.hilang} * ${produk.hargaGrosir} else 0 end), 0)`,
     })
     .from(opnameStok)
     .innerJoin(mitra, eq(opnameStok.idMitra, mitra.id))

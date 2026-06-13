@@ -45,6 +45,10 @@
           <p class="text-lg font-bold">{{ Number(data.summary.totalRetur).toLocaleString('id-ID') }}</p>
         </UCard>
         <UCard class="text-center">
+          <p class="text-xs text-muted-foreground mb-1">Total Hilang</p>
+          <p class="text-lg font-bold">{{ Number(data.summary.totalHilang || 0).toLocaleString('id-ID') }}</p>
+        </UCard>
+        <UCard class="text-center">
           <p class="text-xs text-muted-foreground mb-1">Total Opname</p>
           <p class="text-lg font-bold">{{ data.opnameList.length }}x</p>
         </UCard>
@@ -65,6 +69,9 @@
           </div>
         </template>
         <UTable v-if="opname.items.length" :rows="opname.items" :columns="itemColumns" class="w-full">
+          <template #penanggungHilang-data="{ row }">
+            <span class="text-sm capitalize">{{ row.penanggungHilang || '-' }}</span>
+          </template>
           <template #kondisiRetur-data="{ row }">
             <span v-if="row.kondisiRetur" class="text-sm">{{ kondisiLabel(row.kondisiRetur) }}</span>
             <span v-else class="text-xs text-muted-foreground">-</span>
@@ -124,6 +131,8 @@ const itemColumns = [
   { key: 'stokAwal', label: 'Stok Awal' },
   { key: 'jumlahLaku', label: 'Laku' },
   { key: 'jumlahRetur', label: 'Retur' },
+  { key: 'hilang', label: 'Hilang' },
+  { key: 'penanggungHilang', label: 'Ditanggung' },
   { key: 'kondisiRetur', label: 'Kondisi Retur' },
   { key: 'hargaPabrik', label: 'Harga Pabrik' },
   { key: 'marginPenyalur', label: 'Margin Penyalur' },

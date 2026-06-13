@@ -43,7 +43,7 @@
         <template #header>
           <div class="flex items-center justify-between px-4 sm:px-6 py-3">
             <h3 class="text-sm font-semibold text-zinc-900 dark:text-white">Item Opname</h3>
-            <span class="text-xs text-muted-foreground">Stok Fisik = Stok Awal − Laku − Retur</span>
+            <span class="text-xs text-muted-foreground">Stok Fisik = Stok Awal − Laku − Retur − Hilang</span>
           </div>
         </template>
         <UTable :rows="data.items" :columns="itemColumns" class="w-full">
@@ -61,6 +61,9 @@
           <template #apakahAnomali-data="{ row }">
             <UBadge v-if="row.apakahAnomali" color="red" variant="soft" size="xs">Anomali</UBadge>
             <span v-else class="text-xs text-muted-foreground">-</span>
+          </template>
+          <template #penanggungHilang-data="{ row }">
+            <span class="text-sm capitalize">{{ row.penanggungHilang || '-' }}</span>
           </template>
           <template #kondisiRetur-data="{ row }">
             <span v-if="row.kondisiRetur" class="text-sm">{{ kondisiLabel(row.kondisiRetur) }}</span>
@@ -113,6 +116,8 @@ const itemColumns = [
   { key: 'stokAwal', label: 'Stok Awal' },
   { key: 'jumlahLaku', label: 'Laku' },
   { key: 'jumlahRetur', label: 'Retur' },
+  { key: 'hilang', label: 'Hilang' },
+  { key: 'penanggungHilang', label: 'Ditanggung' },
   { key: 'stokFisik', label: 'Stok Fisik' },
   { key: 'kondisiRetur', label: 'Kondisi Retur' },
   { key: 'apakahAnomali', label: 'Anomali' },

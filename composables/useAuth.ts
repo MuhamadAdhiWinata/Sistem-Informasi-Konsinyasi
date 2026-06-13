@@ -2,7 +2,16 @@ import { ref, computed } from 'vue';
 
 // Simple singleton auth store (no Pinia dependency needed)
 const token = ref<string | null>(null);
-const user = ref<{ id: number; nama: string; email: string; peran: string } | null>(null);
+export interface AuthUser {
+  id: number
+  nama: string
+  email: string
+  peran: string
+  idMitra?: number | null
+  idPemasok?: number | null
+}
+
+const user = ref<AuthUser | null>(null);
 
 function isClient(): boolean {
   return typeof window !== 'undefined';

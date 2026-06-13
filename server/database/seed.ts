@@ -433,7 +433,7 @@ async function main() {
         const anomali = it.anomali === 1 || stokFisik < 0 ? 1 : 0;
         await db.insert(schema.itemOpname).values([{
           idOpname: oh.id, idProduk: prod.id, stokAwal: it.stokAwal,
-          jumlahLaku: it.laku, jumlahRetur: it.retur, stokFisik: Math.max(0, stokFisik),
+          jumlahLaku: it.laku, jumlahRetur: it.retur, hilang: 0, penanggungHilang: 'penyalur', stokFisik: Math.max(0, stokFisik),
           kondisiRetur: it.kondisi, apakahAnomali: anomali,
         }]);
       }

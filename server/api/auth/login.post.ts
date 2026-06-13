@@ -46,6 +46,8 @@ export default defineEventHandler(async (event) => {
         nama: user.nama,
         email: user.email,
         peran: user.peran,
+        idMitra: user.idMitra,
+        idPemasok: user.idPemasok,
       },
     },
     message: 'Login berhasil',
