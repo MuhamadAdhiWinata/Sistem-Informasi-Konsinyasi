@@ -1,9 +1,9 @@
 export default defineAppConfig({
   ui: {
     // red, orange, amber, yellow, lime, green, emerald, teal, cyan, sky, blue, indigo, violet, purple, fuchsia, pink, rose
-    primary: 'blue',
+    primary: 'emerald',
     // slate, zinc, neutral, stone, gray
-    gray: 'neutral',
+    gray: 'zinc',
     notifications: {
       position: 'top-0 right-0',
     },
