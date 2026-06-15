@@ -329,7 +329,7 @@ const penyaluranColumns = [
   { key: 'mitra', label: 'Mitra' },
   { key: 'tanggalPenyaluran', label: 'Tanggal' },
   { key: 'status', label: 'Status' },
-  { key: 'totalNilai', label: 'Total', class: 'text-right' },
+  { key: 'totalNilai', label: 'Total', class: 'text-left' },
   { key: 'actions', label: '', class: 'text-right' },
 ];
 

@@ -96,7 +96,7 @@ const columns = [
   { key: 'tanggalPenyaluran', label: 'Tanggal' },
   { key: 'status', label: 'Status' },
   { key: 'nomorFaktur', label: 'Faktur' },
-  { key: 'totalNilai', label: 'Total', class: 'text-right' },
+  { key: 'totalNilai', label: 'Total', class: 'text-left' },
   { key: 'actions', label: '' },
 ]
 

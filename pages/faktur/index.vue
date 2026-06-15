@@ -55,7 +55,7 @@ const columns = [
   { key: 'gudang', label: 'Gudang' },
   { key: 'tanggalPenyaluran', label: 'Tanggal' },
   { key: 'diterbitkanPada', label: 'Diterbitkan' },
-  { key: 'totalNilai', label: 'Total Nilai', class: 'text-right' },
+  { key: 'totalNilai', label: 'Total Nilai', class: 'text-left' },
   { key: 'actions', label: '', class: 'text-right' },
 ]
 
