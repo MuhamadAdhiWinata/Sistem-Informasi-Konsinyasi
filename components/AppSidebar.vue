@@ -119,7 +119,7 @@ const navGroups = computed(() => {
         { name: 'Faktur', path: '/faktur', icon: 'i-heroicons-document-text' },
         { name: 'Opname', path: '/opname-stok', icon: 'i-heroicons-clipboard-document-check' },
         { name: 'Rekonsiliasi Penyalur', path: '/rekonsiliasi-penyalur', icon: 'i-heroicons-receipt-percent' },
-        { name: 'Restok', path: '/permintaan-stok', icon: 'i-heroicons-shopping-cart' },
+        // { name: 'Restok', path: '/permintaan-stok', icon: 'i-heroicons-shopping-cart' },
       ],
     },
   ]
@@ -131,7 +131,7 @@ const navGroups = computed(() => {
       { label: 'Transaksi', items: [
         { name: 'Penyaluran', path: '/penyaluran', icon: 'i-heroicons-truck' },
         { name: 'Opname', path: '/opname-stok', icon: 'i-heroicons-clipboard-document-check' },
-        { name: 'Restok', path: '/permintaan-stok', icon: 'i-heroicons-shopping-cart' },
+        // { name: 'Restok', path: '/permintaan-stok', icon: 'i-heroicons-shopping-cart' },
         { name: 'Rekonsiliasi Mitra', path: '/rekonsiliasi-mitra', icon: 'i-heroicons-receipt-percent' },
       ]},
     ]
@@ -161,7 +161,7 @@ const navGroups = computed(() => {
       { label: 'Transaksi', items: [
         { name: 'Penyaluran', path: '/penyaluran', icon: 'i-heroicons-truck' },
         { name: 'Opname', path: '/opname-stok', icon: 'i-heroicons-clipboard-document-check' },
-        { name: 'Restok', path: '/permintaan-stok', icon: 'i-heroicons-shopping-cart' },
+        // { name: 'Restok', path: '/permintaan-stok', icon: 'i-heroicons-shopping-cart' },
       ]},
     ]
   }

@@ -55,7 +55,7 @@
             <td style="width:50%; vertical-align:top;">
               <div style="font-weight:bold; margin-bottom:4px;">Referensi Dokumen:</div>
               <div>No. Penyaluran : {{ data.nomorPenyaluran }}</div>
-              <div>Tanggal Kirim : {{ data.tanggalPenyaluran }}</div>
+              <div>Tanggal Kirim : {{ formatTanggal(data.tanggalPenyaluran) }}</div>
               <div>Gudang Asal   : {{ data.gudangAsal }}</div>
               <div>Sales         : {{ data.sales }}</div>
             </td>
@@ -147,7 +147,7 @@
         </table>
 
         <div style="margin-top:24px; border-top:1px solid #ccc; padding-top:8px; text-align:center; font-size:8pt; color:#888;">
-          Dokumen ini sah dan diterbitkan secara elektronik &mdash; {{ new Date(data.faktur?.diterbitkanPada).toLocaleString('id-ID') }}
+          Dokumen ini sah dan diterbitkan secara elektronik &mdash; {{ formatTanggalWaktu(data.faktur?.diterbitkanPada) }}
         </div>
       </div>
     </template>

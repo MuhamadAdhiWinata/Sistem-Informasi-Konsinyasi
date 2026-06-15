@@ -10,52 +10,153 @@
       </p>
     </div>
 
-    <!-- Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-      <UCard v-for="stat in stats" :key="stat.label" class="relative overflow-hidden">
+    <!-- Stats Cards Row 1 -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+      <UCard v-for="stat in statsRow1" :key="stat.label" class="relative overflow-hidden">
         <div class="flex items-start justify-between">
           <div>
             <p class="text-sm font-medium text-muted-foreground">{{ stat.label }}</p>
             <p class="text-2xl font-bold mt-1">{{ stat.value }}</p>
             <p class="text-xs text-muted-foreground mt-1">{{ stat.desc }}</p>
           </div>
-          <div class="w-12 h-12 rounded-xl flex items-center justify-center"
-            :class="stat.bgClass">
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center" :class="stat.bgClass">
             <component :is="stat.icon" class="w-6 h-6" :class="stat.iconClass" />
           </div>
         </div>
         <div class="absolute bottom-0 left-0 right-0 h-1 rounded-full">
-          <div class="h-full w-full rounded-full opacity-20"
-            :class="stat.barClass"></div>
+          <div class="h-full w-full rounded-full opacity-20" :class="stat.barClass"></div>
         </div>
       </UCard>
     </div>
 
-    <!-- Master Data Quick Links -->
-    <div class="mb-8">
-      <h2 class="text-lg font-semibold text-zinc-900 dark:text-white mb-4">Master Data</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-        <NuxtLink v-for="link in masterDataLinks" :key="link.label" :to="link.to"
-          class="flex items-center gap-3 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:shadow-md hover:border-primary/30 transition-all duration-200">
-          <div class="w-10 h-10 rounded-lg flex items-center justify-center"
-            :class="link.bgClass">
-            <component :is="link.icon" class="w-5 h-5" :class="link.iconClass" />
+    <!-- Stats Cards Row 2 -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <UCard v-for="stat in statsRow2" :key="stat.label" class="relative overflow-hidden">
+        <div class="flex items-start justify-between">
+          <div>
+            <p class="text-sm font-medium text-muted-foreground">{{ stat.label }}</p>
+            <p class="text-2xl font-bold mt-1">{{ stat.value }}</p>
+            <p class="text-xs text-muted-foreground mt-1">{{ stat.desc }}</p>
           </div>
-          <div class="flex-1 min-w-0">
-            <p class="text-sm font-medium text-foreground">{{ link.label }}</p>
-            <p class="text-xs text-muted-foreground">{{ link.count }} item</p>
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center" :class="stat.bgClass">
+            <component :is="stat.icon" class="w-6 h-6" :class="stat.iconClass" />
           </div>
-          <Icon name="i-heroicons-chevron-right" class="w-4 h-4 text-muted-foreground" />
-        </NuxtLink>
+        </div>
+        <div class="absolute bottom-0 left-0 right-0 h-1 rounded-full">
+          <div class="h-full w-full rounded-full opacity-20" :class="stat.barClass"></div>
+        </div>
+      </UCard>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      <div>
+        <h2 class="text-lg font-semibold text-zinc-900 dark:text-white mb-4">Master Data</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <NuxtLink v-for="link in masterDataLinks" :key="link.label" :to="link.to"
+            class="flex items-center gap-3 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:shadow-md hover:border-primary/30 transition-all duration-200">
+            <div class="w-10 h-10 rounded-lg flex items-center justify-center" :class="link.bgClass">
+              <component :is="link.icon" class="w-5 h-5" :class="link.iconClass" />
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-foreground">{{ link.label }}</p>
+              <p class="text-xs text-muted-foreground">{{ link.count }} item</p>
+            </div>
+            <Icon name="i-heroicons-chevron-right" class="w-4 h-4 text-muted-foreground" />
+          </NuxtLink>
+        </div>
       </div>
+
+      <div>
+        <h2 class="text-lg font-semibold text-zinc-900 dark:text-white mb-4">Transaksi</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <NuxtLink v-for="link in transaksiLinks" :key="link.label" :to="link.to"
+            class="flex items-center gap-3 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:shadow-md hover:border-primary/30 transition-all duration-200">
+            <div class="w-10 h-10 rounded-lg flex items-center justify-center" :class="link.bgClass">
+              <component :is="link.icon" class="w-5 h-5" :class="link.iconClass" />
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-foreground">{{ link.label }}</p>
+              <p class="text-xs text-muted-foreground">{{ link.count }}</p>
+            </div>
+            <Icon name="i-heroicons-chevron-right" class="w-4 h-4 text-muted-foreground" />
+          </NuxtLink>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Penyaluran -->
+    <UCard class="mb-8" :ui="{ body: { padding: 'p-0 sm:p-0' } }">
+      <template #header>
+        <div class="flex items-center justify-between px-4 sm:px-6 py-3">
+          <h3 class="text-sm font-semibold text-zinc-900 dark:text-white">Penyaluran Terbaru</h3>
+          <UButton size="2xs" color="gray" variant="ghost" to="/penyaluran">Lihat Semua</UButton>
+        </div>
+      </template>
+      <UTable :rows="recentPenyaluran" :columns="penyaluranColumns" :loading="isLoading"
+        :empty-state="{ icon: 'i-heroicons-truck', label: 'Belum ada penyaluran' }" class="w-full">
+        <template #tanggalPenyaluran-data="{ row }">
+          <span class="text-sm">{{ formatTanggal(row.tanggalPenyaluran) }}</span>
+        </template>
+        <template #status-data="{ row }">
+          <UBadge :color="statusColor(row.status)" variant="soft" size="xs">{{ statusLabel(row.status) }}</UBadge>
+        </template>
+        <template #totalNilai-data="{ row }">
+          <span class="font-mono text-sm">Rp {{ Number(row.totalNilai).toLocaleString('id-ID') }}</span>
+        </template>
+        <template #actions-data="{ row }">
+          <UButton icon="i-heroicons-eye" size="2xs" color="orange" variant="ghost" :to="`/penyaluran/${row.id}`" />
+        </template>
+      </UTable>
+    </UCard>
+
+    <!-- Alerts Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <UCard :ui="{ body: { padding: 'p-0 sm:p-0' } }">
+        <template #header>
+          <div class="flex items-center gap-2 px-4 sm:px-6 py-3">
+            <Icon name="i-heroicons-exclamation-triangle" class="w-4 h-4 text-amber-500" />
+            <h3 class="text-sm font-semibold text-zinc-900 dark:text-white">Stok Menipis</h3>
+          </div>
+        </template>
+        <UTable :rows="lowStockItems" :columns="lowStockColumns" :loading="isLoading"
+          :empty-state="{ icon: 'i-heroicons-check-circle', label: 'Semua stok aman' }" class="w-full">
+          <template #jumlah-data="{ row }">
+            <span :class="['font-mono font-medium', Number(row.jumlah) <= 2 ? 'text-red-600 dark:text-red-400' : 'text-amber-600 dark:text-amber-400']">
+              {{ row.jumlah }}
+            </span>
+          </template>
+        </UTable>
+      </UCard>
+
+      <UCard :ui="{ body: { padding: 'p-0 sm:p-0' } }">
+        <template #header>
+          <div class="flex items-center gap-2 px-4 sm:px-6 py-3">
+            <Icon name="i-heroicons-exclamation-circle" class="w-4 h-4 text-red-500" />
+            <h3 class="text-sm font-semibold text-zinc-900 dark:text-white">Anomali Opname</h3>
+          </div>
+        </template>
+        <UTable :rows="opnameAnomalies" :columns="opnameAnomaliColumns" :loading="isLoading"
+          :empty-state="{ icon: 'i-heroicons-check-circle', label: 'Tidak ada anomali' }" class="w-full">
+          <template #tanggalKunjungan-data="{ row }">
+            <span class="text-sm">{{ formatTanggal(row.tanggalKunjungan) }}</span>
+          </template>
+          <template #status-data="{ row }">
+            <UBadge :color="opnameStatusColor(row.status)" variant="soft" size="xs">{{ opnameStatusLabel(row.status) }}</UBadge>
+          </template>
+          <template #actions-data="{ row }">
+            <UButton icon="i-heroicons-eye" size="2xs" color="orange" variant="ghost" :to="`/opname-stok/${row.id}`" />
+          </template>
+        </UTable>
+      </UCard>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
 import {
   Building2, Package, Store, Warehouse, Users,
+  ArrowDownToLine, Truck, ClipboardCheck, FileText, AlertTriangle,
 } from 'lucide-vue-next';
 
 definePageMeta({ layout: 'default' });
@@ -63,48 +164,121 @@ definePageMeta({ layout: 'default' });
 const auth = useAuth();
 const api = useApi();
 
+const isLoading = ref(true);
+
 type StatItem = {
-  label: string; value: string; desc: string; icon: any; color: string;
+  label: string; value: string; desc: string; icon: any;
   bgClass: string; iconClass: string; barClass: string;
 };
 type LinkItem = {
-  to: string; label: string; icon: any; color: string; count: string;
+  to: string; label: string; icon: any; count: string;
   bgClass: string; iconClass: string;
 };
 
-const stats = ref<StatItem[]>([]);
+const statsRow1 = ref<StatItem[]>([]);
+const statsRow2 = ref<StatItem[]>([]);
 const masterDataLinks = ref<LinkItem[]>([]);
+const transaksiLinks = ref<LinkItem[]>([]);
+const recentPenyaluran = ref<any[]>([]);
+const lowStockItems = ref<any[]>([]);
+const opnameAnomalies = ref<any[]>([]);
 
 function buildStat(label: string, value: string, desc: string, icon: any, color: string): StatItem {
-  const bgMap: Record<string, string> = { blue: 'bg-blue-50 dark:bg-blue-900/20', emerald: 'bg-emerald-50 dark:bg-emerald-900/20', orange: 'bg-orange-50 dark:bg-orange-900/20', purple: 'bg-purple-50 dark:bg-purple-900/20', pink: 'bg-pink-50 dark:bg-pink-900/20' };
-  const iconMap: Record<string, string> = { blue: 'text-blue-600 dark:text-blue-400', emerald: 'text-emerald-600 dark:text-emerald-400', orange: 'text-orange-600 dark:text-orange-400', purple: 'text-purple-600 dark:text-purple-400', pink: 'text-pink-600 dark:text-pink-400' };
-  const barMap: Record<string, string> = { blue: 'bg-blue-500', emerald: 'bg-emerald-500', orange: 'bg-orange-500', purple: 'bg-purple-500', pink: 'bg-pink-500' };
-  return { label, value, desc, icon, color, bgClass: bgMap[color] || '', iconClass: iconMap[color] || '', barClass: barMap[color] || '' };
+  const bgMap: Record<string, string> = { blue: 'bg-blue-50 dark:bg-blue-900/20', emerald: 'bg-emerald-50 dark:bg-emerald-900/20', orange: 'bg-orange-50 dark:bg-orange-900/20', purple: 'bg-purple-50 dark:bg-purple-900/20', pink: 'bg-pink-50 dark:bg-pink-900/20', cyan: 'bg-cyan-50 dark:bg-cyan-900/20', red: 'bg-red-50 dark:bg-red-900/20', amber: 'bg-amber-50 dark:bg-amber-900/20' };
+  const iconMap: Record<string, string> = { blue: 'text-blue-600 dark:text-blue-400', emerald: 'text-emerald-600 dark:text-emerald-400', orange: 'text-orange-600 dark:text-orange-400', purple: 'text-purple-600 dark:text-purple-400', pink: 'text-pink-600 dark:text-pink-400', cyan: 'text-cyan-600 dark:text-cyan-400', red: 'text-red-600 dark:text-red-400', amber: 'text-amber-600 dark:text-amber-400' };
+  const barMap: Record<string, string> = { blue: 'bg-blue-500', emerald: 'bg-emerald-500', orange: 'bg-orange-500', purple: 'bg-purple-500', pink: 'bg-pink-500', cyan: 'bg-cyan-500', red: 'bg-red-500', amber: 'bg-amber-500' };
+  return { label, value, desc, icon, bgClass: bgMap[color] || '', iconClass: iconMap[color] || '', barClass: barMap[color] || '' };
 }
 
 function buildLink(to: string, label: string, icon: any, color: string, count: string): LinkItem {
-  const bgMap: Record<string, string> = { blue: 'bg-blue-50 dark:bg-blue-900/20', emerald: 'bg-emerald-50 dark:bg-emerald-900/20', orange: 'bg-orange-50 dark:bg-orange-900/20', purple: 'bg-purple-50 dark:bg-purple-900/20', pink: 'bg-pink-50 dark:bg-pink-900/20' };
-  const iconMap: Record<string, string> = { blue: 'text-blue-600 dark:text-blue-400', emerald: 'text-emerald-600 dark:text-emerald-400', orange: 'text-orange-600 dark:text-orange-400', purple: 'text-purple-600 dark:text-purple-400', pink: 'text-pink-600 dark:text-pink-400' };
-  return { to, label, icon, color, count, bgClass: bgMap[color] || '', iconClass: iconMap[color] || '' };
+  const bgMap: Record<string, string> = { blue: 'bg-blue-50 dark:bg-blue-900/20', emerald: 'bg-emerald-50 dark:bg-emerald-900/20', orange: 'bg-orange-50 dark:bg-orange-900/20', purple: 'bg-purple-50 dark:bg-purple-900/20', pink: 'bg-pink-50 dark:bg-pink-900/20', cyan: 'bg-cyan-50 dark:bg-cyan-900/20', red: 'bg-red-50 dark:bg-red-900/20', amber: 'bg-amber-50 dark:bg-amber-900/20' };
+  const iconMap: Record<string, string> = { blue: 'text-blue-600 dark:text-blue-400', emerald: 'text-emerald-600 dark:text-emerald-400', orange: 'text-orange-600 dark:text-orange-400', purple: 'text-purple-600 dark:text-purple-400', pink: 'text-pink-600 dark:text-pink-400', cyan: 'text-cyan-600 dark:text-cyan-400', red: 'text-red-600 dark:text-red-400', amber: 'text-amber-600 dark:text-amber-400' };
+  return { to, label, icon, count, bgClass: bgMap[color] || '', iconClass: iconMap[color] || '' };
 }
 
-async function fetchStats() {
+const penyaluranColumns = [
+  { key: 'nomorPenyaluran', label: 'Nomor' },
+  { key: 'mitra', label: 'Mitra' },
+  { key: 'tanggalPenyaluran', label: 'Tanggal' },
+  { key: 'status', label: 'Status' },
+  { key: 'totalNilai', label: 'Total', class: 'text-right' },
+  { key: 'actions', label: '', class: 'text-right' },
+];
+
+const lowStockColumns = [
+  { key: 'produk', label: 'Produk' },
+  { key: 'sku', label: 'SKU' },
+  { key: 'gudang', label: 'Gudang' },
+  { key: 'jumlah', label: 'Stok', class: 'text-right' },
+  { key: 'satuan', label: 'Satuan' },
+];
+
+const opnameAnomaliColumns = [
+  { key: 'nomorOpname', label: 'Nomor' },
+  { key: 'mitra', label: 'Mitra' },
+  { key: 'tanggalKunjungan', label: 'Tanggal' },
+  { key: 'status', label: 'Status' },
+  { key: 'actions', label: '', class: 'text-right' },
+];
+
+function statusColor(status: string) {
+  const map: Record<string, string> = { draft: 'gray', sent: 'blue', received: 'emerald' }
+  return (map[status] || 'gray') as any
+}
+
+function statusLabel(status: string) {
+  const map: Record<string, string> = { draft: 'Draft', sent: 'Dikirim', received: 'Diterima' }
+  return map[status] || status
+}
+
+function opnameStatusColor(status: string) {
+  const map: Record<string, string> = { draft: 'gray', submitted: 'blue', verified: 'emerald' }
+  return (map[status] || 'gray') as any
+}
+
+function opnameStatusLabel(status: string) {
+  const map: Record<string, string> = { draft: 'Draft', submitted: 'Submitted', verified: 'Terverifikasi' }
+  return map[status] || status
+}
+
+async function fetchData() {
+  isLoading.value = true
   try {
-    const responses = await Promise.all([
+    const [pemasokRes, produkRes, mitraRes, gudangRes, penggunaRes, penyaluranRes, penerimaanRes, opnameRes, stokRes] = await Promise.all([
       api('/api/master/pemasok'),
       api('/api/master/produk'),
       api('/api/master/mitra'),
       api('/api/master/gudang'),
       api('/api/master/pengguna'),
-    ]);
-    const [pemasok, produk, mitra, gudang, pengguna] = responses.map(r => String((r as { data?: unknown[] }).data?.length || 0));
+      api('/api/penyaluran'),
+      api('/api/penerimaan-barang'),
+      api('/api/opname-stok'),
+      api('/api/stok-gudang'),
+    ])
 
-    stats.value = [
+    const toCount = (res: any) => String((res.data as any[])?.length || 0)
+    const pemasok = toCount(pemasokRes)
+    const produk = toCount(produkRes)
+    const mitra = toCount(mitraRes)
+    const gudang = toCount(gudangRes)
+    const pengguna = toCount(penggunaRes)
+    const penyaluranCount = toCount(penyaluranRes)
+    const penerimaanCount = toCount(penerimaanRes)
+    const opnameCount = toCount(opnameRes)
+
+    statsRow1.value = [
       buildStat('Total Pemasok', pemasok, 'Supplier aktif', Building2, 'blue'),
       buildStat('Total Produk', produk, 'SKU terdaftar', Package, 'emerald'),
       buildStat('Total Mitra', mitra, 'Toko partner', Store, 'orange'),
       buildStat('Total Gudang', gudang, 'Lokasi penyimpanan', Warehouse, 'purple'),
-    ];
+    ]
+
+    statsRow2.value = [
+      buildStat('Total Pengguna', pengguna, 'Akun sistem', Users, 'pink'),
+      buildStat('Penerimaan Barang', penerimaanCount, 'Barang masuk', ArrowDownToLine, 'cyan'),
+      buildStat('Penyaluran', penyaluranCount, 'Barang keluar', Truck, 'amber'),
+      buildStat('Opname Stok', opnameCount, 'Siklus opname', ClipboardCheck, 'red'),
+    ]
 
     masterDataLinks.value = [
       buildLink('/master/pemasok', 'Pemasok', Building2, 'blue', pemasok),
@@ -112,11 +286,35 @@ async function fetchStats() {
       buildLink('/master/mitra', 'Mitra', Store, 'orange', mitra),
       buildLink('/master/gudang', 'Gudang', Warehouse, 'purple', gudang),
       buildLink('/master/pengguna', 'Pengguna', Users, 'pink', pengguna),
-    ];
+    ]
+
+    transaksiLinks.value = [
+      buildLink('/penerimaan-barang', 'Penerimaan Barang', ArrowDownToLine, 'cyan', `${penerimaanCount} transaksi`),
+      buildLink('/penyaluran', 'Penyaluran', Truck, 'amber', `${penyaluranCount} transaksi`),
+      buildLink('/faktur', 'Faktur', FileText, 'blue', `${toCount(await api('/api/faktur'))} dokumen`),
+      buildLink('/opname-stok', 'Opname Stok', ClipboardCheck, 'red', `${opnameCount} siklus`),
+      buildLink('/stok-gudang', 'Stok Gudang', Warehouse, 'purple', `${toCount(stokRes)} item`),
+      buildLink('/rekonsiliasi-penyalur', 'Rekonsiliasi', FileText, 'orange', 'Laporan'),
+    ]
+
+    const penyaluranData = (penyaluranRes as any).data || []
+    recentPenyaluran.value = penyaluranData.slice(0, 5)
+
+    const stokData = (stokRes as any).data || []
+    lowStockItems.value = stokData
+      .filter((s: any) => Number(s.jumlah) <= 5)
+      .slice(0, 10)
+
+    const opnameData = (opnameRes as any).data || []
+    opnameAnomalies.value = opnameData
+      .filter((o: any) => o.memilikiAnomali)
+      .slice(0, 10)
   } catch (err) {
-    console.error('Failed to fetch stats', err);
+    console.error('Failed to fetch dashboard data', err)
+  } finally {
+    isLoading.value = false
   }
 }
 
-onMounted(() => fetchStats());
+onMounted(() => fetchData())
 </script>

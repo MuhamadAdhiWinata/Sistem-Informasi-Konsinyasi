@@ -44,7 +44,7 @@
         </UCard>
         <UCard>
           <p class="text-xs text-muted-foreground mb-1">Tanggal</p>
-          <p class="text-sm font-medium text-zinc-900 dark:text-white">{{ data.tanggalPenyaluran }}</p>
+          <p class="text-sm font-medium text-zinc-900 dark:text-white">{{ formatTanggal(data.tanggalPenyaluran) }}</p>
         </UCard>
       </div>
 
@@ -102,7 +102,7 @@
               </div>
               <div>
                 <p class="text-xs text-muted-foreground">Diterbitkan</p>
-                <p class="text-sm text-zinc-900 dark:text-white">{{ new Date(data.faktur.diterbitkanPada).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }) }}</p>
+                <p class="text-sm text-zinc-900 dark:text-white">{{ formatTanggalWaktu(data.faktur.diterbitkanPada) }}</p>
               </div>
             </div>
           </UCard>

@@ -59,7 +59,7 @@
           <div class="flex items-center justify-between px-4 sm:px-6 py-3">
             <div>
               <h3 class="text-sm font-semibold text-zinc-900 dark:text-white">{{ opname.nomorOpname }}</h3>
-              <p class="text-xs text-muted-foreground">{{ opname.tanggalKunjungan }} · {{ opname.sales }}</p>
+              <p class="text-xs text-muted-foreground">{{ formatTanggal(opname.tanggalKunjungan) }} · {{ opname.sales }}</p>
             </div>
             <UBadge :color="opnameStatusColor(opname.status)" variant="soft" size="xs">{{ opnameStatusLabel(opname.status) }}</UBadge>
           </div>

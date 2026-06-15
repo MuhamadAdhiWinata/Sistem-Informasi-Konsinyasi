@@ -20,6 +20,9 @@
             {{ row.status === 'completed' ? 'Selesai' : 'Draft' }}
           </UBadge>
         </template>
+        <template #tanggalPenerimaan-data="{ row }">
+          <span class="text-sm">{{ formatTanggal(row.tanggalPenerimaan) }}</span>
+        </template>
         <template #actions-data="{ row }">
           <div class="flex gap-1">
             <UTooltip text="Detail" :popper="{ placement: 'top' }">

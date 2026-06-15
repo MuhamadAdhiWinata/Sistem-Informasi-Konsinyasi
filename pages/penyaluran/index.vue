@@ -21,6 +21,9 @@
         <template #status-data="{ row }">
           <UBadge :color="statusColor(row.status)" variant="soft" size="xs">{{ statusLabel(row.status) }}</UBadge>
         </template>
+        <template #tanggalPenyaluran-data="{ row }">
+          <span class="text-sm">{{ formatTanggal(row.tanggalPenyaluran) }}</span>
+        </template>
         <template #totalNilai-data="{ row }">
           <span class="font-mono text-sm">Rp {{ Number(row.totalNilai).toLocaleString('id-ID') }}</span>
         </template>

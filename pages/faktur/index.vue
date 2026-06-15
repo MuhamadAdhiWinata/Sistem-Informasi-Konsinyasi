@@ -17,8 +17,11 @@
         <template #totalNilai-data="{ row }">
           <span class="font-mono text-sm">Rp {{ Number(row.totalNilai).toLocaleString('id-ID') }}</span>
         </template>
+        <template #tanggalPenyaluran-data="{ row }">
+          <span class="text-sm">{{ formatTanggal(row.tanggalPenyaluran) }}</span>
+        </template>
         <template #diterbitkanPada-data="{ row }">
-          <span class="text-sm">{{ new Date(row.diterbitkanPada).toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' }) }}</span>
+          <span class="text-sm">{{ formatTanggal(row.diterbitkanPada) }}</span>
         </template>
         <template #actions-data="{ row }">
           <div class="flex gap-1">

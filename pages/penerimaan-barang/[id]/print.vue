@@ -54,7 +54,7 @@
             <td style="width:50%; vertical-align:top;">
               <div style="font-weight:bold; margin-bottom:4px;">Referensi Dokumen:</div>
               <div>No. Penerimaan : {{ data.nomorPenerimaan }}</div>
-              <div>Tanggal Diterima : {{ data.tanggalPenerimaan }}</div>
+              <div>Tanggal Diterima : {{ formatTanggal(data.tanggalPenerimaan) }}</div>
               <div>Gudang Tujuan    : {{ data.gudang }}</div>
               <div>Diterima Oleh    : {{ data.penerima }}</div>
             </td>

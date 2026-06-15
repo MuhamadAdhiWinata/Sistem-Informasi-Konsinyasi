@@ -43,7 +43,7 @@
         </UCard>
         <UCard>
           <p class="text-xs text-muted-foreground mb-1">Tanggal</p>
-          <p class="text-sm font-medium text-zinc-900 dark:text-white">{{ data.tanggalPenerimaan }}</p>
+          <p class="text-sm font-medium text-zinc-900 dark:text-white">{{ formatTanggal(data.tanggalPenerimaan) }}</p>
         </UCard>
       </div>
 

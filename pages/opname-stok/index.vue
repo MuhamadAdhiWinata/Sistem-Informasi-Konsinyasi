@@ -22,6 +22,9 @@
           <UBadge v-if="row.memilikiAnomali" color="red" variant="soft" size="xs">Anomali</UBadge>
           <span v-else class="text-xs text-muted-foreground">Normal</span>
         </template>
+        <template #tanggalKunjungan-data="{ row }">
+          <span class="text-sm">{{ formatTanggal(row.tanggalKunjungan) }}</span>
+        </template>
         <template #actions-data="{ row }">
           <div class="flex gap-1">
             <UTooltip text="Detail" :popper="{ placement: 'top' }">
