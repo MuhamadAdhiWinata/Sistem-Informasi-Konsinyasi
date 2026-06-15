@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { desc, eq } from 'drizzle-orm';
 import { produk, pemasok } from '~~/server/database/schema';
 import { useDB } from '~~/server/utils/database';
 
@@ -19,6 +19,6 @@ export default defineEventHandler(async (event) => {
   })
     .from(produk)
     .leftJoin(pemasok, eq(produk.idPemasok, pemasok.id))
-    .orderBy(produk.nama);
+    .orderBy(desc(produk.id));
   return { data: items };
 });

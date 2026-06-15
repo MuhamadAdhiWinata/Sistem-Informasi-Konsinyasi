@@ -1,4 +1,4 @@
-import { eq, sql } from 'drizzle-orm';
+import { desc, eq, sql } from 'drizzle-orm';
 import { pengguna } from '~~/server/database/schema';
 import { useDB } from '~~/server/utils/database';
 
@@ -14,6 +14,6 @@ export default defineEventHandler(async (event) => {
     apakahAktif: pengguna.apakahAktif,
   })
     .from(pengguna)
-    .orderBy(pengguna.nama);
+    .orderBy(desc(pengguna.id));
   return { data: items };
 });

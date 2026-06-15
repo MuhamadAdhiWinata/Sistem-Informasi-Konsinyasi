@@ -134,6 +134,7 @@ import { z } from 'zod';
 definePageMeta({ layout: 'default' });
 
 const api = useApi();
+const toast = useToast();
 
 const searchQuery = ref('');
 const isModalOpen = ref(false);
@@ -169,14 +170,14 @@ const formSchema = z.object({
   nama: z.string().min(1, 'Nama wajib diisi'),
   idPemasok: z.preprocess(toNum, z.number({ required_error: 'Pemasok wajib dipilih' })),
   satuan: z.string().min(1, 'Satuan wajib diisi'),
-  hargaPabrik: z.string().min(1, 'Harga tebus wajib diisi'),
-  hargaGrosir: z.string().min(1, 'Harga jual penyalur wajib diisi'),
-  hargaRetail: z.string().min(1, 'Harga jual retail wajib diisi'),
+  hargaPabrik: z.preprocess(v => typeof v === 'number' ? String(v) : v, z.string().min(1, 'Harga tebus wajib diisi')),
+  hargaGrosir: z.preprocess(v => typeof v === 'number' ? String(v) : v, z.string().min(1, 'Harga jual penyalur wajib diisi')),
+  hargaRetail: z.preprocess(v => typeof v === 'number' ? String(v) : v, z.string().min(1, 'Harga jual retail wajib diisi')),
   gambar: z.string().optional().default(''),
-  apakahAktif: z.number().min(0).max(1),
+  apakahAktif: z.preprocess(toNum, z.number().min(0).max(1)),
 });
 
-interface FormData { id?: number; sku: string; nama: string; idPemasok?: number; satuan: string; hargaPabrik: string; hargaGrosir: string; hargaRetail: string; gambar: string; apakahAktif: number }
+interface FormData { id?: number; sku: string; nama: string; idPemasok?: number; satuan: string; hargaPabrik: string | number; hargaGrosir: string | number; hargaRetail: string | number; gambar: string; apakahAktif: number }
 const defaultForm = (): FormData => ({ sku: '', nama: '', idPemasok: undefined, satuan: '', hargaPabrik: '', hargaGrosir: '', hargaRetail: '', gambar: '', apakahAktif: 1 });
 const formState = ref<FormData>(defaultForm());
 const statusOptions = [{ label: 'Aktif', value: 1 }, { label: 'Nonaktif', value: 0 }];
@@ -225,7 +226,10 @@ async function saveItem() {
     }
     closeModal();
     await fetchItems();
-  } catch (err: any) { console.error(err); } finally { isSaving.value = false; }
+    toast.add({ title: 'Berhasil', description: isEditing.value ? 'Data produk berhasil diubah' : 'Data produk berhasil ditambahkan', color: 'green' });
+  } catch (err: any) {
+    toast.add({ title: 'Gagal', description: err.data?.statusMessage || err.message, color: 'red' });
+  } finally { isSaving.value = false; }
 }
 
 function confirmDelete(row: any) { deleteTarget.value = row; isDeleteModalOpen.value = true; }
@@ -238,7 +242,10 @@ async function deleteItem() {
     isDeleteModalOpen.value = false;
     deleteTarget.value = null;
     await fetchItems();
-  } catch (err: any) { console.error(err); } finally { isDeleting.value = false; }
+    toast.add({ title: 'Berhasil', description: 'Data produk berhasil dihapus', color: 'green' });
+  } catch (err: any) {
+    toast.add({ title: 'Gagal', description: err.data?.statusMessage || err.message, color: 'red' });
+  } finally { isDeleting.value = false; }
 }
 
 onMounted(() => fetchItems());

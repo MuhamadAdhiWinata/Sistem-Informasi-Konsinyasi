@@ -168,14 +168,15 @@ const mitraOptions = computed(() =>
     ({ label: `${m.nama} - ${m.namaPemilik}`, value: m.id })),
 )
 
-const produkOptions = computed(() =>
-  produkList.value
-    .filter((p: any) => p.apakahAktif)
+const produkOptions = computed(() => {
+  const idsInGudang = new Set(stokList.value.map(s => s.idProduk))
+  return produkList.value
+    .filter((p: any) => p.apakahAktif && idsInGudang.has(p.id))
     .map((p: any) => ({
       label: `${p.nama} (${p.sku})`,
       value: p.id,
-    })),
-)
+    }))
+})
 
 const stokByProduk = computed(() => {
   const map: Record<number, number> = {}

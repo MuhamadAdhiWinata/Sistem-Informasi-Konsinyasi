@@ -28,6 +28,7 @@ export default defineEventHandler(async (event) => {
     .innerJoin(produk, eq(itemOpname.idProduk, produk.id))
     .where(eq(opnameStok.idMitra, idMitra))
     .groupBy(opnameStok.idMitra, mitra.nama, mitra.telepon)
+    .orderBy(opnameStok.idMitra)
 
   return { data: rows }
 })

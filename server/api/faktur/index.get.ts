@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
     .leftJoin(penyaluran, eq(faktur.idPenyaluran, penyaluran.id))
     .leftJoin(mitra, eq(penyaluran.idMitra, mitra.id))
     .leftJoin(gudang, eq(penyaluran.idGudangAsal, gudang.id))
-    .orderBy(desc(faktur.diterbitkanPada))
+    .orderBy(desc(faktur.id))
 
   return { data }
 })

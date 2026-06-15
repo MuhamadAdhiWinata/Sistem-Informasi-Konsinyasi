@@ -20,6 +20,6 @@ export default defineEventHandler(async (event) => {
     .leftJoin(pemasok, eq(penerimaanBarang.idPemasok, pemasok.id))
     .leftJoin(gudang, eq(penerimaanBarang.idGudang, gudang.id))
     .leftJoin(pengguna, eq(penerimaanBarang.diterimaOleh, pengguna.id))
-    .orderBy(desc(penerimaanBarang.tanggalPenerimaan))
+    .orderBy(desc(penerimaanBarang.id))
   return { data: items }
 })

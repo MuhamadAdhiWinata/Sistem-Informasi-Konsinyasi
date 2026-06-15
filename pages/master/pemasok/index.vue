@@ -87,6 +87,7 @@ import { z } from 'zod';
 definePageMeta({ layout: 'default' });
 
 const api = useApi();
+const toast = useToast();
 
 const searchQuery = ref('');
 const isModalOpen = ref(false);
@@ -106,11 +107,16 @@ const columns = [
   { key: 'actions', label: '' },
 ];
 
+function toNum(val: unknown) {
+  if (val === null || val === '' || val === undefined) return undefined
+  return Number(val)
+}
+
 const formSchema = z.object({
   nama: z.string().min(1, 'Nama wajib diisi'),
   kategoriMerek: z.string().optional().default(''),
   narahubung: z.string().optional().default(''),
-  apakahAktif: z.number().min(0).max(1),
+  apakahAktif: z.preprocess(toNum, z.number().min(0).max(1)),
 });
 
 interface FormData { id?: number; nama: string; kategoriMerek: string; narahubung: string; apakahAktif: number }
@@ -146,7 +152,10 @@ async function saveItem() {
     }
     closeModal();
     await fetchItems();
-  } catch (err: any) { console.error(err); } finally { isSaving.value = false; }
+    toast.add({ title: 'Berhasil', description: isEditing.value ? 'Data pemasok berhasil diubah' : 'Data pemasok berhasil ditambahkan', color: 'green' });
+  } catch (err: any) {
+    toast.add({ title: 'Gagal', description: err.data?.statusMessage || err.message, color: 'red' });
+  } finally { isSaving.value = false; }
 }
 
 function confirmDelete(row: any) { deleteTarget.value = row; isDeleteModalOpen.value = true; }
@@ -159,7 +168,10 @@ async function deleteItem() {
     isDeleteModalOpen.value = false;
     deleteTarget.value = null;
     await fetchItems();
-  } catch (err: any) { console.error(err); } finally { isDeleting.value = false; }
+    toast.add({ title: 'Berhasil', description: 'Data pemasok berhasil dihapus', color: 'green' });
+  } catch (err: any) {
+    toast.add({ title: 'Gagal', description: err.data?.statusMessage || err.message, color: 'red' });
+  } finally { isDeleting.value = false; }
 }
 
 onMounted(() => fetchItems());

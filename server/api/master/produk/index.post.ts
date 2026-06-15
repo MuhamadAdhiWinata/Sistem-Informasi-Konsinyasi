@@ -3,16 +3,27 @@ import { produk } from '~~/server/database/schema';
 import { useDB } from '~~/server/utils/database';
 import { requireRole } from '~~/server/utils/rbac';
 
+function toNum(val: unknown) {
+  if (val === null || val === '' || val === undefined) return undefined
+  return Number(val)
+}
+
+function toStr(val: unknown) {
+  if (val === null || val === '' || val === undefined) return undefined
+  if (typeof val === 'number') return String(val)
+  return val
+}
+
 const bodySchema = z.object({
   sku: z.string().min(1, 'SKU wajib diisi').max(50),
   nama: z.string().min(1, 'Nama wajib diisi').max(150),
-  idPemasok: z.number({ required_error: 'Pemasok wajib dipilih' }),
+  idPemasok: z.preprocess(toNum, z.number({ required_error: 'Pemasok wajib dipilih' })),
   satuan: z.string().min(1, 'Satuan wajib diisi').max(20),
-  hargaPabrik: z.string({ required_error: 'Harga tebus wajib diisi' }),
-  hargaGrosir: z.string({ required_error: 'Harga jual penyalur wajib diisi' }),
-  hargaRetail: z.string({ required_error: 'Harga jual retail wajib diisi' }),
+  hargaPabrik: z.preprocess(toStr, z.string({ required_error: 'Harga tebus wajib diisi' })),
+  hargaGrosir: z.preprocess(toStr, z.string({ required_error: 'Harga jual penyalur wajib diisi' })),
+  hargaRetail: z.preprocess(toStr, z.string({ required_error: 'Harga jual retail wajib diisi' })),
   gambar: z.string().optional(),
-  apakahAktif: z.number().int().min(0).max(1).default(1),
+  apakahAktif: z.preprocess(toNum, z.number().int().min(0).max(1).default(1)),
 });
 
 export default defineEventHandler(async (event) => {

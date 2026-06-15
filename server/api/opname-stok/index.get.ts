@@ -17,6 +17,6 @@ export default defineEventHandler(async (event) => {
     .from(opnameStok)
     .leftJoin(mitra, eq(opnameStok.idMitra, mitra.id))
     .leftJoin(pengguna, eq(opnameStok.idSales, pengguna.id))
-    .orderBy(desc(opnameStok.tanggalKunjungan))
+    .orderBy(desc(opnameStok.id))
   return { data: items }
 })

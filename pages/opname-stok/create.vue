@@ -168,10 +168,10 @@ const penanggungOptions = [
 
 const defaultItem = (): ItemForm => ({
   idProduk: undefined,
-  stokAwal: undefined,
-  jumlahLaku: undefined,
-  jumlahRetur: undefined,
-  hilang: undefined,
+  stokAwal: 0,
+  jumlahLaku: 0,
+  jumlahRetur: 0,
+  hilang: 0,
   penanggungHilang: 'penyalur',
   kondisiRetur: undefined,
   _stokFisik: 0,
@@ -231,10 +231,10 @@ async function fetchExpectedItems(idMitra: number) {
     const data = (res as any).data || []
     formState.value.items = data.map((d: any) => ({
       idProduk: d.idProduk,
-      stokAwal: d.expectedStock,
-      jumlahLaku: undefined as number | undefined,
-      jumlahRetur: undefined as number | undefined,
-      hilang: undefined as number | undefined,
+      stokAwal: d.expectedStock ?? 0,
+      jumlahLaku: 0,
+      jumlahRetur: 0,
+      hilang: 0,
       penanggungHilang: 'penyalur',
       kondisiRetur: undefined as string | undefined,
       _stokFisik: d.expectedStock,

@@ -96,6 +96,7 @@ import { z } from 'zod';
 definePageMeta({ layout: 'default' });
 
 const api = useApi();
+const toast = useToast();
 
 const searchQuery = ref('');
 const isModalOpen = ref(false);
@@ -115,12 +116,17 @@ const columns = [
   { key: 'actions', label: '' },
 ];
 
+function toNum(val: unknown) {
+  if (val === null || val === '' || val === undefined) return undefined
+  return Number(val)
+}
+
 const formSchema = z.object({
   nama: z.string().min(1, 'Nama wajib diisi'),
   email: z.string().email('Email tidak valid'),
   password: z.string().optional().default(''),
-  peran: z.string().min(1, 'Peran wajib dipilih'),
-  apakahAktif: z.number().min(0).max(1),
+  peran: z.enum(['penyalur', 'sales', 'mitra', 'pemasok'], { required_error: 'Peran wajib dipilih' }),
+  apakahAktif: z.preprocess(toNum, z.number().min(0).max(1)),
 });
 
 interface FormData { id?: number; nama: string; email: string; password: string; peran: string; apakahAktif: number }
@@ -171,7 +177,10 @@ async function saveItem() {
     }
     closeModal();
     await fetchItems();
-  } catch (err: any) { console.error(err); } finally { isSaving.value = false; }
+    toast.add({ title: 'Berhasil', description: isEditing.value ? 'Data pengguna berhasil diubah' : 'Data pengguna berhasil ditambahkan', color: 'green' });
+  } catch (err: any) {
+    toast.add({ title: 'Gagal', description: err.data?.statusMessage || err.message, color: 'red' });
+  } finally { isSaving.value = false; }
 }
 
 function confirmDelete(row: any) { deleteTarget.value = row; isDeleteModalOpen.value = true; }
@@ -184,7 +193,10 @@ async function deleteItem() {
     isDeleteModalOpen.value = false;
     deleteTarget.value = null;
     await fetchItems();
-  } catch (err: any) { console.error(err); } finally { isDeleting.value = false; }
+    toast.add({ title: 'Berhasil', description: 'Data pengguna berhasil dihapus', color: 'green' });
+  } catch (err: any) {
+    toast.add({ title: 'Gagal', description: err.data?.statusMessage || err.message, color: 'red' });
+  } finally { isDeleting.value = false; }
 }
 
 onMounted(() => fetchItems());

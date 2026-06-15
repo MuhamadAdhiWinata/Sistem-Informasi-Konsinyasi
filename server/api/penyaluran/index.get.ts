@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
     .leftJoin(gudang, eq(penyaluran.idGudangAsal, gudang.id))
     .leftJoin(pengguna, eq(penyaluran.idSales, pengguna.id))
     .leftJoin(faktur, eq(penyaluran.id, faktur.idPenyaluran))
-    .orderBy(desc(penyaluran.tanggalPenyaluran))
+    .orderBy(desc(penyaluran.id))
 
   let result = items
   if (user?.peran === 'pemasok') {

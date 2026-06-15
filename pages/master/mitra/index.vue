@@ -103,6 +103,7 @@ import { z } from 'zod';
 definePageMeta({ layout: 'default' });
 
 const api = useApi();
+const toast = useToast();
 
 const searchQuery = ref('');
 const isModalOpen = ref(false);
@@ -124,17 +125,22 @@ const columns = [
   { key: 'actions', label: '' },
 ];
 
+function toNum(val: unknown) {
+  if (val === null || val === '' || val === undefined) return undefined
+  return Number(val)
+}
+
 const formSchema = z.object({
   nama: z.string().min(1, 'Nama wajib diisi'),
   namaPemilik: z.string().min(1, 'Nama pemilik wajib diisi'),
   telepon: z.string().optional().default(''),
-  idSalesDitugaskan: z.number().nullable().optional(),
-  lat: z.string().optional().default(''),
-  lng: z.string().optional().default(''),
-  apakahAktif: z.number().min(0).max(1),
+  idSalesDitugaskan: z.preprocess(toNum, z.number().nullable().optional()),
+  lat: z.preprocess(v => typeof v === 'number' ? String(v) : v, z.string().optional().default('')),
+  lng: z.preprocess(v => typeof v === 'number' ? String(v) : v, z.string().optional().default('')),
+  apakahAktif: z.preprocess(toNum, z.number().min(0).max(1)),
 });
 
-interface FormData { id?: number; nama: string; namaPemilik: string; telepon: string; idSalesDitugaskan: number | undefined; lat: string; lng: string; apakahAktif: number }
+interface FormData { id?: number; nama: string; namaPemilik: string; telepon: string; idSalesDitugaskan: number | undefined; lat: string | number; lng: string | number; apakahAktif: number }
 const defaultForm = (): FormData => ({ nama: '', namaPemilik: '', telepon: '', idSalesDitugaskan: undefined, lat: '', lng: '', apakahAktif: 1 });
 const formState = ref<FormData>(defaultForm());
 const statusOptions = [{ label: 'Aktif', value: 1 }, { label: 'Nonaktif', value: 0 }];
@@ -176,7 +182,10 @@ async function saveItem() {
     }
     closeModal();
     await fetchItems();
-  } catch (err: any) { console.error(err); } finally { isSaving.value = false; }
+    toast.add({ title: 'Berhasil', description: isEditing.value ? 'Data mitra berhasil diubah' : 'Data mitra berhasil ditambahkan', color: 'green' });
+  } catch (err: any) {
+    toast.add({ title: 'Gagal', description: err.data?.statusMessage || err.message, color: 'red' });
+  } finally { isSaving.value = false; }
 }
 
 function confirmDelete(row: any) { deleteTarget.value = row; isDeleteModalOpen.value = true; }
@@ -189,7 +198,10 @@ async function deleteItem() {
     isDeleteModalOpen.value = false;
     deleteTarget.value = null;
     await fetchItems();
-  } catch (err: any) { console.error(err); } finally { isDeleting.value = false; }
+    toast.add({ title: 'Berhasil', description: 'Data mitra berhasil dihapus', color: 'green' });
+  } catch (err: any) {
+    toast.add({ title: 'Gagal', description: err.data?.statusMessage || err.message, color: 'red' });
+  } finally { isDeleting.value = false; }
 }
 
 onMounted(() => fetchItems());

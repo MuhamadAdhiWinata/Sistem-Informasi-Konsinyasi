@@ -35,7 +35,7 @@ export default defineEventHandler(async (event) => {
     .leftJoin(gudang, eq(stokGudang.idGudang, gudang.id))
     .leftJoin(produk, eq(stokGudang.idProduk, produk.id))
     .where(where)
-    .orderBy(gudang.nama, produk.nama)
+    .orderBy(desc(stokGudang.id))
 
   return { data: items }
 })
