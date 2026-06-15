@@ -315,7 +315,7 @@ async function main() {
     for (const del of delData) {
       await db.insert(schema.penyaluran).values([{
         nomorPenyaluran: del.nomor, idGudangAsal: del.gudang.id, idMitra: del.mitra.id,
-        idSales: del.sales.id, tanggalPenyaluran: del.tgl, status: del.status, dibuatOleh: admin.id,
+        idSales: del.sales.id, tanggalPenyaluran: del.tgl, status: del.status as 'draft' | 'sent' | 'received', dibuatOleh: admin.id,
       }]);
       const [header] = await db.select().from(schema.penyaluran).where(sql`nomor_penyaluran = ${del.nomor}`);
       for (const item of del.items) {
@@ -424,7 +424,7 @@ async function main() {
       const hasAnomali = op.items.some(it => it.anomali === 1 || (it.stokAwal - it.laku - it.retur < 0));
       await db.insert(schema.opnameStok).values([{
         nomorOpname: op.nomor, idMitra: op.mitra.id, idSales: op.sales.id,
-        tanggalKunjungan: op.tgl, status: op.status, memilikiAnomali: hasAnomali ? 1 : 0, dibuatOleh: op.sales.id,
+        tanggalKunjungan: op.tgl, status: op.status as 'draft' | 'submitted' | 'verified', memilikiAnomali: hasAnomali ? 1 : 0, dibuatOleh: op.sales.id,
       }]);
       const [oh] = await db.select().from(schema.opnameStok).where(sql`nomor_opname = ${op.nomor}`);
       for (const it of op.items) {
@@ -434,7 +434,7 @@ async function main() {
         await db.insert(schema.itemOpname).values([{
           idOpname: oh.id, idProduk: prod.id, stokAwal: it.stokAwal,
           jumlahLaku: it.laku, jumlahRetur: it.retur, hilang: 0, penanggungHilang: 'penyalur', stokFisik: Math.max(0, stokFisik),
-          kondisiRetur: it.kondisi, apakahAnomali: anomali,
+          kondisiRetur: it.kondisi as 'good' | 'damaged' | 'expired' | null, apakahAnomali: anomali,
         }]);
       }
     }
@@ -547,7 +547,7 @@ async function main() {
     for (const s of stokAkhir) {
       if (s.gudang !== lastGudang.nama) {
         console.log(`  ${s.gudang}:`);
-        lastGudang.nama = s.gudang;
+        lastGudang.nama = s.gudang ?? '';
       }
       console.log(`    • ${s.produk}: ${s.jumlah}`);
     }

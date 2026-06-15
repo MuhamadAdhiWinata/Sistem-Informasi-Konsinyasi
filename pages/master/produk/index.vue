@@ -176,8 +176,8 @@ const formSchema = z.object({
   apakahAktif: z.number().min(0).max(1),
 });
 
-interface FormData { id?: number; sku: string; nama: string; idPemasok: number | null; satuan: string; hargaPabrik: string; hargaGrosir: string; hargaRetail: string; gambar: string; apakahAktif: number }
-const defaultForm = (): FormData => ({ sku: '', nama: '', idPemasok: null, satuan: '', hargaPabrik: '', hargaGrosir: '', hargaRetail: '', gambar: '', apakahAktif: 1 });
+interface FormData { id?: number; sku: string; nama: string; idPemasok?: number; satuan: string; hargaPabrik: string; hargaGrosir: string; hargaRetail: string; gambar: string; apakahAktif: number }
+const defaultForm = (): FormData => ({ sku: '', nama: '', idPemasok: undefined, satuan: '', hargaPabrik: '', hargaGrosir: '', hargaRetail: '', gambar: '', apakahAktif: 1 });
 const formState = ref<FormData>(defaultForm());
 const statusOptions = [{ label: 'Aktif', value: 1 }, { label: 'Nonaktif', value: 0 }];
 

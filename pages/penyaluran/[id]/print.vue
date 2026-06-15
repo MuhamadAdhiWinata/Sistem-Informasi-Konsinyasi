@@ -46,7 +46,7 @@
 
         <!-- DATA REFERENSI -->
         <table style="width:100%; font-size:11pt; border-collapse:collapse;">
-          <tr>
+          <tbody><tr>
             <td style="width:50%; vertical-align:top;">
               <div style="font-weight:bold; margin-bottom:4px;">Mitra (Penerima):</div>
               <div>Nama Toko : {{ data.mitra }}</div>
@@ -59,7 +59,7 @@
               <div>Gudang Asal   : {{ data.gudangAsal }}</div>
               <div>Sales         : {{ data.sales }}</div>
             </td>
-          </tr>
+          </tr></tbody>
         </table>
 
         <div style="margin: 16px 0;"></div>
@@ -81,7 +81,7 @@
         </thead>
         <tbody>
           <tr v-for="(item, i) in data.items" :key="item.id" style="border-bottom:1px solid #999;">
-            <td style="text-align:center; padding:5px 4px;">{{ i + 1 }}</td>
+            <td style="text-align:center; padding:5px 4px;">{{ Number(i) + 1 }}</td>
             <td style="text-align:center; padding:5px 4px;">{{ item.sku }}</td>
             <td style="text-align:left; padding:5px 4px;">{{ item.produk }}</td>
             <td style="text-align:center; padding:5px 4px;">{{ item.jumlahDikirim }}</td>
@@ -118,7 +118,7 @@
 
         <!-- AREA TANDA TANGAN -->
         <table style="width:100%; border-collapse:collapse; font-size:11pt;">
-          <tr>
+          <tbody><tr>
             <td style="width:33%; text-align:center; vertical-align:top;">
               <div>Diserahkan Oleh</div>
               <div style="font-weight:bold; margin-top:4px;">(Pihak Penyalur),</div>
@@ -143,7 +143,7 @@
                 <b>{{ data.mitra }}</b>
               </div>
             </td>
-          </tr>
+          </tr></tbody>
         </table>
 
         <div style="margin-top:24px; border-top:1px solid #ccc; padding-top:8px; text-align:center; font-size:8pt; color:#888;">

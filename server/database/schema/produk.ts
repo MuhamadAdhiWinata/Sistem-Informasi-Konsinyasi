@@ -12,6 +12,6 @@ export const produk = mysqlTable('produk', {
   hargaPabrik:  decimal('harga_pabrik', { precision: 12, scale: 2 }).notNull(),
   hargaGrosir: decimal('harga_grosir', { precision: 12, scale: 2 }).notNull(),
   hargaRetail:   decimal('harga_retail', { precision: 12, scale: 2 }).notNull(),
-  gambar:      text('gambar', { length: 'medium' }),
+  gambar:      text('gambar'),
   apakahAktif: tinyint('apakah_aktif').notNull().default(1),
 });

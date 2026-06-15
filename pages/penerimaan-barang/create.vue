@@ -113,27 +113,27 @@ const formSchema = z.object({
 })
 
 interface ItemForm {
-  idProduk: number | null
-  jumlah: number | null
-  hargaPabrikAktual: number | null
+  idProduk?: number
+  jumlah?: number
+  hargaPabrikAktual?: number
 }
 
 interface FormData {
-  idPemasok: number | null
-  idGudang: number | null
+  idPemasok?: number
+  idGudang?: number
   tanggalPenerimaan: string
   items: ItemForm[]
 }
 
 const defaultItem = (): ItemForm => ({
-  idProduk: null,
-  jumlah: null,
-  hargaPabrikAktual: null,
+  idProduk: undefined,
+  jumlah: undefined,
+  hargaPabrikAktual: undefined,
 })
 
 const formState = ref<FormData>({
-  idPemasok: null,
-  idGudang: null,
+  idPemasok: undefined,
+  idGudang: undefined,
   tanggalPenerimaan: new Date().toISOString().split('T')[0],
   items: [],
 })

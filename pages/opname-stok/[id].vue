@@ -150,7 +150,7 @@ async function updateStatus(status: string) {
   isUpdating.value = true
   try {
     await api(`/api/opname-stok/${route.params.id}`, {
-      method: 'PATCH',
+      method: 'PATCH' as any,
       body: { status },
     })
     toast.add({ title: 'Berhasil', description: `Status diubah ke ${statusLabel(status)}`, color: 'green' })

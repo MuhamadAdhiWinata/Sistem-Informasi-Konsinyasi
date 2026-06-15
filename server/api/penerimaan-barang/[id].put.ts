@@ -43,7 +43,7 @@ export default defineEventHandler(async (event) => {
       .set({
         idPemasok: body.idPemasok,
         idGudang: body.idGudang,
-        tanggalPenerimaan: body.tanggalPenerimaan,
+        tanggalPenerimaan: new Date(body.tanggalPenerimaan),
       })
       .where(eq(penerimaanBarang.id, id))
 

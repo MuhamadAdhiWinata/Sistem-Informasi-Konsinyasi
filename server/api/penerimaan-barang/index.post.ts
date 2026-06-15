@@ -38,7 +38,7 @@ export default defineEventHandler(async (event) => {
       idPemasok: body.idPemasok,
       idGudang: body.idGudang,
       diterimaOleh: user.id,
-      tanggalPenerimaan: body.tanggalPenerimaan,
+      tanggalPenerimaan: new Date(body.tanggalPenerimaan),
       status: 'draft',
     })
 

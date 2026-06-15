@@ -95,7 +95,7 @@ export default defineEventHandler(async (event) => {
       const approvedQty = item.jumlahDisetujui || item.jumlahDiminta
 
       const [produkData] = await tx
-        .select({ hargaRetail: produk.hargaRetail, hargaPabrik: produk.hargaPabrik })
+        .select({ hargaRetail: produk.hargaRetail, hargaPabrik: produk.hargaPabrik, hargaGrosir: produk.hargaGrosir })
         .from(produk)
         .where(eq(produk.id, item.idProduk))
         .limit(1)
