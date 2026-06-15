@@ -11,7 +11,7 @@
         <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white text-sm font-bold shrink-0">
           S
         </div>
-        <span v-if="open" class="text-base font-semibold text-foreground truncate">SIKONS</span>
+        <span v-if="open" class="text-base font-semibold text-foreground truncate">SITJ</span>
       </NuxtLink>
       <button
         v-if="open"

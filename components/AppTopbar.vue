@@ -6,7 +6,6 @@
         variant="ghost"
         icon="i-heroicons-bars-3"
         size="sm"
-        class="lg:hidden"
         @click="$emit('toggle-sidebar')"
       />
       <span class="text-sm font-semibold text-foreground">{{ pageTitle }}</span>

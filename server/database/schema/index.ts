@@ -1,4 +1,4 @@
-// Barrel export — semua schema SIKONS
+// Barrel export — semua schema SITJ
 // Urutan penting: tabel induk dulu sebelum tabel yang punya FK ke mereka
 
 export * from './pengguna';

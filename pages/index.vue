@@ -6,149 +6,277 @@
         Halo, {{ auth.user.value?.nama || 'User' }}!
       </h1>
       <p class="text-sm text-muted-foreground mt-1">
-        Selamat datang di SIKONS — Sistem Informasi Konsinyasi Terintegrasi
+        Selamat datang di SITJ — Sistem Informasi Titip Jual
       </p>
     </div>
 
-    <!-- Stats Cards Row 1 -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-      <UCard v-for="stat in statsRow1" :key="stat.label" class="relative overflow-hidden">
-        <div class="flex items-start justify-between">
-          <div>
-            <p class="text-sm font-medium text-muted-foreground">{{ stat.label }}</p>
-            <p class="text-2xl font-bold mt-1">{{ stat.value }}</p>
-            <p class="text-xs text-muted-foreground mt-1">{{ stat.desc }}</p>
+    <!-- Stats Row 1 -->
+    <template v-if="isLoading">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+        <UCard v-for="i in 4" :key="'s1-'+i">
+          <div class="flex items-start justify-between">
+            <div class="space-y-3">
+              <USkeleton class="h-4 w-24" />
+              <USkeleton class="h-8 w-16" />
+              <USkeleton class="h-3 w-32" />
+            </div>
+            <USkeleton class="w-12 h-12 rounded-xl shrink-0" />
           </div>
-          <div class="w-12 h-12 rounded-xl flex items-center justify-center" :class="stat.bgClass">
-            <component :is="stat.icon" class="w-6 h-6" :class="stat.iconClass" />
+        </UCard>
+      </div>
+    </template>
+    <template v-else>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+        <UCard v-for="stat in statsRow1" :key="stat.label" class="relative overflow-hidden">
+          <div class="flex items-start justify-between">
+            <div>
+              <p class="text-sm font-medium text-muted-foreground">{{ stat.label }}</p>
+              <p class="text-2xl font-bold mt-1">{{ stat.value }}</p>
+              <p class="text-xs text-muted-foreground mt-1">{{ stat.desc }}</p>
+            </div>
+            <div class="w-12 h-12 rounded-xl flex items-center justify-center" :class="stat.bgClass">
+              <component :is="stat.icon" class="w-6 h-6" :class="stat.iconClass" />
+            </div>
           </div>
-        </div>
-        <div class="absolute bottom-0 left-0 right-0 h-1 rounded-full">
-          <div class="h-full w-full rounded-full opacity-20" :class="stat.barClass"></div>
-        </div>
-      </UCard>
-    </div>
+          <div class="absolute bottom-0 left-0 right-0 h-1 rounded-full">
+            <div class="h-full w-full rounded-full opacity-20" :class="stat.barClass"></div>
+          </div>
+        </UCard>
+      </div>
+    </template>
 
-    <!-- Stats Cards Row 2 -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-      <UCard v-for="stat in statsRow2" :key="stat.label" class="relative overflow-hidden">
-        <div class="flex items-start justify-between">
-          <div>
-            <p class="text-sm font-medium text-muted-foreground">{{ stat.label }}</p>
-            <p class="text-2xl font-bold mt-1">{{ stat.value }}</p>
-            <p class="text-xs text-muted-foreground mt-1">{{ stat.desc }}</p>
+    <!-- Stats Row 2 -->
+    <template v-if="isLoading">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <UCard v-for="i in 4" :key="'s2-'+i">
+          <div class="flex items-start justify-between">
+            <div class="space-y-3">
+              <USkeleton class="h-4 w-24" />
+              <USkeleton class="h-8 w-16" />
+              <USkeleton class="h-3 w-32" />
+            </div>
+            <USkeleton class="w-12 h-12 rounded-xl shrink-0" />
           </div>
-          <div class="w-12 h-12 rounded-xl flex items-center justify-center" :class="stat.bgClass">
-            <component :is="stat.icon" class="w-6 h-6" :class="stat.iconClass" />
+        </UCard>
+      </div>
+    </template>
+    <template v-else>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <UCard v-for="stat in statsRow2" :key="stat.label" class="relative overflow-hidden">
+          <div class="flex items-start justify-between">
+            <div>
+              <p class="text-sm font-medium text-muted-foreground">{{ stat.label }}</p>
+              <p class="text-2xl font-bold mt-1">{{ stat.value }}</p>
+              <p class="text-xs text-muted-foreground mt-1">{{ stat.desc }}</p>
+            </div>
+            <div class="w-12 h-12 rounded-xl flex items-center justify-center" :class="stat.bgClass">
+              <component :is="stat.icon" class="w-6 h-6" :class="stat.iconClass" />
+            </div>
           </div>
-        </div>
-        <div class="absolute bottom-0 left-0 right-0 h-1 rounded-full">
-          <div class="h-full w-full rounded-full opacity-20" :class="stat.barClass"></div>
-        </div>
-      </UCard>
-    </div>
+          <div class="absolute bottom-0 left-0 right-0 h-1 rounded-full">
+            <div class="h-full w-full rounded-full opacity-20" :class="stat.barClass"></div>
+          </div>
+        </UCard>
+      </div>
+    </template>
 
     <!-- Quick Links -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-      <div>
-        <h2 class="text-lg font-semibold text-zinc-900 dark:text-white mb-4">Master Data</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <NuxtLink v-for="link in masterDataLinks" :key="link.label" :to="link.to"
-            class="flex items-center gap-3 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:shadow-md hover:border-primary/30 transition-all duration-200">
-            <div class="w-10 h-10 rounded-lg flex items-center justify-center" :class="link.bgClass">
-              <component :is="link.icon" class="w-5 h-5" :class="link.iconClass" />
+    <template v-if="isLoading">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div>
+          <USkeleton class="h-6 w-28 mb-4" />
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div v-for="i in 5" :key="'ml-'+i" class="flex items-center gap-3 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800">
+              <USkeleton class="w-10 h-10 rounded-lg shrink-0" />
+              <div class="flex-1 space-y-2">
+                <USkeleton class="h-4 w-28" />
+                <USkeleton class="h-3 w-16" />
+              </div>
+              <USkeleton class="w-4 h-4 shrink-0" />
             </div>
-            <div class="flex-1 min-w-0">
-              <p class="text-sm font-medium text-foreground">{{ link.label }}</p>
-              <p class="text-xs text-muted-foreground">{{ link.count }} item</p>
+          </div>
+        </div>
+        <div>
+          <USkeleton class="h-6 w-28 mb-4" />
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div v-for="i in 6" :key="'tl-'+i" class="flex items-center gap-3 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800">
+              <USkeleton class="w-10 h-10 rounded-lg shrink-0" />
+              <div class="flex-1 space-y-2">
+                <USkeleton class="h-4 w-28" />
+                <USkeleton class="h-3 w-16" />
+              </div>
+              <USkeleton class="w-4 h-4 shrink-0" />
             </div>
-            <Icon name="i-heroicons-chevron-right" class="w-4 h-4 text-muted-foreground" />
-          </NuxtLink>
+          </div>
         </div>
       </div>
-
-      <div>
-        <h2 class="text-lg font-semibold text-zinc-900 dark:text-white mb-4">Transaksi</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <NuxtLink v-for="link in transaksiLinks" :key="link.label" :to="link.to"
-            class="flex items-center gap-3 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:shadow-md hover:border-primary/30 transition-all duration-200">
-            <div class="w-10 h-10 rounded-lg flex items-center justify-center" :class="link.bgClass">
-              <component :is="link.icon" class="w-5 h-5" :class="link.iconClass" />
-            </div>
-            <div class="flex-1 min-w-0">
-              <p class="text-sm font-medium text-foreground">{{ link.label }}</p>
-              <p class="text-xs text-muted-foreground">{{ link.count }}</p>
-            </div>
-            <Icon name="i-heroicons-chevron-right" class="w-4 h-4 text-muted-foreground" />
-          </NuxtLink>
+    </template>
+    <template v-else>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div>
+          <h2 class="text-lg font-semibold text-zinc-900 dark:text-white mb-4">Master Data</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <NuxtLink v-for="link in masterDataLinks" :key="link.label" :to="link.to"
+              class="flex items-center gap-3 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:shadow-md hover:border-primary/30 transition-all duration-200">
+              <div class="w-10 h-10 rounded-lg flex items-center justify-center" :class="link.bgClass">
+                <component :is="link.icon" class="w-5 h-5" :class="link.iconClass" />
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium text-foreground">{{ link.label }}</p>
+                <p class="text-xs text-muted-foreground">{{ link.count }} item</p>
+              </div>
+              <Icon name="i-heroicons-chevron-right" class="w-4 h-4 text-muted-foreground" />
+            </NuxtLink>
+          </div>
+        </div>
+        <div>
+          <h2 class="text-lg font-semibold text-zinc-900 dark:text-white mb-4">Transaksi</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <NuxtLink v-for="link in transaksiLinks" :key="link.label" :to="link.to"
+              class="flex items-center gap-3 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:shadow-md hover:border-primary/30 transition-all duration-200">
+              <div class="w-10 h-10 rounded-lg flex items-center justify-center" :class="link.bgClass">
+                <component :is="link.icon" class="w-5 h-5" :class="link.iconClass" />
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium text-foreground">{{ link.label }}</p>
+                <p class="text-xs text-muted-foreground">{{ link.count }}</p>
+              </div>
+              <Icon name="i-heroicons-chevron-right" class="w-4 h-4 text-muted-foreground" />
+            </NuxtLink>
+          </div>
         </div>
       </div>
-    </div>
+    </template>
 
     <!-- Recent Penyaluran -->
-    <UCard class="mb-8" :ui="{ body: { padding: 'p-0 sm:p-0' } }">
-      <template #header>
-        <div class="flex items-center justify-between px-4 sm:px-6 py-3">
-          <h3 class="text-sm font-semibold text-zinc-900 dark:text-white">Penyaluran Terbaru</h3>
-          <UButton size="2xs" color="gray" variant="ghost" to="/penyaluran">Lihat Semua</UButton>
+    <template v-if="isLoading">
+      <UCard class="mb-8" :ui="{ body: { padding: 'p-0 sm:p-0' } }">
+        <template #header>
+          <div class="flex items-center justify-between px-4 sm:px-6 py-3">
+            <USkeleton class="h-5 w-40" />
+            <USkeleton class="h-7 w-20 rounded" />
+          </div>
+        </template>
+        <div class="p-4 space-y-4">
+          <div v-for="i in 5" :key="'pr-'+i" class="flex items-center gap-4">
+            <USkeleton class="h-4 w-28" />
+            <USkeleton class="h-4 w-24" />
+            <USkeleton class="h-4 w-20" />
+            <USkeleton class="h-4 w-16" />
+            <USkeleton class="h-4 w-24 ml-auto" />
+            <USkeleton class="h-7 w-7 rounded shrink-0" />
+          </div>
         </div>
-      </template>
-      <UTable :rows="recentPenyaluran" :columns="penyaluranColumns" :loading="isLoading"
-        :empty-state="{ icon: 'i-heroicons-truck', label: 'Belum ada penyaluran' }" class="w-full">
-        <template #tanggalPenyaluran-data="{ row }">
-          <span class="text-sm">{{ formatTanggal(row.tanggalPenyaluran) }}</span>
+      </UCard>
+    </template>
+    <template v-else>
+      <UCard class="mb-8" :ui="{ body: { padding: 'p-0 sm:p-0' } }">
+        <template #header>
+          <div class="flex items-center justify-between px-4 sm:px-6 py-3">
+            <h3 class="text-sm font-semibold text-zinc-900 dark:text-white">Penyaluran Terbaru</h3>
+            <UButton size="2xs" color="gray" variant="ghost" to="/penyaluran">Lihat Semua</UButton>
+          </div>
         </template>
-        <template #status-data="{ row }">
-          <UBadge :color="statusColor(row.status)" variant="soft" size="xs">{{ statusLabel(row.status) }}</UBadge>
-        </template>
-        <template #totalNilai-data="{ row }">
-          <span class="font-mono text-sm">Rp {{ Number(row.totalNilai).toLocaleString('id-ID') }}</span>
-        </template>
-        <template #actions-data="{ row }">
-          <UButton icon="i-heroicons-eye" size="2xs" color="orange" variant="ghost" :to="`/penyaluran/${row.id}`" />
-        </template>
-      </UTable>
-    </UCard>
+        <UTable :rows="recentPenyaluran" :columns="penyaluranColumns"
+          :empty-state="{ icon: 'i-heroicons-truck', label: 'Belum ada penyaluran' }" class="w-full">
+          <template #tanggalPenyaluran-data="{ row }">
+            <span class="text-sm">{{ formatTanggal(row.tanggalPenyaluran) }}</span>
+          </template>
+          <template #status-data="{ row }">
+            <UBadge :color="statusColor(row.status)" variant="soft" size="xs">{{ statusLabel(row.status) }}</UBadge>
+          </template>
+          <template #totalNilai-data="{ row }">
+            <span class="font-mono text-sm">Rp {{ Number(row.totalNilai).toLocaleString('id-ID') }}</span>
+          </template>
+          <template #actions-data="{ row }">
+            <UButton icon="i-heroicons-eye" size="2xs" color="orange" variant="ghost" :to="`/penyaluran/${row.id}`" />
+          </template>
+        </UTable>
+      </UCard>
+    </template>
 
     <!-- Alerts Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <UCard :ui="{ body: { padding: 'p-0 sm:p-0' } }">
-        <template #header>
-          <div class="flex items-center gap-2 px-4 sm:px-6 py-3">
-            <Icon name="i-heroicons-exclamation-triangle" class="w-4 h-4 text-amber-500" />
-            <h3 class="text-sm font-semibold text-zinc-900 dark:text-white">Stok Menipis</h3>
-          </div>
-        </template>
-        <UTable :rows="lowStockItems" :columns="lowStockColumns" :loading="isLoading"
-          :empty-state="{ icon: 'i-heroicons-check-circle', label: 'Semua stok aman' }" class="w-full">
-          <template #jumlah-data="{ row }">
-            <span :class="['font-mono font-medium', Number(row.jumlah) <= 2 ? 'text-red-600 dark:text-red-400' : 'text-amber-600 dark:text-amber-400']">
-              {{ row.jumlah }}
-            </span>
+      <!-- Low Stock -->
+      <template v-if="isLoading">
+        <UCard :ui="{ body: { padding: 'p-0 sm:p-0' } }">
+          <template #header>
+            <div class="flex items-center gap-2 px-4 sm:px-6 py-3">
+              <USkeleton class="w-4 h-4 rounded" />
+              <USkeleton class="h-5 w-28" />
+            </div>
           </template>
-        </UTable>
-      </UCard>
+          <div class="p-4 space-y-4">
+            <div v-for="i in 4" :key="'ls-'+i" class="flex items-center gap-4">
+              <USkeleton class="h-4 w-24" />
+              <USkeleton class="h-4 w-16" />
+              <USkeleton class="h-4 w-20" />
+              <USkeleton class="h-4 w-10 ml-auto" />
+            </div>
+          </div>
+        </UCard>
+      </template>
+      <template v-else>
+        <UCard :ui="{ body: { padding: 'p-0 sm:p-0' } }">
+          <template #header>
+            <div class="flex items-center gap-2 px-4 sm:px-6 py-3">
+              <Icon name="i-heroicons-exclamation-triangle" class="w-4 h-4 text-amber-500" />
+              <h3 class="text-sm font-semibold text-zinc-900 dark:text-white">Stok Menipis</h3>
+            </div>
+          </template>
+          <UTable :rows="lowStockItems" :columns="lowStockColumns"
+            :empty-state="{ icon: 'i-heroicons-check-circle', label: 'Semua stok aman' }" class="w-full">
+            <template #jumlah-data="{ row }">
+              <span :class="['font-mono font-medium', Number(row.jumlah) <= 2 ? 'text-red-600 dark:text-red-400' : 'text-amber-600 dark:text-amber-400']">
+                {{ row.jumlah }}
+              </span>
+            </template>
+          </UTable>
+        </UCard>
+      </template>
 
-      <UCard :ui="{ body: { padding: 'p-0 sm:p-0' } }">
-        <template #header>
-          <div class="flex items-center gap-2 px-4 sm:px-6 py-3">
-            <Icon name="i-heroicons-exclamation-circle" class="w-4 h-4 text-red-500" />
-            <h3 class="text-sm font-semibold text-zinc-900 dark:text-white">Anomali Opname</h3>
+      <!-- Opname Anomalies -->
+      <template v-if="isLoading">
+        <UCard :ui="{ body: { padding: 'p-0 sm:p-0' } }">
+          <template #header>
+            <div class="flex items-center gap-2 px-4 sm:px-6 py-3">
+              <USkeleton class="w-4 h-4 rounded" />
+              <USkeleton class="h-5 w-28" />
+            </div>
+          </template>
+          <div class="p-4 space-y-4">
+            <div v-for="i in 3" :key="'oa-'+i" class="flex items-center gap-4">
+              <USkeleton class="h-4 w-24" />
+              <USkeleton class="h-4 w-20" />
+              <USkeleton class="h-4 w-20" />
+              <USkeleton class="h-4 w-16" />
+              <USkeleton class="h-7 w-7 rounded shrink-0 ml-auto" />
+            </div>
           </div>
-        </template>
-        <UTable :rows="opnameAnomalies" :columns="opnameAnomaliColumns" :loading="isLoading"
-          :empty-state="{ icon: 'i-heroicons-check-circle', label: 'Tidak ada anomali' }" class="w-full">
-          <template #tanggalKunjungan-data="{ row }">
-            <span class="text-sm">{{ formatTanggal(row.tanggalKunjungan) }}</span>
+        </UCard>
+      </template>
+      <template v-else>
+        <UCard :ui="{ body: { padding: 'p-0 sm:p-0' } }">
+          <template #header>
+            <div class="flex items-center gap-2 px-4 sm:px-6 py-3">
+              <Icon name="i-heroicons-exclamation-circle" class="w-4 h-4 text-red-500" />
+              <h3 class="text-sm font-semibold text-zinc-900 dark:text-white">Anomali Opname</h3>
+            </div>
           </template>
-          <template #status-data="{ row }">
-            <UBadge :color="opnameStatusColor(row.status)" variant="soft" size="xs">{{ opnameStatusLabel(row.status) }}</UBadge>
-          </template>
-          <template #actions-data="{ row }">
-            <UButton icon="i-heroicons-eye" size="2xs" color="orange" variant="ghost" :to="`/opname-stok/${row.id}`" />
-          </template>
-        </UTable>
-      </UCard>
+          <UTable :rows="opnameAnomalies" :columns="opnameAnomaliColumns"
+            :empty-state="{ icon: 'i-heroicons-check-circle', label: 'Tidak ada anomali' }" class="w-full">
+            <template #tanggalKunjungan-data="{ row }">
+              <span class="text-sm">{{ formatTanggal(row.tanggalKunjungan) }}</span>
+            </template>
+            <template #status-data="{ row }">
+              <UBadge :color="opnameStatusColor(row.status)" variant="soft" size="xs">{{ opnameStatusLabel(row.status) }}</UBadge>
+            </template>
+            <template #actions-data="{ row }">
+              <UButton icon="i-heroicons-eye" size="2xs" color="orange" variant="ghost" :to="`/opname-stok/${row.id}`" />
+            </template>
+          </UTable>
+        </UCard>
+      </template>
     </div>
   </div>
 </template>

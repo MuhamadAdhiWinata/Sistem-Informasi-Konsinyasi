@@ -23,9 +23,7 @@
 <script setup lang="ts">
 const isSidebarOpen = ref(false)
 
-onMounted(() => {
-  if (window.innerWidth >= 1024) {
-    isSidebarOpen.value = true
-  }
-})
+if (import.meta.client) {
+  isSidebarOpen.value = window.innerWidth >= 1024
+}
 </script>

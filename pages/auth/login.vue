@@ -5,7 +5,7 @@
         <Icon name="i-heroicons-cube-transparent" class="w-7 h-7" />
       </div>
       <h1 class="text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">Selamat Datang</h1>
-      <p class="text-sm text-muted-foreground mt-1">Masuk ke SIKONS untuk melanjutkan</p>
+      <p class="text-sm text-muted-foreground mt-1">Masuk ke SITJ untuk melanjutkan</p>
     </div>
 
     <UForm :state="{ email, password }" @submit="handleLogin" class="space-y-5">

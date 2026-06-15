@@ -6,7 +6,7 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
   app: {
     head: {
-      title: 'SIKONS - Sistem Informasi Konsinyasi',
+      title: 'SITJ - Sistem Informasi Titip Jual',
       link: [
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
