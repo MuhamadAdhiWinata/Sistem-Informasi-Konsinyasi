@@ -16,4 +16,3 @@ export * from './opname_stok';
 export * from './item_opname';
 export * from './permintaan_stok';
 export * from './item_permintaan_stok';
-export * from './prediksi_stok';

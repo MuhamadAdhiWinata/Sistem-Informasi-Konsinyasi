@@ -53,8 +53,8 @@
 | 2.13 | `item_opname` | opname_items | ✅ | Schema created |
 | 2.14 | `permintaan_stok` | restock_requests | ✅ | Schema created |
 | 2.15 | `item_permintaan_stok` | restock_request_items | ✅ | Schema created |
-| 2.16 | `prediksi_stok` | stock_forecasts | ✅ | Schema created |
-| 2.17 | **Seeder** data dummy | — | ✅ | Basic dummy data seeded |
+| 2.16 | ~~`prediksi_stok`~~ | ~~stock_forecasts~~ | ~~✅~~ ❌ | Table dropped (migration 0008) — Modul G dihapus dari MVP |
+| 2.17 | **Seeder** data dummy | — | ✅ | 10 pemasok, 11 pengguna, 6 mitra, 24 produk, 36 transaksi (8 GR, 8 DEL, 8 Faktur, 8 OP, 4 RR), semua completed ≤ 15 Jun 2026 |
 
 ## 3. Modul A — Master Data
 
@@ -62,7 +62,7 @@
 | :-- | :---- | :----- | :------ |
 | 3.1 | **Manajemen Pemasok (Suppliers)** — CRUD | ✅ | Backend API + Frontend pages with @nuxt/ui |
 | 3.2 | **Manajemen Produk / SKU** — CRUD (+ kode unik) | ✅ | Backend API + Frontend pages with pemasok select |
-| 3.3 | **Manajemen Mitra (Partners)** — CRUD (+ GPS, assign sales) | ✅ | Backend API + Frontend pages with sales select |
+| 3.3 | **Manajemen Mitra (Partners)** — CRUD (+ GPS, assign sales, alamat) | ✅ | Backend API + Frontend pages with sales select; kolom `alamat`, `lat`, `lng` ditampilkan di tabel |
 | 3.4 | **Manajemen Gudang (Warehouses)** — CRUD | ✅ | Backend API + Frontend pages |
 | 3.5 | **Manajemen User & Roles** — CRUD (4 peran) | ✅ | Backend API + Frontend pages (excl. password hash exposure) |
 
@@ -182,24 +182,26 @@
 | Mitra | Create | ✅ |
 | Pemasok | — | ⏳ |
 
-## 9. Modul G — Analitik & Prediksi Stok (AI)
+## 9. Modul G — ~~Analitik & Prediksi Stok (AI)~~ ❌ Dihapus dari MVP
+
+> Modul G dihapus — tabel `prediksi_stok`, API routes, halaman frontend, dan seed data telah dihapus (migration 0008). Tidak ada fitur prediksi atau analitik AI di MVP SITJ.
 
 | No | Fitur | Status | Catatan |
 | :-- | :---- | :----- | :------ |
-| 9.1 | Grafik tren performa penjualan per produk | ⏳ | Pending — butuh chart library |
-| 9.2 | Grafik keaktifan Mitra | ⏳ | Pending — butuh chart library |
-| 9.3 | Algoritma Moving Average (N kunjungan terakhir) | ✅ | Server-side dengan N=4 default |
-| 9.4 | Rekomendasi jumlah pengiriman berikutnya | ✅ | Math.ceil(rata-rata) prediksi |
-| 9.5 | Tampilan prediksi di halaman detail Mitra | ✅ | pages/prediksi-stok + grouped by mitra |
+| 9.1 | Grafik tren performa penjualan per produk | ❌ | Dihapus dari MVP |
+| 9.2 | Grafik keaktifan Mitra | ❌ | Dihapus dari MVP |
+| 9.3 | Algoritma Moving Average (N kunjungan terakhir) | ❌ | Dihapus dari MVP |
+| 9.4 | Rekomendasi jumlah pengiriman berikutnya | ❌ | Dihapus dari MVP |
+| 9.5 | Tampilan prediksi di halaman detail Mitra | ❌ | Dihapus dari MVP |
 
 ### Hak Akses Modul G
 
 | Peran | Akses | Status |
 | :---- | :---- | :----- |
-| Penyalur | Full | ✅ |
-| Sales Field | Read | ⏳ |
-| Mitra | — | ⏳ |
-| Pemasok | — | ⏳ |
+| Penyalur | Full | ❌ |
+| Sales Field | Read | ❌ |
+| Mitra | — | ❌ |
+| Pemasok | — | ❌ |
 
 ## 10. Autentikasi & Manajemen Pengguna
 
@@ -272,25 +274,25 @@
 | Kategori | Total Task | ✅ Selesai | 🔄 Progres | ⏳ Pending | Progress % |
 | :------- | :---------: | :---------: | :---------: | :---------: | :--------: |
 | 1. Inisialisasi & Setup | 12 | 10 | 0 | 2 | 83% |
-| 2. Database Migration | 17 | 17 | 0 | 0 | 100% |
+| 2. Database Migration | 17 | 16 | 0 | 0 | 94% |
 | 3. Modul A — Master Data | 6 | 6 | 0 | 0 | 100% |
 | 4. Modul B — Penerimaan | 8 | 8 | 0 | 0 | 100% |
 | 5. Modul C — Penyaluran & Faktur | 11 | 11 | 0 | 0 | 100% |
 | 6. Modul D — Opname Stok | 5 | 5 | 0 | 0 | 100% |
 | 7. Modul E — Rekonsiliasi | 7 | 7 | 0 | 0 | 100% |
 | 8. Modul F — Request Restock | 4 | 3 | 0 | 1 | 75% |
-| 9. Modul G — Prediksi Stok AI | 5 | 3 | 0 | 2 | 60% |
+| 9. ~~Modul G — Prediksi Stok AI~~ | ~~5~~ | ~~3~~ | ~~0~~ | ~~2~~ | ~~60%~~ ❌ |
 | 10. Autentikasi | 6 | 6 | 0 | 0 | 100% |
 | 11. UI/UX Global | 9 | 8 | 0 | 1 | 88% |
 | 12. Non-Fungsional | 6 | 2 | 0 | 4 | 33% |
 | 13. Testing | 4 | 0 | 0 | 4 | 0% |
 | 14. Deployment | 6 | 0 | 0 | 6 | 0% |
 | 15. Dokumentasi | 3 | 0 | 0 | 3 | 0% |
-| **TOTAL** | **108** | **86** | **0** | **22** | **80%** |
+| **TOTAL** | **108** | **82** | **0** | **22** | **76%** |
 
 ---
 
-> ⏱ Terakhir diperbarui: Sabtu, 13 Juni 2026 — Kolom `hilang` + `penanggung_hilang` di `item_opname` (migrations 0006 + 0007). Stok Awal di opname read-only. Formula stok fisik: `stokAwal − laku − retur − hilang`. Rekonsiliasi menghitung pendapatan dengan case `penanggungHilang`. Profile page + change password API selesai (10.6). (produk); `harga_pabrik_aktual` (item_penerimaan_barang); `snapshot_harga_retail`, `snapshot_harga_grosir` (item_penyaluran).
+> ⏱ Terakhir diperbarui: Senin, 15 Juni 2026 — Seed diperbarui: 6 mitra, 11 pengguna, 36 transaksi completed (s.d. 14 Jun). Masterdata mitra + pengguna + transaksi diperbanyak. Kolom `alamat`, `lat`, `lng` tampil di tabel mitra. Siap untuk transaksi baru mulai besok.
 >
 > 🚀 **Workflow Stok & Approval (v2):**
 > - **Penerimaan Barang**: Stok gudang hanya bertambah saat dikonfirmasi (`draft → completed`), bukan saat create. Edit/hapus hanya untuk draft. PUT endpoint + edit page.
@@ -298,13 +300,7 @@
 > - **Seed**: Disesuaikan — completed GR & sent/received DEL yang memengaruhi stok; draft GR/DEL tidak mengubah stok.
 > - **List actions**: Edit & Hapus buttons di index + detail page (penerimaan & penyaluran), dengan RBAC & status check.
 >
-> 🚀 **Modul G — Prediksi Stok AI (Moving Average) (v1):**
-> - **Algoritma**: Moving Average — untuk setiap (mitra, produk), ambil N=4 kunjungan terakhir, rata-rata jumlahLaku → ceil → prediksi
-> - **API**: `POST /api/prediksi-stok/generate` (run algorithm), `GET /api/prediksi-stok` (list), `GET /api/prediksi-stok/:idMitra` (per mitra)
-> - **Frontend**: Dashboard grouped by mitra dengan tabel produk + prediksi
-> - **Sidebar**: menu "Prediksi" ditambahkan
-> - **Pending**: Grafik tren (butuh chart library), integrasi prediksi di halaman mitra
-> 🚀 **Modul F — Request Restock (v1):**
+🚀 **Modul F — Request Restock (v1):**
 > - **API**: `GET /api/permintaan-stok`, `POST /api/permintaan-stok`, `GET /api/permintaan-stok/:id`, `PATCH /api/permintaan-stok/:id`
 > - **Create**: Mitra/Sales bisa buat permintaan (RR-YYYYMMDD-NNNN)
 > - **Approval**: Penyalur approve (pilih gudang asal) → auto-create penyaluran + faktur + decrement stok

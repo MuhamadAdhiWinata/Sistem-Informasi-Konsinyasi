@@ -57,6 +57,13 @@
       "when": 1782300000000,
       "tag": "0007_add_penanggung_hilang_to_item_opname",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "5",
+      "when": 1781506393749,
+      "tag": "0008_burly_switch",
+      "breakpoints": true
     }
   ]
 }

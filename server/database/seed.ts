@@ -1,5 +1,5 @@
 import { drizzle } from 'drizzle-orm/mysql2';
-import { sql } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import mysql from 'mysql2/promise';
 import bcrypt from 'bcryptjs';
 import * as schema from './schema';
@@ -34,7 +34,6 @@ async function main() {
     await db.delete(schema.penyaluran);
     await db.delete(schema.itemPenerimaanBarang);
     await db.delete(schema.penerimaanBarang);
-    await db.delete(schema.prediksiStok);
     await db.delete(schema.stokGudang);
     await db.delete(schema.produk);
     await db.delete(schema.mitra);
@@ -81,46 +80,38 @@ async function main() {
     // ═══════════════════════════════════════════
     console.log('Seeding produk...');
     const produkData = [
-      // Wings — harga per botol
-      { sku: 'WNG-FLO-250', nama: 'Floridina Orange 250ml', idPemasok: pWings.id, satuan: 'Botol', hargaPabrik: '4000', hargaGrosir: '4700', hargaRetail: '5500' },
-      { sku: 'WNG-FLL-250', nama: 'Floridina Lychee 250ml', idPemasok: pWings.id, satuan: 'Botol', hargaPabrik: '4000', hargaGrosir: '4700', hargaRetail: '5500' },
-      { sku: 'WNG-FTR-350', nama: 'Freshtea Raslemon 350ml', idPemasok: pWings.id, satuan: 'Botol', hargaPabrik: '3500', hargaGrosir: '4200', hargaRetail: '5000' },
-      // Mayora — harga per botol
-      { sku: 'MYR-KP78-150', nama: 'Kopiko 78 Coffee 150ml', idPemasok: pMayora.id, satuan: 'Botol', hargaPabrik: '4500', hargaGrosir: '5200', hargaRetail: '6000' },
-      { sku: 'MYR-KPB-200', nama: 'Kopiko Blister 200ml', idPemasok: pMayora.id, satuan: 'Botol', hargaPabrik: '5000', hargaGrosir: '5700', hargaRetail: '6500' },
-      { sku: 'MYR-TRS-200', nama: 'Torres 200ml', idPemasok: pMayora.id, satuan: 'Botol', hargaPabrik: '4200', hargaGrosir: '4900', hargaRetail: '5800' },
-      // Kalbe — harga per botol
-      { sku: 'KLB-KRT-250', nama: 'Kiranti 250ml', idPemasok: pKalbe.id, satuan: 'Botol', hargaPabrik: '5000', hargaGrosir: '5800', hargaRetail: '6500' },
-      { sku: 'KLB-FTG-150', nama: 'Fatigon Spirit 150ml', idPemasok: pKalbe.id, satuan: 'Botol', hargaPabrik: '3800', hargaGrosir: '4500', hargaRetail: '5200' },
-      { sku: 'KLB-PRM-100', nama: 'Promag Syrup 100ml', idPemasok: pKalbe.id, satuan: 'Botol', hargaPabrik: '3200', hargaGrosir: '3800', hargaRetail: '4500' },
-      // Coca-Cola — harga per botol
-      { sku: 'CCL-COLA-390', nama: 'Coca-Cola 390ml', idPemasok: pCoca.id, satuan: 'Botol', hargaPabrik: '4500', hargaGrosir: '5200', hargaRetail: '6000' },
-      { sku: 'CCL-SPR-390', nama: 'Sprite 390ml', idPemasok: pCoca.id, satuan: 'Botol', hargaPabrik: '4500', hargaGrosir: '5200', hargaRetail: '6000' },
-      { sku: 'CCL-FAN-390', nama: 'Fanta Strawberry 390ml', idPemasok: pCoca.id, satuan: 'Botol', hargaPabrik: '4500', hargaGrosir: '5200', hargaRetail: '6000' },
-      // Sosro — harga per botol
-      { sku: 'SOS-TBS-350', nama: 'Teh Botol Sosro 350ml', idPemasok: pSosro.id, satuan: 'Botol', hargaPabrik: '3500', hargaGrosir: '4200', hargaRetail: '5000' },
-      { sku: 'SOS-FTM-350', nama: 'Fruit Tea Markisa 350ml', idPemasok: pSosro.id, satuan: 'Botol', hargaPabrik: '3500', hargaGrosir: '4200', hargaRetail: '5000' },
-      // Ultra Jaya — harga per kotak
-      { sku: 'ULT-UMF-250', nama: 'Ultra Milk Full Cream 250ml', idPemasok: pUltra.id, satuan: 'Kotak', hargaPabrik: '5000', hargaGrosir: '5700', hargaRetail: '6500' },
-      { sku: 'ULT-UMC-250', nama: 'Ultra Milk Coklat 250ml', idPemasok: pUltra.id, satuan: 'Kotak', hargaPabrik: '5000', hargaGrosir: '5700', hargaRetail: '6500' },
-      { sku: 'ULT-SBJ-250', nama: 'Ultra Sari Buah Jambu 250ml', idPemasok: pUltra.id, satuan: 'Kotak', hargaPabrik: '4500', hargaGrosir: '5200', hargaRetail: '6000' },
-      // Yakult — harga per botol
-      { sku: 'YKT-ORI-65', nama: 'Yakult Original 65ml', idPemasok: pYakult.id, satuan: 'Botol', hargaPabrik: '1700', hargaGrosir: '1900', hargaRetail: '2200' },
-      // Indofood — harga per botol
-      { sku: 'IND-ICO-350', nama: 'Ichi Ocha 350ml', idPemasok: pIndofood.id, satuan: 'Botol', hargaPabrik: '3200', hargaGrosir: '3800', hargaRetail: '4500' },
-      { sku: 'IND-TSK-300', nama: 'Teh Sarikoe 300ml', idPemasok: pIndofood.id, satuan: 'Botol', hargaPabrik: '2800', hargaGrosir: '3300', hargaRetail: '4000' },
-      // PepsiCo — harga per botol
-      { sku: 'PEP-COLA-390', nama: 'Pepsi Cola 390ml', idPemasok: pPepsi.id, satuan: 'Botol', hargaPabrik: '4200', hargaGrosir: '4900', hargaRetail: '5800' },
-      { sku: 'PEP-MIR-390', nama: 'Mirinda Orange 390ml', idPemasok: pPepsi.id, satuan: 'Botol', hargaPabrik: '4200', hargaGrosir: '4900', hargaRetail: '5800' },
-      // Jamu Jago
-      { sku: 'JGO-KBE-100', nama: 'Kuku Bima Ener-G 100ml', idPemasok: pJago.id, satuan: 'Botol', hargaPabrik: '2500', hargaGrosir: '3000', hargaRetail: '3500' },
-      { sku: 'JGO-TAG-15', nama: 'Tolak Angin 15ml', idPemasok: pJago.id, satuan: 'Sachet', hargaPabrik: '1200', hargaGrosir: '1400', hargaRetail: '1700' },
+      { sku: 'WNG-FLO-250', nama: 'Floridina Orange 250ml', pemasok: pWings, satuan: 'Botol', hp: '4000', hg: '4700', hr: '5500' },
+      { sku: 'WNG-FLL-250', nama: 'Floridina Lychee 250ml', pemasok: pWings, satuan: 'Botol', hp: '4000', hg: '4700', hr: '5500' },
+      { sku: 'WNG-FTR-350', nama: 'Freshtea Raslemon 350ml', pemasok: pWings, satuan: 'Botol', hp: '3500', hg: '4200', hr: '5000' },
+      { sku: 'MYR-KP78-150', nama: 'Kopiko 78 Coffee 150ml', pemasok: pMayora, satuan: 'Botol', hp: '4500', hg: '5200', hr: '6000' },
+      { sku: 'MYR-KPB-200', nama: 'Kopiko Blister 200ml', pemasok: pMayora, satuan: 'Botol', hp: '5000', hg: '5700', hr: '6500' },
+      { sku: 'MYR-TRS-200', nama: 'Torres 200ml', pemasok: pMayora, satuan: 'Botol', hp: '4200', hg: '4900', hr: '5800' },
+      { sku: 'KLB-KRT-250', nama: 'Kiranti 250ml', pemasok: pKalbe, satuan: 'Botol', hp: '5000', hg: '5800', hr: '6500' },
+      { sku: 'KLB-FTG-150', nama: 'Fatigon Spirit 150ml', pemasok: pKalbe, satuan: 'Botol', hp: '3800', hg: '4500', hr: '5200' },
+      { sku: 'KLB-PRM-100', nama: 'Promag Syrup 100ml', pemasok: pKalbe, satuan: 'Botol', hp: '3200', hg: '3800', hr: '4500' },
+      { sku: 'CCL-COLA-390', nama: 'Coca-Cola 390ml', pemasok: pCoca, satuan: 'Botol', hp: '4500', hg: '5200', hr: '6000' },
+      { sku: 'CCL-SPR-390', nama: 'Sprite 390ml', pemasok: pCoca, satuan: 'Botol', hp: '4500', hg: '5200', hr: '6000' },
+      { sku: 'CCL-FAN-390', nama: 'Fanta Strawberry 390ml', pemasok: pCoca, satuan: 'Botol', hp: '4500', hg: '5200', hr: '6000' },
+      { sku: 'SOS-TBS-350', nama: 'Teh Botol Sosro 350ml', pemasok: pSosro, satuan: 'Botol', hp: '3500', hg: '4200', hr: '5000' },
+      { sku: 'SOS-FTM-350', nama: 'Fruit Tea Markisa 350ml', pemasok: pSosro, satuan: 'Botol', hp: '3500', hg: '4200', hr: '5000' },
+      { sku: 'ULT-UMF-250', nama: 'Ultra Milk Full Cream 250ml', pemasok: pUltra, satuan: 'Kotak', hp: '5000', hg: '5700', hr: '6500' },
+      { sku: 'ULT-UMC-250', nama: 'Ultra Milk Coklat 250ml', pemasok: pUltra, satuan: 'Kotak', hp: '5000', hg: '5700', hr: '6500' },
+      { sku: 'ULT-SBJ-250', nama: 'Ultra Sari Buah Jambu 250ml', pemasok: pUltra, satuan: 'Kotak', hp: '4500', hg: '5200', hr: '6000' },
+      { sku: 'YKT-ORI-65', nama: 'Yakult Original 65ml', pemasok: pYakult, satuan: 'Botol', hp: '1700', hg: '1900', hr: '2200' },
+      { sku: 'IND-ICO-350', nama: 'Ichi Ocha 350ml', pemasok: pIndofood, satuan: 'Botol', hp: '3200', hg: '3800', hr: '4500' },
+      { sku: 'IND-TSK-300', nama: 'Teh Sarikoe 300ml', pemasok: pIndofood, satuan: 'Botol', hp: '2800', hg: '3300', hr: '4000' },
+      { sku: 'PEP-COLA-390', nama: 'Pepsi Cola 390ml', pemasok: pPepsi, satuan: 'Botol', hp: '4200', hg: '4900', hr: '5800' },
+      { sku: 'PEP-MIR-390', nama: 'Mirinda Orange 390ml', pemasok: pPepsi, satuan: 'Botol', hp: '4200', hg: '4900', hr: '5800' },
+      { sku: 'JGO-KBE-100', nama: 'Kuku Bima Ener-G 100ml', pemasok: pJago, satuan: 'Botol', hp: '2500', hg: '3000', hr: '3500' },
+      { sku: 'JGO-TAG-15', nama: 'Tolak Angin 15ml', pemasok: pJago, satuan: 'Sachet', hp: '1200', hg: '1400', hr: '1700' },
     ];
-    await db.insert(schema.produk).values(produkData.map(p => ({ ...p, apakahAktif: 1 })));
+    await db.insert(schema.produk).values(
+      produkData.map(p => ({ sku: p.sku, nama: p.nama, idPemasok: p.pemasok.id, satuan: p.satuan, hargaPabrik: p.hp, hargaGrosir: p.hg, hargaRetail: p.hr, apakahAktif: 1 }))
+    );
     const produk = await db.select().from(schema.produk).orderBy(sql`id`);
 
     // ═══════════════════════════════════════════
-    //  4. PENGUNA
+    //  4. PENGUNA (11)
     // ═══════════════════════════════════════════
     console.log('Seeding pengguna...');
     await db.insert(schema.pengguna).values([
@@ -130,28 +121,45 @@ async function main() {
       { nama: 'Budi Mitra', email: 'budi@sikons.com', passwordHash: hashed, peran: 'mitra', apakahAktif: 1 },
       { nama: 'Ani Mitra', email: 'ani@sikons.com', passwordHash: hashed, peran: 'mitra', apakahAktif: 1 },
       { nama: 'Citra Mitra', email: 'citra@sikons.com', passwordHash: hashed, peran: 'mitra', apakahAktif: 1 },
+      { nama: 'Dedi Mitra', email: 'dedi@sikons.com', passwordHash: hashed, peran: 'mitra', apakahAktif: 1 },
+      { nama: 'Euis Mitra', email: 'euis@sikons.com', passwordHash: hashed, peran: 'mitra', apakahAktif: 1 },
+      { nama: 'Fajar Mitra', email: 'fajar@sikons.com', passwordHash: hashed, peran: 'mitra', apakahAktif: 1 },
       { nama: 'Supplier Wings', email: 'wings@sikons.com', passwordHash: hashed, peran: 'pemasok', idPemasok: pWings.id, apakahAktif: 1 },
       { nama: 'Supplier Mayora', email: 'mayora@sikons.com', passwordHash: hashed, peran: 'pemasok', idPemasok: pMayora.id, apakahAktif: 1 },
     ]);
-    const [admin, salesRudi, salesSari, ...restUsers] = await db.select().from(schema.pengguna).orderBy(sql`id`);
+
+    const allUsers = await db.select().from(schema.pengguna).orderBy(sql`id`);
+    const admin = allUsers.find(u => u.email === 'admin@sikons.com')!;
+    const salesRudi = allUsers.find(u => u.email === 'rudi@sikons.com')!;
+    const salesSari = allUsers.find(u => u.email === 'sari@sikons.com')!;
+    const userBudi = allUsers.find(u => u.email === 'budi@sikons.com')!;
+    const userAni = allUsers.find(u => u.email === 'ani@sikons.com')!;
+    const userCitra = allUsers.find(u => u.email === 'citra@sikons.com')!;
+    const userDedi = allUsers.find(u => u.email === 'dedi@sikons.com')!;
+    const userEuis = allUsers.find(u => u.email === 'euis@sikons.com')!;
+    const userFajar = allUsers.find(u => u.email === 'fajar@sikons.com')!;
 
     // ═══════════════════════════════════════════
-    //  5. MITRA (3)
+    //  5. MITRA (6)
     // ═══════════════════════════════════════════
     console.log('Seeding mitra...');
     await db.insert(schema.mitra).values([
-      { nama: 'Toko Budi', namaPemilik: 'Budi Santoso', telepon: '081234567890', lat: '-6.914744', lng: '107.609810', idSalesDitugaskan: salesRudi.id, apakahAktif: 1 },
-      { nama: 'Warung Ani', namaPemilik: 'Ani Rahmawati', telepon: '089876543210', lat: '-6.920000', lng: '107.610000', idSalesDitugaskan: salesRudi.id, apakahAktif: 1 },
-      { nama: 'Kios Citra', namaPemilik: 'Citra Dewi', telepon: '085711223344', lat: '-7.250000', lng: '112.750000', idSalesDitugaskan: salesSari.id, apakahAktif: 1 },
+      { nama: 'Toko Budi', namaPemilik: 'Budi Santoso', telepon: '081234567890', alamat: 'Jl. Merdeka No. 45, Bandung', lat: '-6.914744', lng: '107.609810', idSalesDitugaskan: salesRudi.id, apakahAktif: 1 },
+      { nama: 'Warung Ani', namaPemilik: 'Ani Rahmawati', telepon: '089876543210', alamat: 'Jl. Diponegoro No. 12, Bandung', lat: '-6.920000', lng: '107.610000', idSalesDitugaskan: salesRudi.id, apakahAktif: 1 },
+      { nama: 'Kios Citra', namaPemilik: 'Citra Dewi', telepon: '085711223344', alamat: 'Jl. Panglima Sudirman No. 8, Surabaya', lat: '-7.250000', lng: '112.750000', idSalesDitugaskan: salesSari.id, apakahAktif: 1 },
+      { nama: 'Toko Dedi', namaPemilik: 'Dedi Haryanto', telepon: '081312345678', alamat: 'Jl. Gatot Subroto No. 23, Jakarta Pusat', lat: '-6.200000', lng: '106.820000', idSalesDitugaskan: salesRudi.id, apakahAktif: 1 },
+      { nama: 'Warung Euis', namaPemilik: 'Euis Siti', telepon: '082198765432', alamat: 'Jl. Setiabudi No. 67, Bandung', lat: '-6.890000', lng: '107.590000', idSalesDitugaskan: salesRudi.id, apakahAktif: 1 },
+      { nama: 'Kios Fajar', namaPemilik: 'Fajar Prasetyo', telepon: '083145678901', alamat: 'Jl. Darmo No. 34, Surabaya', lat: '-7.280000', lng: '112.730000', idSalesDitugaskan: salesSari.id, apakahAktif: 1 },
     ]);
-    const [mitraBudi, mitraAni, mitraCitra] = await db.select().from(schema.mitra).orderBy(sql`id`);
-    await db.update(schema.pengguna).set({ idMitra: mitraBudi.id }).where(sql`id = ${restUsers[0].id}`);
-    await db.update(schema.pengguna).set({ idMitra: mitraAni.id }).where(sql`id = ${restUsers[1].id}`);
-    await db.update(schema.pengguna).set({ idMitra: mitraCitra.id }).where(sql`id = ${restUsers[2].id}`);
+    const [mitraBudi, mitraAni, mitraCitra, mitraDedi, mitraEuis, mitraFajar] =
+      await db.select().from(schema.mitra).orderBy(sql`id`);
 
-    const userBudi = restUsers[0];
-    const userAni = restUsers[1];
-    const userCitra = restUsers[2];
+    await db.update(schema.pengguna).set({ idMitra: mitraBudi.id }).where(eq(schema.pengguna.id, userBudi.id));
+    await db.update(schema.pengguna).set({ idMitra: mitraAni.id }).where(eq(schema.pengguna.id, userAni.id));
+    await db.update(schema.pengguna).set({ idMitra: mitraCitra.id }).where(eq(schema.pengguna.id, userCitra.id));
+    await db.update(schema.pengguna).set({ idMitra: mitraDedi.id }).where(eq(schema.pengguna.id, userDedi.id));
+    await db.update(schema.pengguna).set({ idMitra: mitraEuis.id }).where(eq(schema.pengguna.id, userEuis.id));
+    await db.update(schema.pengguna).set({ idMitra: mitraFajar.id }).where(eq(schema.pengguna.id, userFajar.id));
 
     // ═══════════════════════════════════════════
     //  6. STOK GUDANG AWAL — semua gudang, semua produk
@@ -170,15 +178,15 @@ async function main() {
     }
 
     // ═══════════════════════════════════════════
-    //  7. PENERIMAAN BARANG (6 GR)
+    //  7. PENERIMAAN BARANG (8 GR — all completed)
     // ═══════════════════════════════════════════
     console.log('Seeding penerimaan barang...');
 
     interface GRItem { produkIdx: number; jumlah: number; hargaPabrikAktual: string }
 
-    const grData: { nomor: string; pemasok: typeof pWings; gudang: typeof gPusat; tgl: Date; items: GRItem[]; status: 'draft' | 'completed' }[] = [
+    const grData: { nomor: string; pemasok: typeof pWings; gudang: typeof gPusat; tgl: Date; items: GRItem[] }[] = [
       {
-        nomor: 'GR-20260601-0001', pemasok: pWings, gudang: gPusat, tgl: new Date('2026-06-01'), status: 'completed',
+        nomor: 'GR-20260601-0001', pemasok: pWings, gudang: gPusat, tgl: new Date('2026-06-01'),
         items: [
           { produkIdx: 0, jumlah: 80, hargaPabrikAktual: '4000' },
           { produkIdx: 1, jumlah: 70, hargaPabrikAktual: '4000' },
@@ -186,7 +194,7 @@ async function main() {
         ],
       },
       {
-        nomor: 'GR-20260602-0001', pemasok: pMayora, gudang: gPusat, tgl: new Date('2026-06-02'), status: 'completed',
+        nomor: 'GR-20260602-0001', pemasok: pMayora, gudang: gPusat, tgl: new Date('2026-06-02'),
         items: [
           { produkIdx: 3, jumlah: 70, hargaPabrikAktual: '4500' },
           { produkIdx: 4, jumlah: 60, hargaPabrikAktual: '5000' },
@@ -194,7 +202,7 @@ async function main() {
         ],
       },
       {
-        nomor: 'GR-20260605-0001', pemasok: pCoca, gudang: gBandung, tgl: new Date('2026-06-05'), status: 'completed',
+        nomor: 'GR-20260603-0001', pemasok: pCoca, gudang: gBandung, tgl: new Date('2026-06-03'),
         items: [
           { produkIdx: 9, jumlah: 60, hargaPabrikAktual: '4500' },
           { produkIdx: 10, jumlah: 50, hargaPabrikAktual: '4500' },
@@ -202,14 +210,14 @@ async function main() {
         ],
       },
       {
-        nomor: 'GR-20260607-0001', pemasok: pSosro, gudang: gBandung, tgl: new Date('2026-06-07'), status: 'draft',
+        nomor: 'GR-20260604-0001', pemasok: pSosro, gudang: gBandung, tgl: new Date('2026-06-04'),
         items: [
           { produkIdx: 12, jumlah: 70, hargaPabrikAktual: '3500' },
           { produkIdx: 13, jumlah: 60, hargaPabrikAktual: '3500' },
         ],
       },
       {
-        nomor: 'GR-20260610-0001', pemasok: pUltra, gudang: gSurabaya, tgl: new Date('2026-06-10'), status: 'draft',
+        nomor: 'GR-20260605-0001', pemasok: pUltra, gudang: gSurabaya, tgl: new Date('2026-06-05'),
         items: [
           { produkIdx: 14, jumlah: 60, hargaPabrikAktual: '5000' },
           { produkIdx: 15, jumlah: 50, hargaPabrikAktual: '5000' },
@@ -217,10 +225,23 @@ async function main() {
         ],
       },
       {
-        nomor: 'GR-20260612-0001', pemasok: pIndofood, gudang: gPusat, tgl: new Date('2026-06-12'), status: 'draft',
+        nomor: 'GR-20260606-0001', pemasok: pYakult, gudang: gPusat, tgl: new Date('2026-06-06'),
+        items: [
+          { produkIdx: 17, jumlah: 100, hargaPabrikAktual: '1700' },
+        ],
+      },
+      {
+        nomor: 'GR-20260607-0001', pemasok: pIndofood, gudang: gPusat, tgl: new Date('2026-06-07'),
         items: [
           { produkIdx: 18, jumlah: 70, hargaPabrikAktual: '3200' },
           { produkIdx: 19, jumlah: 60, hargaPabrikAktual: '2800' },
+        ],
+      },
+      {
+        nomor: 'GR-20260610-0001', pemasok: pPepsi, gudang: gSurabaya, tgl: new Date('2026-06-10'),
+        items: [
+          { produkIdx: 20, jumlah: 50, hargaPabrikAktual: '4200' },
+          { produkIdx: 21, jumlah: 40, hargaPabrikAktual: '4200' },
         ],
       },
     ];
@@ -228,7 +249,7 @@ async function main() {
     for (const gr of grData) {
       await db.insert(schema.penerimaanBarang).values([{
         nomorPenerimaan: gr.nomor, idPemasok: gr.pemasok.id, idGudang: gr.gudang.id,
-        diterimaOleh: admin.id, tanggalPenerimaan: gr.tgl, status: gr.status,
+        diterimaOleh: admin.id, tanggalPenerimaan: gr.tgl, status: 'completed',
       }]);
       const [header] = await db.select().from(schema.penerimaanBarang).where(sql`nomor_penerimaan = ${gr.nomor}`);
       for (const item of gr.items) {
@@ -237,77 +258,93 @@ async function main() {
           idPenerimaan: header.id, idProduk: prod.id, jumlah: item.jumlah,
           hargaPabrikAktual: item.hargaPabrikAktual,
         }]);
-        if (gr.status === 'completed') {
-          await db.update(schema.stokGudang)
-            .set({ jumlah: sql`jumlah + ${item.jumlah}`, diperbaruiPada: sql`CURRENT_TIMESTAMP` })
-            .where(sql`id_gudang = ${gr.gudang.id} AND id_produk = ${prod.id}`);
-          addStock(gr.gudang.id, prod.id, item.jumlah);
-        }
+        await db.update(schema.stokGudang)
+          .set({ jumlah: sql`jumlah + ${item.jumlah}`, diperbaruiPada: sql`CURRENT_TIMESTAMP` })
+          .where(sql`id_gudang = ${gr.gudang.id} AND id_produk = ${prod.id}`);
+        addStock(gr.gudang.id, prod.id, item.jumlah);
       }
     }
 
     // ═══════════════════════════════════════════
-    //  8. PENYALURAN + FAKTUR (6 DEL)
+    //  8. PENYALURAN + FAKTUR (8 DEL — all received)
     // ═══════════════════════════════════════════
     console.log('Seeding penyaluran & faktur...');
 
     interface DELItem { produkIdx: number; jumlahDikirim: number }
 
     const delData: {
-      nomor: string; gudang: typeof gPusat; mitra: typeof mitraBudi; sales: typeof salesRudi; tgl: Date; status: string;
+      nomor: string; gudang: typeof gPusat; mitra: typeof mitraBudi; sales: typeof salesRudi; tgl: Date;
       items: DELItem[]
     }[] = [
       {
         nomor: 'DEL-20260604-0001', gudang: gPusat, mitra: mitraBudi, sales: salesRudi,
-        tgl: new Date('2026-06-04'), status: 'received',
+        tgl: new Date('2026-06-04'),
         items: [
-          { produkIdx: 0, jumlahDikirim: 30 }, // Floridina Orange
-          { produkIdx: 3, jumlahDikirim: 20 }, // Kopiko 78
-          { produkIdx: 18, jumlahDikirim: 25 }, // Ichi Ocha
+          { produkIdx: 0, jumlahDikirim: 30 },
+          { produkIdx: 3, jumlahDikirim: 20 },
+          { produkIdx: 18, jumlahDikirim: 25 },
         ],
       },
       {
-        nomor: 'DEL-20260606-0001', gudang: gPusat, mitra: mitraAni, sales: salesRudi,
-        tgl: new Date('2026-06-06'), status: 'received',
+        nomor: 'DEL-20260605-0001', gudang: gPusat, mitra: mitraAni, sales: salesRudi,
+        tgl: new Date('2026-06-05'),
         items: [
-          { produkIdx: 1, jumlahDikirim: 25 }, // Floridina Lychee
-          { produkIdx: 4, jumlahDikirim: 20 }, // Kopiko Blister
-          { produkIdx: 19, jumlahDikirim: 20 }, // Teh Sarikoe
+          { produkIdx: 1, jumlahDikirim: 25 },
+          { produkIdx: 4, jumlahDikirim: 20 },
+          { produkIdx: 19, jumlahDikirim: 20 },
         ],
       },
       {
-        nomor: 'DEL-20260608-0001', gudang: gBandung, mitra: mitraCitra, sales: salesSari,
-        tgl: new Date('2026-06-08'), status: 'sent',
+        nomor: 'DEL-20260606-0001', gudang: gBandung, mitra: mitraCitra, sales: salesSari,
+        tgl: new Date('2026-06-06'),
         items: [
-          { produkIdx: 9, jumlahDikirim: 20 }, // Coca-Cola
-          { produkIdx: 12, jumlahDikirim: 25 }, // Teh Botol Sosro
-          { produkIdx: 13, jumlahDikirim: 15 }, // Fruit Tea
+          { produkIdx: 9, jumlahDikirim: 20 },
+          { produkIdx: 12, jumlahDikirim: 25 },
+          { produkIdx: 13, jumlahDikirim: 15 },
         ],
       },
       {
-        nomor: 'DEL-20260611-0001', gudang: gPusat, mitra: mitraBudi, sales: salesRudi,
-        tgl: new Date('2026-06-11'), status: 'sent',
+        nomor: 'DEL-20260607-0001', gudang: gPusat, mitra: mitraBudi, sales: salesRudi,
+        tgl: new Date('2026-06-07'),
         items: [
-          { produkIdx: 0, jumlahDikirim: 20 }, // Floridina Orange
-          { produkIdx: 5, jumlahDikirim: 15 }, // Torres
-          { produkIdx: 18, jumlahDikirim: 15 }, // Ichi Ocha
+          { produkIdx: 0, jumlahDikirim: 20 },
+          { produkIdx: 5, jumlahDikirim: 15 },
+          { produkIdx: 18, jumlahDikirim: 15 },
         ],
       },
       {
-        nomor: 'DEL-20260615-0001', gudang: gBandung, mitra: mitraAni, sales: salesRudi,
-        tgl: new Date('2026-06-15'), status: 'draft',
+        nomor: 'DEL-20260608-0001', gudang: gBandung, mitra: mitraAni, sales: salesRudi,
+        tgl: new Date('2026-06-08'),
         items: [
-          { produkIdx: 9, jumlahDikirim: 15 }, // Coca-Cola
-          { produkIdx: 10, jumlahDikirim: 10 }, // Sprite
-          { produkIdx: 11, jumlahDikirim: 10 }, // Fanta
+          { produkIdx: 10, jumlahDikirim: 15 },
+          { produkIdx: 11, jumlahDikirim: 10 },
         ],
       },
       {
-        nomor: 'DEL-20260618-0001', gudang: gSurabaya, mitra: mitraCitra, sales: salesSari,
-        tgl: new Date('2026-06-18'), status: 'draft',
+        nomor: 'DEL-20260609-0001', gudang: gSurabaya, mitra: mitraCitra, sales: salesSari,
+        tgl: new Date('2026-06-09'),
         items: [
-          { produkIdx: 14, jumlahDikirim: 20 }, // Ultra Milk Full Cream
-          { produkIdx: 15, jumlahDikirim: 15 }, // Ultra Milk Coklat
+          { produkIdx: 14, jumlahDikirim: 20 },
+          { produkIdx: 15, jumlahDikirim: 15 },
+          { produkIdx: 20, jumlahDikirim: 15 },
+        ],
+      },
+      {
+        nomor: 'DEL-20260611-0001', gudang: gPusat, mitra: mitraDedi, sales: salesRudi,
+        tgl: new Date('2026-06-11'),
+        items: [
+          { produkIdx: 2, jumlahDikirim: 15 },
+          { produkIdx: 3, jumlahDikirim: 15 },
+          { produkIdx: 17, jumlahDikirim: 30 },
+        ],
+      },
+      {
+        nomor: 'DEL-20260614-0001', gudang: gSurabaya, mitra: mitraFajar, sales: salesSari,
+        tgl: new Date('2026-06-14'),
+        items: [
+          { produkIdx: 16, jumlahDikirim: 15 },
+          { produkIdx: 20, jumlahDikirim: 10 },
+          { produkIdx: 21, jumlahDikirim: 10 },
         ],
       },
     ];
@@ -315,58 +352,52 @@ async function main() {
     for (const del of delData) {
       await db.insert(schema.penyaluran).values([{
         nomorPenyaluran: del.nomor, idGudangAsal: del.gudang.id, idMitra: del.mitra.id,
-        idSales: del.sales.id, tanggalPenyaluran: del.tgl, status: del.status as 'draft' | 'sent' | 'received', dibuatOleh: admin.id,
+        idSales: del.sales.id, tanggalPenyaluran: del.tgl, status: 'received', dibuatOleh: admin.id,
       }]);
       const [header] = await db.select().from(schema.penyaluran).where(sql`nomor_penyaluran = ${del.nomor}`);
       for (const item of del.items) {
         const prod = produk[item.produkIdx];
         await db.insert(schema.itemPenyaluran).values([{
           idPenyaluran: header.id, idProduk: prod.id, jumlahDikirim: item.jumlahDikirim,
-          snapshotHargaRetail: prod.hargaRetail,           snapshotHargaGrosir: prod.hargaGrosir,
+          snapshotHargaRetail: prod.hargaRetail, snapshotHargaGrosir: prod.hargaGrosir,
         }]);
-        if (del.status !== 'draft') {
-          const stok = getStock(del.gudang.id, prod.id);
-          if (stok < item.jumlahDikirim) {
-            throw new Error(`[BALANCE ERROR] Stok ${prod.nama} di gudang ${del.gudang.id} hanya ${stok}, butuh ${item.jumlahDikirim}`);
-          }
-          await db.update(schema.stokGudang)
-            .set({ jumlah: sql`jumlah - ${item.jumlahDikirim}`, diperbaruiPada: sql`CURRENT_TIMESTAMP` })
-            .where(sql`id_gudang = ${del.gudang.id} AND id_produk = ${prod.id}`);
-          subStock(del.gudang.id, prod.id, item.jumlahDikirim);
+        const stok = getStock(del.gudang.id, prod.id);
+        if (stok < item.jumlahDikirim) {
+          throw new Error(`[BALANCE ERROR] Stok ${prod.nama} di gudang ${del.gudang.id} hanya ${stok}, butuh ${item.jumlahDikirim}`);
         }
+        await db.update(schema.stokGudang)
+          .set({ jumlah: sql`jumlah - ${item.jumlahDikirim}`, diperbaruiPada: sql`CURRENT_TIMESTAMP` })
+          .where(sql`id_gudang = ${del.gudang.id} AND id_produk = ${prod.id}`);
+        subStock(del.gudang.id, prod.id, item.jumlahDikirim);
       }
     }
 
-    // Faktur — hanya untuk penyaluran dengan status 'received' atau 'sent'
-    const [del1, del2, del3, ..._] = await db.select().from(schema.penyaluran).orderBy(sql`id`);
-    const fakturItems = [
-      { del: del1, nomor: 'INV-2026-0001' },
-      { del: del2, nomor: 'INV-2026-0002' },
-      { del: del3, nomor: 'INV-2026-0003' },
-    ];
-    for (const f of fakturItems) {
-      const items = await db.select().from(schema.itemPenyaluran).where(sql`id_penyaluran = ${f.del.id}`);
+    // Faktur — untuk semua penyaluran
+    const allDel = await db.select().from(schema.penyaluran).orderBy(sql`id`);
+    for (const del of allDel) {
+      const items = await db.select().from(schema.itemPenyaluran).where(sql`id_penyaluran = ${del.id}`);
       const total = items.reduce((sum, it) => sum + Number(it.jumlahDikirim) * Number(it.snapshotHargaRetail), 0);
+      const nomorFaktur = `INV-2026-${String(del.id).padStart(4, '0')}`;
       await db.insert(schema.faktur).values([{
-        nomorFaktur: f.nomor, idPenyaluran: f.del.id,
-        totalNilai: String(total), diterbitkanPada: f.del.tanggalPenyaluran,
+        nomorFaktur, idPenyaluran: del.id,
+        totalNilai: String(total), diterbitkanPada: del.tanggalPenyaluran,
       }]);
     }
 
     // ═══════════════════════════════════════════
-    //  9. OPNAME STOK (6 opname)
+    //  9. OPNAME STOK (8 opname — all verified)
     // ═══════════════════════════════════════════
     console.log('Seeding opname stok...');
 
-    interface OPData {
-      nomor: string; mitra: typeof mitraBudi; sales: typeof salesRudi; tgl: Date; status: string;
-      items: { produkIdx: number; stokAwal: number; laku: number; retur: number; kondisi: string | null; anomali?: number }[]
-    }
+    interface OPItem { produkIdx: number; stokAwal: number; laku: number; retur: number; kondisi: string | null; hilang?: number; penanggungHilang?: string; anomali?: number }
 
-    const opData: OPData[] = [
+    const opData: {
+      nomor: string; mitra: typeof mitraBudi; sales: typeof salesRudi; tgl: Date;
+      items: OPItem[]
+    }[] = [
       {
-        nomor: 'OP-20260611-0001', mitra: mitraBudi, sales: salesRudi,
-        tgl: new Date('2026-06-11'), status: 'verified',
+        nomor: 'OP-20260610-0001', mitra: mitraBudi, sales: salesRudi,
+        tgl: new Date('2026-06-10'),
         items: [
           { produkIdx: 0, stokAwal: 30, laku: 18, retur: 2, kondisi: 'good' },
           { produkIdx: 3, stokAwal: 20, laku: 12, retur: 1, kondisi: 'good' },
@@ -374,8 +405,8 @@ async function main() {
         ],
       },
       {
-        nomor: 'OP-20260613-0001', mitra: mitraAni, sales: salesRudi,
-        tgl: new Date('2026-06-13'), status: 'verified',
+        nomor: 'OP-20260611-0001', mitra: mitraAni, sales: salesRudi,
+        tgl: new Date('2026-06-11'),
         items: [
           { produkIdx: 1, stokAwal: 25, laku: 15, retur: 3, kondisi: 'expired' },
           { produkIdx: 4, stokAwal: 20, laku: 12, retur: 2, kondisi: 'damaged' },
@@ -383,8 +414,8 @@ async function main() {
         ],
       },
       {
-        nomor: 'OP-20260614-0001', mitra: mitraCitra, sales: salesSari,
-        tgl: new Date('2026-06-14'), status: 'verified',
+        nomor: 'OP-20260612-0001', mitra: mitraCitra, sales: salesSari,
+        tgl: new Date('2026-06-12'),
         items: [
           { produkIdx: 9, stokAwal: 20, laku: 10, retur: 2, kondisi: 'good' },
           { produkIdx: 12, stokAwal: 25, laku: 18, retur: 1, kondisi: 'good' },
@@ -392,8 +423,8 @@ async function main() {
         ],
       },
       {
-        nomor: 'OP-20260618-0001', mitra: mitraBudi, sales: salesRudi,
-        tgl: new Date('2026-06-18'), status: 'submitted',
+        nomor: 'OP-20260612-0002', mitra: mitraBudi, sales: salesRudi,
+        tgl: new Date('2026-06-12'),
         items: [
           { produkIdx: 0, stokAwal: 10, laku: 6, retur: 1, kondisi: 'good' },
           { produkIdx: 5, stokAwal: 15, laku: 8, retur: 2, kondisi: 'good' },
@@ -401,87 +432,90 @@ async function main() {
         ],
       },
       {
-        nomor: 'OP-20260620-0001', mitra: mitraAni, sales: salesRudi,
-        tgl: new Date('2026-06-20'), status: 'submitted',
+        nomor: 'OP-20260613-0001', mitra: mitraAni, sales: salesRudi,
+        tgl: new Date('2026-06-13'),
         items: [
-          { produkIdx: 1, stokAwal: 7, laku: 4, retur: 1, kondisi: 'damaged' },
-          { produkIdx: 4, stokAwal: 6, laku: 4, retur: 0, kondisi: null },
+          { produkIdx: 10, stokAwal: 15, laku: 8, retur: 2, kondisi: 'good' },
+          { produkIdx: 11, stokAwal: 10, laku: 6, retur: 1, kondisi: 'good' },
         ],
       },
       {
-        nomor: 'OP-20260622-0001', mitra: mitraCitra, sales: salesSari,
-        tgl: new Date('2026-06-22'), status: 'submitted',
+        nomor: 'OP-20260613-0002', mitra: mitraCitra, sales: salesSari,
+        tgl: new Date('2026-06-13'),
         items: [
-          { produkIdx: 9, stokAwal: 8, laku: 5, retur: 1, kondisi: 'good' },
-          { produkIdx: 12, stokAwal: 6, laku: 4, retur: 2, kondisi: 'expired' },
-          { produkIdx: 13, stokAwal: 7, laku: 5, retur: 0, kondisi: null },
-          { produkIdx: 11, stokAwal: 10, laku: -1, retur: 0, kondisi: null, anomali: 1 },
+          { produkIdx: 14, stokAwal: 20, laku: 12, retur: 2, kondisi: 'good' },
+          { produkIdx: 15, stokAwal: 15, laku: 10, retur: 1, kondisi: 'good' },
+          { produkIdx: 20, stokAwal: 15, laku: 8, retur: 0, kondisi: null },
+        ],
+      },
+      {
+        nomor: 'OP-20260614-0001', mitra: mitraDedi, sales: salesRudi,
+        tgl: new Date('2026-06-14'),
+        items: [
+          { produkIdx: 2, stokAwal: 15, laku: 10, retur: 1, kondisi: 'good' },
+          { produkIdx: 3, stokAwal: 15, laku: 8, retur: 1, kondisi: 'good' },
+          { produkIdx: 17, stokAwal: 30, laku: 20, retur: 3, kondisi: 'good' },
+        ],
+      },
+      {
+        nomor: 'OP-20260614-0002', mitra: mitraFajar, sales: salesSari,
+        tgl: new Date('2026-06-14'),
+        items: [
+          { produkIdx: 16, stokAwal: 15, laku: 8, retur: 2, kondisi: 'good' },
+          { produkIdx: 20, stokAwal: 10, laku: 6, retur: 0, kondisi: null },
+          { produkIdx: 21, stokAwal: 10, laku: 7, retur: 1, kondisi: 'good' },
         ],
       },
     ];
 
     for (const op of opData) {
-      const hasAnomali = op.items.some(it => it.anomali === 1 || (it.stokAwal - it.laku - it.retur < 0));
+      const hasAnomali = op.items.some(it => it.anomali === 1 || (it.stokAwal - it.laku - it.retur - (it.hilang ?? 0) < 0));
       await db.insert(schema.opnameStok).values([{
         nomorOpname: op.nomor, idMitra: op.mitra.id, idSales: op.sales.id,
-        tanggalKunjungan: op.tgl, status: op.status as 'draft' | 'submitted' | 'verified', memilikiAnomali: hasAnomali ? 1 : 0, dibuatOleh: op.sales.id,
+        tanggalKunjungan: op.tgl, status: 'verified', memilikiAnomali: hasAnomali ? 1 : 0, dibuatOleh: op.sales.id,
       }]);
       const [oh] = await db.select().from(schema.opnameStok).where(sql`nomor_opname = ${op.nomor}`);
       for (const it of op.items) {
         const prod = produk[it.produkIdx];
-        const stokFisik = Math.max(0, it.stokAwal - it.laku - it.retur);
+        const stokFisik = Math.max(0, it.stokAwal - it.laku - it.retur - (it.hilang ?? 0));
         const anomali = it.anomali === 1 || stokFisik < 0 ? 1 : 0;
         await db.insert(schema.itemOpname).values([{
           idOpname: oh.id, idProduk: prod.id, stokAwal: it.stokAwal,
-          jumlahLaku: it.laku, jumlahRetur: it.retur, hilang: 0, penanggungHilang: 'penyalur', stokFisik: Math.max(0, stokFisik),
-          kondisiRetur: it.kondisi as 'good' | 'damaged' | 'expired' | null, apakahAnomali: anomali,
+          jumlahLaku: it.laku, jumlahRetur: it.retur, hilang: it.hilang ?? 0,
+          penanggungHilang: (it.penanggungHilang ?? 'penyalur') as 'penyalur' | 'mitra',
+          stokFisik: Math.max(0, stokFisik),
+          kondisiRetur: it.kondisi as 'good' | 'damaged' | 'expired' | null,
+          apakahAnomali: anomali,
         }]);
       }
     }
 
     // ═══════════════════════════════════════════
-    //  10. PERMINTAAN RESTOK
+    //  10. PERMINTAAN RESTOK (4 — all approved)
     // ═══════════════════════════════════════════
     console.log('Seeding permintaan restok...');
 
     await db.insert(schema.permintaanStok).values([
-      { nomorPermintaan: 'RR-20260616-0001', idMitra: mitraBudi.id, dimintaOleh: userBudi.id, status: 'approved', disetujuiOleh: admin.id },
-      { nomorPermintaan: 'RR-20260619-0001', idMitra: mitraAni.id, dimintaOleh: userAni.id, status: 'pending' },
-      { nomorPermintaan: 'RR-20260621-0001', idMitra: mitraCitra.id, dimintaOleh: salesSari.id, status: 'pending' },
+      { nomorPermintaan: 'RR-20260608-0001', idMitra: mitraBudi.id, dimintaOleh: userBudi.id, status: 'approved', disetujuiOleh: admin.id },
+      { nomorPermintaan: 'RR-20260610-0001', idMitra: mitraAni.id, dimintaOleh: userAni.id, status: 'approved', disetujuiOleh: admin.id },
+      { nomorPermintaan: 'RR-20260612-0001', idMitra: mitraCitra.id, dimintaOleh: userCitra.id, status: 'approved', disetujuiOleh: admin.id },
+      { nomorPermintaan: 'RR-20260614-0001', idMitra: mitraDedi.id, dimintaOleh: userDedi.id, status: 'approved', disetujuiOleh: admin.id },
     ]);
-    const [rr1, rr2, rr3] = await db.select().from(schema.permintaanStok).orderBy(sql`id`);
+    const [rr1, rr2, rr3, rr4] = await db.select().from(schema.permintaanStok).orderBy(sql`id`);
 
     await db.insert(schema.itemPermintaanStok).values([
       { idPermintaan: rr1.id, idProduk: produk[0].id, jumlahDiminta: 30, jumlahDisetujui: 30 },
       { idPermintaan: rr1.id, idProduk: produk[3].id, jumlahDiminta: 20, jumlahDisetujui: 20 },
       { idPermintaan: rr1.id, idProduk: produk[18].id, jumlahDiminta: 25, jumlahDisetujui: 20 },
-      { idPermintaan: rr2.id, idProduk: produk[1].id, jumlahDiminta: 20 },
-      { idPermintaan: rr2.id, idProduk: produk[4].id, jumlahDiminta: 15 },
-      { idPermintaan: rr2.id, idProduk: produk[19].id, jumlahDiminta: 15 },
-      { idPermintaan: rr3.id, idProduk: produk[9].id, jumlahDiminta: 15 },
-      { idPermintaan: rr3.id, idProduk: produk[12].id, jumlahDiminta: 20 },
-      { idPermintaan: rr3.id, idProduk: produk[14].id, jumlahDiminta: 15 },
-    ]);
-
-    // ═══════════════════════════════════════════
-    //  11. PREDIKSI STOK
-    // ═══════════════════════════════════════════
-    console.log('Seeding prediksi stok...');
-
-    // Predictions based on average laku from opname data
-    await db.insert(schema.prediksiStok).values([
-      // Toko Budi
-      { idMitra: mitraBudi.id, idProduk: produk[0].id, jumlahPrediksi: 12, rataRataLaku: '12.00', berdasarkanKunjungan: 2, dihasilkanPada: new Date() },
-      { idMitra: mitraBudi.id, idProduk: produk[3].id, jumlahPrediksi: 12, rataRataLaku: '12.00', berdasarkanKunjungan: 1, dihasilkanPada: new Date() },
-      { idMitra: mitraBudi.id, idProduk: produk[18].id, jumlahPrediksi: 12, rataRataLaku: '12.00', berdasarkanKunjungan: 2, dihasilkanPada: new Date() },
-      // Warung Ani
-      { idMitra: mitraAni.id, idProduk: produk[1].id, jumlahPrediksi: 10, rataRataLaku: '9.50', berdasarkanKunjungan: 2, dihasilkanPada: new Date() },
-      { idMitra: mitraAni.id, idProduk: produk[4].id, jumlahPrediksi: 8, rataRataLaku: '8.00', berdasarkanKunjungan: 2, dihasilkanPada: new Date() },
-      { idMitra: mitraAni.id, idProduk: produk[19].id, jumlahPrediksi: 14, rataRataLaku: '14.00', berdasarkanKunjungan: 1, dihasilkanPada: new Date() },
-      // Kios Citra
-      { idMitra: mitraCitra.id, idProduk: produk[9].id, jumlahPrediksi: 8, rataRataLaku: '7.50', berdasarkanKunjungan: 2, dihasilkanPada: new Date() },
-      { idMitra: mitraCitra.id, idProduk: produk[12].id, jumlahPrediksi: 11, rataRataLaku: '11.00', berdasarkanKunjungan: 2, dihasilkanPada: new Date() },
-      { idMitra: mitraCitra.id, idProduk: produk[13].id, jumlahPrediksi: 7, rataRataLaku: '6.50', berdasarkanKunjungan: 2, dihasilkanPada: new Date() },
+      { idPermintaan: rr2.id, idProduk: produk[1].id, jumlahDiminta: 20, jumlahDisetujui: 20 },
+      { idPermintaan: rr2.id, idProduk: produk[4].id, jumlahDiminta: 15, jumlahDisetujui: 15 },
+      { idPermintaan: rr2.id, idProduk: produk[19].id, jumlahDiminta: 15, jumlahDisetujui: 15 },
+      { idPermintaan: rr3.id, idProduk: produk[9].id, jumlahDiminta: 15, jumlahDisetujui: 15 },
+      { idPermintaan: rr3.id, idProduk: produk[12].id, jumlahDiminta: 20, jumlahDisetujui: 20 },
+      { idPermintaan: rr3.id, idProduk: produk[14].id, jumlahDiminta: 15, jumlahDisetujui: 15 },
+      { idPermintaan: rr4.id, idProduk: produk[2].id, jumlahDiminta: 15, jumlahDisetujui: 15 },
+      { idPermintaan: rr4.id, idProduk: produk[3].id, jumlahDiminta: 15, jumlahDisetujui: 15 },
+      { idPermintaan: rr4.id, idProduk: produk[17].id, jumlahDiminta: 30, jumlahDisetujui: 30 },
     ]);
 
     // ═══════════════════════════════════════════
@@ -498,7 +532,6 @@ async function main() {
     const [opCount] = await db.select({ count: sql<number>`count(*)` }).from(schema.opnameStok);
     const [opiCount] = await db.select({ count: sql<number>`count(*)` }).from(schema.itemOpname);
     const [rrCount] = await db.select({ count: sql<number>`count(*)` }).from(schema.permintaanStok);
-    const [predCount] = await db.select({ count: sql<number>`count(*)` }).from(schema.prediksiStok);
 
     console.log('');
     console.log('✅ Seeding completed successfully!');
@@ -512,6 +545,9 @@ async function main() {
     console.log('║ budi@sikons.com    / password123 (Mitra)     ║');
     console.log('║ ani@sikons.com     / password123 (Mitra)     ║');
     console.log('║ citra@sikons.com   / password123 (Mitra)     ║');
+    console.log('║ dedi@sikons.com    / password123 (Mitra)     ║');
+    console.log('║ euis@sikons.com    / password123 (Mitra)     ║');
+    console.log('║ fajar@sikons.com   / password123 (Mitra)     ║');
     console.log('║ wings@sikons.com   / password123 (Pemasok)   ║');
     console.log('║ mayora@sikons.com  / password123 (Pemasok)   ║');
     console.log('╚══════════════════════════════════════════════╝');
@@ -526,7 +562,6 @@ async function main() {
     console.log(`  • ${fakCount.count} faktur`);
     console.log(`  • ${opCount.count} opname stok (${opiCount.count} item)`);
     console.log(`  • ${rrCount.count} permintaan restok`);
-    console.log(`  • ${predCount.count} prediksi stok`);
     console.log('');
     console.log('💰 Faktur:');
     const fakturs = await db.select().from(schema.faktur).orderBy(sql`id`);
@@ -559,5 +594,4 @@ async function main() {
   }
 }
 
-import { eq } from 'drizzle-orm';
 main();

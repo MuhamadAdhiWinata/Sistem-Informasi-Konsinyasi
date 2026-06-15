@@ -56,6 +56,9 @@
           <UFormGroup label="Telepon" name="telepon">
             <UInput v-model="formState.telepon" placeholder="e.g. 0812-xxxx-xxxx" />
           </UFormGroup>
+          <UFormGroup label="Alamat" name="alamat">
+            <UInput v-model="formState.alamat" placeholder="e.g. Jl. Merdeka No. 123" />
+          </UFormGroup>
           <UFormGroup label="Sales Ditugaskan" name="idSalesDitugaskan">
             <USelect v-model="formState.idSalesDitugaskan" :options="salesOptions" placeholder="Pilih sales" />
           </UFormGroup>
@@ -120,6 +123,9 @@ const columns = [
   { key: 'nama', label: 'Nama Toko' },
   { key: 'namaPemilik', label: 'Pemilik' },
   { key: 'telepon', label: 'Telepon' },
+  { key: 'alamat', label: 'Alamat' },
+  { key: 'lat', label: 'Latitude' },
+  { key: 'lng', label: 'Longitude' },
   { key: 'namaSales', label: 'Sales' },
   { key: 'apakahAktif', label: 'Status' },
   { key: 'actions', label: '' },
@@ -134,14 +140,15 @@ const formSchema = z.object({
   nama: z.string().min(1, 'Nama wajib diisi'),
   namaPemilik: z.string().min(1, 'Nama pemilik wajib diisi'),
   telepon: z.string().optional().default(''),
+  alamat: z.string().optional().default(''),
   idSalesDitugaskan: z.preprocess(toNum, z.number().nullable().optional()),
   lat: z.preprocess(v => typeof v === 'number' ? String(v) : v, z.string().optional().default('')),
   lng: z.preprocess(v => typeof v === 'number' ? String(v) : v, z.string().optional().default('')),
   apakahAktif: z.preprocess(toNum, z.number().min(0).max(1)),
 });
 
-interface FormData { id?: number; nama: string; namaPemilik: string; telepon: string; idSalesDitugaskan: number | undefined; lat: string | number; lng: string | number; apakahAktif: number }
-const defaultForm = (): FormData => ({ nama: '', namaPemilik: '', telepon: '', idSalesDitugaskan: undefined, lat: '', lng: '', apakahAktif: 1 });
+interface FormData { id?: number; nama: string; namaPemilik: string; telepon: string; alamat: string; idSalesDitugaskan: number | undefined; lat: string | number; lng: string | number; apakahAktif: number }
+const defaultForm = (): FormData => ({ nama: '', namaPemilik: '', telepon: '', alamat: '', idSalesDitugaskan: undefined, lat: '', lng: '', apakahAktif: 1 });
 const formState = ref<FormData>(defaultForm());
 const statusOptions = [{ label: 'Aktif', value: 1 }, { label: 'Nonaktif', value: 0 }];
 const salesOptions = computed(() => salesList.value.map((s: any) => ({ label: `${s.nama} (${s.email})`, value: s.id })));
@@ -149,7 +156,7 @@ const salesOptions = computed(() => salesList.value.map((s: any) => ({ label: `$
 const filteredItems = computed(() => {
   if (!searchQuery.value) return items.value;
   const q = searchQuery.value.toLowerCase();
-  return items.value.filter((i: any) => i.nama?.toLowerCase().includes(q) || i.namaPemilik?.toLowerCase().includes(q) || i.telepon?.toLowerCase().includes(q));
+  return items.value.filter((i: any) => i.nama?.toLowerCase().includes(q) || i.namaPemilik?.toLowerCase().includes(q) || i.telepon?.toLowerCase().includes(q) || i.alamat?.toLowerCase().includes(q));
 });
 
 async function fetchItems() {
@@ -167,7 +174,7 @@ async function fetchItems() {
 function openCreateModal() { isEditing.value = false; formState.value = defaultForm(); isModalOpen.value = true; }
 function openEditModal(row: any) {
   isEditing.value = true;
-  formState.value = { id: row.id, nama: row.nama, namaPemilik: row.namaPemilik, telepon: row.telepon || '', idSalesDitugaskan: row.idSalesDitugaskan, lat: row.lat || '', lng: row.lng || '', apakahAktif: row.apakahAktif };
+  formState.value = { id: row.id, nama: row.nama, namaPemilik: row.namaPemilik, telepon: row.telepon || '', alamat: row.alamat || '', idSalesDitugaskan: row.idSalesDitugaskan, lat: row.lat || '', lng: row.lng || '', apakahAktif: row.apakahAktif };
   isModalOpen.value = true;
 }
 function closeModal() { isModalOpen.value = false; formState.value = defaultForm(); }

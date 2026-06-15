@@ -19,6 +19,7 @@ const bodySchema = z.object({
   nama: z.string().min(1, 'Nama wajib diisi').max(100),
   namaPemilik: z.string().min(1, 'Nama pemilik wajib diisi').max(100),
   telepon: z.string().max(20).optional().nullable(),
+  alamat: z.string().max(255).optional().nullable(),
   lat: z.preprocess(toStr, z.string().optional().nullable()),
   lng: z.preprocess(toStr, z.string().optional().nullable()),
   idSalesDitugaskan: z.preprocess(toNum, z.number().optional().nullable()),
