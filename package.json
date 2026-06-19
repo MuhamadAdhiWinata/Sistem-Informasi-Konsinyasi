@@ -12,6 +12,7 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "node --import tsx server/database/migrate.ts",
     "db:seed": "node --import tsx server/database/seed.ts",
+    "db:reset": "node --import tsx server/database/clean.ts && pnpm db:migrate && pnpm db:seed",
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {

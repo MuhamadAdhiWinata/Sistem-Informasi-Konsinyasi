@@ -263,7 +263,7 @@
 
 | No | Task | Status | Catatan |
 | :-- | :--- | :----- | :------ |
-| 15.1 | README.md — panduan instalasi & setup | ⏳ | |
+| 15.1 | README.md — panduan instalasi & setup | ✅ | Panduan setup + command DB (db:reset, dll) | |
 | 15.2 | API Documentation endpoint list | ⏳ | |
 | 15.3 | User Manual / Panduan Operasional | ⏳ | |
 
@@ -292,7 +292,7 @@
 
 ---
 
-> ⏱ Terakhir diperbarui: Senin, 15 Juni 2026 — Seed diperbarui: 6 mitra, 11 pengguna, 36 transaksi completed (s.d. 14 Jun). Masterdata mitra + pengguna + transaksi diperbanyak. Kolom `alamat`, `lat`, `lng` tampil di tabel mitra. Siap untuk transaksi baru mulai besok.
+> ⏱ Terakhir diperbarui: Kamis, 19 Juni 2026 — Menambahkan script `db:reset` (clean → migrate → seed) + dokumentasi README — Seed diperbarui: 6 mitra, 11 pengguna, 36 transaksi completed (s.d. 14 Jun). Masterdata mitra + pengguna + transaksi diperbanyak. Kolom `alamat`, `lat`, `lng` tampil di tabel mitra. Siap untuk transaksi baru mulai besok.
 >
 > 🚀 **Workflow Stok & Approval (v2):**
 > - **Penerimaan Barang**: Stok gudang hanya bertambah saat dikonfirmasi (`draft → completed`), bukan saat create. Edit/hapus hanya untuk draft. PUT endpoint + edit page.
