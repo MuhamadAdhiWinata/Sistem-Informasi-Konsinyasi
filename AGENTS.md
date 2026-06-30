@@ -9,7 +9,7 @@
 
 | Properti | Nilai |
 |:---------|:------|
-| **Nama** | SIKONS — Sistem Informasi Konsinyasi Terintegrasi |
+| **Nama** | SIKONS — Sistem Informasi Konsinyasi |
 | **Jenis** | Skripsi / Karya Ilmiah UMKM |
 | **PRD** | `PRD_SIKONS_v1.2.md` |
 | **Progress** | `progress.md` — WAJIB diperbarui setiap task selesai |

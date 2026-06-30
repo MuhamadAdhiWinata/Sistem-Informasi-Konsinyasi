@@ -9,8 +9,8 @@
 
 | Properti | Nilai |
 |:---------|:------|
-| **Judul** | Rancang Bangun Sistem Informasi Konsinyasi Terintegrasi (SIKONS) Berbasis Web menggunakan Framework Nuxt 3 |
-| **Nama Sistem** | SIKONS — Sistem Informasi Konsinyasi Terintegrasi |
+| **Judul** | Rancang Bangun Sistem Informasi Konsinyasi (SIKONS) Berbasis Web menggunakan Framework Nuxt 3 |
+| **Nama Sistem** | SIKONS — Sistem Informasi Konsinyasi |
 | **Jenis** | Skripsi / Karya Ilmiah |
 | **PRD** | `PRD_SIKONS_v1.2.md` |
 | **Progress Skripsi** | `progress-skripsi.md` |

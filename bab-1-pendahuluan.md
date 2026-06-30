@@ -4,11 +4,11 @@
 
 ## 1.1 Latar Belakang
 
-Transformasi digital mendorong pelaku usaha beralih dari pencatatan manual ke sistem informasi guna meningkatkan efisiensi dan akurasi operasional (Fauzan & Noprisson, 2020). UMKM, yang berkontribusi lebih dari 60% terhadap PDB nasional dan menyerap 97% tenaga kerja, banyak menjalankan model konsinyasi (titip jual) — skema penitipan barang dari pemasok ke pengecer dengan pembayaran setelah barang terjual. Namun, praktik pencatatan konsinyasi masih dilakukan secara manual menggunakan buku atau spreadsheet, sehingga menimbulkan masalah: risiko kehilangan data, ketidakmampuan memantau stok secara real-time, rekonsiliasi keuangan yang lambat, serta keterlambatan pengambilan keputusan.
+Transformasi digital mendorong pelaku usaha beralih dari pencatatan manual ke sistem informasi guna meningkatkan efisiensi dan akurasi operasional (Fauzan & Noprisson, 2020). UMKM, yang berkontribusi lebih dari 60% terhadap PDB nasional dan menyerap 97% tenaga kerja, banyak menjalankan model konsinyasi (titip jual) — skema penitipan barang dari pemasok ke pengecer dengan pembayaran setelah barang terjual. Namun, di PT XYZ — objek penelitian ini — praktik pencatatan titip jual masih dilakukan secara manual menggunakan buku atau spreadsheet. Hal ini sejalan dengan temuan Ajeng Aditya Putri (2024) yang menunjukkan bahwa UMKM masih mencatat transaksi secara manual sehingga menimbulkan berbagai masalah: risiko kehilangan data, ketidakmampuan memantau stok secara real-time, rekonsiliasi keuangan yang lambat, serta keterlambatan pengambilan keputusan.
 
 Penelitian terdahulu menunjukkan bahwa sistem informasi berbasis web mampu mengatasi permasalahan tersebut. Bantang dan Nugroho (2023) merancang sistem pengelolaan barang menggunakan Nuxt JS yang meningkatkan efisiensi dan mengurangi kesalahan data. Febyanti (2025) membuktikan bahwa sistem informasi akuntansi mempercepat proses kerja dan meminimalisir kesalahan administrasi. Studi lain tentang sistem informasi jasa titip barang ekspor-impor juga menunjukkan peningkatan efektivitas operasional (Repository Universitas Nurul Fikri, 2020). Meskipun demikian, penelitian-penelitian tersebut masih berfokus pada aspek parsial dan belum ada yang merancang sistem informasi konsinyasi terintegrasi yang mencakup seluruh alur bisnis dari penerimaan barang, distribusi, opname stok, hingga rekonsiliasi keuangan dengan struktur harga tiga tingkat (pabrik, grosir, retail).
 
-Penelitian ini bertujuan merancang dan membangun Sistem Informasi Konsinyasi Terintegrasi (SIKONS) berbasis web menggunakan Nuxt 3. Sistem mencakup enam modul utama: Master Data, Penerimaan Barang, Penyaluran dan Faktur, Opname Stok, Rekonsiliasi Keuangan, serta Request Restock. Pengembangan menggunakan metode Waterfall dengan pengujian Black Box Testing (Setiyani, 2019). Teknologi yang digunakan meliputi Nuxt 3, TypeScript, MariaDB, Drizzle ORM, serta RBAC untuk empat peran pengguna: Penyalur, Sales Field, Mitra, dan Pemasok. SIKONS diharapkan menjadi solusi digital komprehensif yang meningkatkan efisiensi, akurasi, dan transparansi pada sektor distribusi konsinyasi di Indonesia.
+Penelitian ini bertujuan merancang dan membangun Sistem Informasi Konsinyasi (SIKONS) berbasis web menggunakan Nuxt 3. Sistem mencakup enam modul utama: Master Data, Penerimaan Barang, Penyaluran dan Faktur, Opname Stok, Rekonsiliasi Keuangan, serta Request Restock. Pengembangan menggunakan metode Waterfall dengan pengujian Black Box Testing (Setiyani, 2019). Teknologi yang digunakan meliputi Nuxt 3, TypeScript, MariaDB, Drizzle ORM, serta RBAC untuk empat peran pengguna: Penyalur, Sales Field, Mitra, dan Pemasok. SIKONS diharapkan menjadi solusi digital komprehensif yang meningkatkan efisiensi, akurasi, dan transparansi pada sektor distribusi konsinyasi di Indonesia.
 
 ---
 
@@ -16,7 +16,7 @@ Penelitian ini bertujuan merancang dan membangun Sistem Informasi Konsinyasi Ter
 
 Berdasarkan latar belakang yang telah diuraikan, maka rumusan masalah dalam penelitian ini adalah sebagai berikut:
 
-1. Bagaimana merancang dan membangun Sistem Informasi Konsinyasi Terintegrasi (SIKONS) berbasis web yang mencakup modul master data, penerimaan barang, penyaluran dan faktur, opname stok, rekonsiliasi keuangan, serta request restock?
+1. Bagaimana merancang dan membangun Sistem Informasi Konsinyasi (SIKONS) berbasis web yang mencakup modul master data, penerimaan barang, penyaluran dan faktur, opname stok, rekonsiliasi keuangan, serta request restock?
 2. Bagaimana menerapkan alur bisnis konsinyasi ke dalam sistem dengan workflow yang mencakup proses penerimaan barang dari pemasok, distribusi ke mitra, pencatatan opname stok, hingga rekonsiliasi keuangan?
 3. Bagaimana mengintegrasikan sistem Role-Based Access Control (RBAC) dengan empat peran pengguna (Penyalur, Sales Field, Mitra, dan Pemasok) dalam satu platform?
 4. Bagaimana performa sistem berdasarkan pengujian Black Box Testing pada seluruh modul fungsional?
@@ -27,7 +27,7 @@ Berdasarkan latar belakang yang telah diuraikan, maka rumusan masalah dalam pene
 
 Ruang lingkup penelitian ini meliputi:
 
-1. Objek Penelitian: Sistem Informasi Konsinyasi Terintegrasi (SIKONS) — sebuah platform berbasis web yang menangani seluruh siklus bisnis konsinyasi mulai dari master data, penerimaan barang, penyaluran, opname stok, rekonsiliasi keuangan, hingga request restock.
+1. Objek Penelitian: Sistem Informasi Konsinyasi (SIKONS) — sebuah platform berbasis web yang menangani seluruh siklus bisnis konsinyasi mulai dari master data, penerimaan barang, penyaluran, opname stok, rekonsiliasi keuangan, hingga request restock.
 2. Model Pengembangan: Waterfall dengan tahapan analisis kebutuhan, desain sistem, implementasi, dan pengujian.
 3. Metode Pengujian: Black Box Testing yang berfokus pada pengujian fungsionalitas antarmuka pengguna dan API tanpa menguji struktur internal kode.
 4. Platform Sistem: Berbasis web (web application) yang diakses melalui peramban desktop dan mobile.
@@ -44,7 +44,7 @@ Ruang lingkup penelitian ini meliputi:
 
 Tujuan penelitian ini adalah:
 
-1. Menghasilkan Sistem Informasi Konsinyasi Terintegrasi (SIKONS) berbasis web yang mencakup enam modul fungsional — Master Data, Penerimaan Barang, Penyaluran dan Faktur, Opname Stok, Rekonsiliasi Keuangan, serta Request Restock.
+1. Menghasilkan Sistem Informasi Konsinyasi (SIKONS) berbasis web yang mencakup enam modul fungsional — Master Data, Penerimaan Barang, Penyaluran dan Faktur, Opname Stok, Rekonsiliasi Keuangan, serta Request Restock.
 2. Mengintegrasikan enam modul tersebut ke dalam satu platform dengan alur data yang saling terhubung, sehingga data penerimaan barang, penyaluran, opname, dan rekonsiliasi dapat diakses secara real-time.
 3. Mengimplementasikan Role-Based Access Control (RBAC) untuk mengatur hak akses empat peran pengguna — Penyalur, Sales Field, Mitra, dan Pemasok — pada setiap fitur sistem.
 4. Memvalidasi seluruh fungsionalitas sistem melalui Black Box Testing yang mencakup pengujian CRUD, workflow status, perhitungan otomatis, deteksi anomali, serta pembatasan akses antar peran.
@@ -106,5 +106,7 @@ Fauzan, E., & Noprisson, H. (2020). Analisa & perancangan aplikasi e-commerce ja
 Febyanti, A. (2025). Peran sistem informasi akuntansi dalam rangka meningkatkan kinerja karyawan divisi purchasing di PT Semen Indonesia Distributor. *Jurnal Ekonomi, Koperasi & Kewirausahaan*, *14*(1), 45–58.
 
 Implementasi sistem informasi pemasaran berbasis web dalam kegiatan jasa titip barang ekspor impor pada bisnis Tourgether.in. (2020). *Repository Universitas Nurul Fikri*.
+
+Putri, A. A. (2024). Perancangan sistem pencatatan transaksi dan pelaporan keuangan menggunakan Google Spreadsheet (Studi Kasus Percetakan Tunas Karya) [D4 thesis, Politeknik Negeri Jakarta]. Repository Politeknik Negeri Jakarta.
 
 Setiyani, L. (2019). Pengujian sistem informasi inventory pada perusahaan distributor farmasi menggunakan metode black box testing. *Techno Xplore: Jurnal Ilmu Komputer dan Teknologi Informasi*, *4*(1), 30–38.

@@ -9,9 +9,9 @@
 | Bab | Judul | Status | Tanggal Selesai |
 |:----|:------|:------:|:----------------:|
 | BAB 1 | Pendahuluan | ✅ | 19 Jun 2026 |
-| BAB 2 | Tinjauan Pustaka | ⏳ | — |
-| BAB 3 | Metode Penelitian | ⏳ | — |
-| BAB 4 | Hasil dan Pembahasan | ⏳ | — |
+| BAB 2 | Tinjauan Pustaka | ✅ | 30 Jun 2026 |
+| BAB 3 | Metode Penelitian | ✅ | 30 Jun 2026 |
+| BAB 4 | Hasil dan Pembahasan | ✅ | 30 Jun 2026 |
 | BAB 5 | Penutup | ⏳ | — |
 
 ---

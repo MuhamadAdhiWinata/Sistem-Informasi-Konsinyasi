@@ -1,4 +1,4 @@
-# **PRD SIKONS v1.2 | Sistem Informasi Konsinyasi Terintegrasi**
+# **PRD SIKONS v1.2 | Sistem Informasi Konsinyasi**
 
 ## ---
 
@@ -17,7 +17,7 @@
 
 ---
 
-SIKONS (Sistem Informasi Konsinyasi Terintegrasi) adalah platform berbasis web yang dirancang untuk mendigitalisasi dan mengotomatiskan seluruh alur bisnis konsinyasi — mulai dari penerimaan barang dari Pemasok, distribusi ke Mitra/Warung, pencatatan penjualan mingguan, hingga rekonsiliasi keuangan dan laporan performa.  
+SIKONS (Sistem Informasi Konsinyasi) adalah platform berbasis web yang dirancang untuk mendigitalisasi dan mengotomatiskan seluruh alur bisnis konsinyasi — mulai dari penerimaan barang dari Pemasok, distribusi ke Mitra/Warung, pencatatan penjualan mingguan, hingga rekonsiliasi keuangan dan laporan performa.  
 Sistem ini dibangun sebagai karya ilmiah (skripsi) dengan mempertimbangkan skalabilitas UMKM, kemudahan operasional di lapangan, dan fitur kecerdasan buatan ringan untuk prediksi kebutuhan stok.
 
 ## **1.1 Tujuan Proyek**

@@ -55,4 +55,14 @@
 
 ---
 
+## Referensi 6
+
+**Sitasi:** Putri, A. A. (2024). Perancangan sistem pencatatan transaksi dan pelaporan keuangan menggunakan Google Spreadsheet (Studi Kasus Percetakan Tunas Karya) [D4 thesis, Politeknik Negeri Jakarta]. Repository Politeknik Negeri Jakarta.
+
+**Tautan:** [https://repository.pnj.ac.id/id/eprint/22421/](https://repository.pnj.ac.id/id/eprint/22421/)
+
+**Relevansi:** Penelitian ini merancang sistem pencatatan transaksi dan pelaporan keuangan menggunakan Google Spreadsheet untuk UMKM yang masih melakukan pencatatan manual. Relevan dengan SIKONS karena memberikan gambaran nyata permasalahan pencatatan manual pada UMKM yang mendasari perlunya sistem informasi terintegrasi untuk menggantikan proses manual tersebut.
+
+---
+
 *Referensi dapat ditambahkan seiring penulisan skripsi.*

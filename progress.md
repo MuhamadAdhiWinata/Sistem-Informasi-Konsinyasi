@@ -1,6 +1,6 @@
 # 📋 Progress Tracker — SIKONS v1.2
 
-> **Sistem Informasi Konsinyasi Terintegrasi (SIKONS)**
+> **Sistem Informasi Konsinyasi (SIKONS)**
 > Berdasarkan PRD v1.2 — Teknologi Stack: Nuxt 3 · TypeScript · Tailwind CSS · MariaDB
 
 ---
