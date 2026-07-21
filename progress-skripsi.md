@@ -1,6 +1,6 @@
 # Progress Penulisan Skripsi SIKONS
 
-> Diperbarui: Juni 2026
+> Diperbarui: 5 Juli 2026
 
 ---
 
@@ -12,7 +12,7 @@
 | BAB 2 | Tinjauan Pustaka | ✅ | 30 Jun 2026 |
 | BAB 3 | Metode Penelitian | ✅ | 30 Jun 2026 |
 | BAB 4 | Hasil dan Pembahasan | ✅ | 30 Jun 2026 |
-| BAB 5 | Penutup | ⏳ | — |
+| BAB 5 | Penutup | ✅ | 5 Jul 2026 |
 
 ---
 

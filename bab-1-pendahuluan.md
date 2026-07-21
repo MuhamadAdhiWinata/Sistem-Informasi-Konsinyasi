@@ -14,12 +14,7 @@ Penelitian ini bertujuan merancang dan membangun Sistem Informasi Konsinyasi (SI
 
 ## 1.2 Rumusan Masalah
 
-Berdasarkan latar belakang yang telah diuraikan, maka rumusan masalah dalam penelitian ini adalah sebagai berikut:
-
-1. Bagaimana merancang dan membangun Sistem Informasi Konsinyasi (SIKONS) berbasis web yang mencakup modul master data, penerimaan barang, penyaluran dan faktur, opname stok, rekonsiliasi keuangan, serta request restock?
-2. Bagaimana menerapkan alur bisnis konsinyasi ke dalam sistem dengan workflow yang mencakup proses penerimaan barang dari pemasok, distribusi ke mitra, pencatatan opname stok, hingga rekonsiliasi keuangan?
-3. Bagaimana mengintegrasikan sistem Role-Based Access Control (RBAC) dengan empat peran pengguna (Penyalur, Sales Field, Mitra, dan Pemasok) dalam satu platform?
-4. Bagaimana performa sistem berdasarkan pengujian Black Box Testing pada seluruh modul fungsional?
+Berdasarkan latar belakang yang telah diuraikan, maka rumusan masalah dalam penelitian ini adalah bagaimana merancang dan membangun Sistem Informasi Konsinyasi (SIKONS) berbasis web yang mencakup modul master data, penerimaan barang, penyaluran dan faktur, opname stok, rekonsiliasi keuangan, serta request restock dengan alur bisnis terintegrasi dari penerimaan barang hingga rekonsiliasi keuangan serta Role-Based Access Control (RBAC) untuk empat peran pengguna (Penyalur, Sales Field, Mitra, dan Pemasok), yang kemudian diuji menggunakan Black Box Testing pada seluruh modul fungsional.
 
 ---
 

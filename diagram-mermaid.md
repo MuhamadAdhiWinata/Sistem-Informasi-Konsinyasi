@@ -375,52 +375,73 @@ classDiagram
 
 ## 3. Use Case Diagram
 
+> **UML Use Case Diagram** — `[Aktor]` persegi di luar batas sistem, `(Use Case)` oval di dalam `subgraph` (system boundary).
+> Garis putus `-. <<include>> .->` untuk relasi <<include>> dan <<extend>> (standar UML).
+
 ```mermaid
 flowchart LR
-    Penyalur((Penyalur))
-    Sales((Sales Field))
-    Mitra((Mitra))
-    Pemasok((Pemasok))
-    
-    subgraph SIKONS[Sistem Informasi Konsinyasi - SIKONS]
-        UC1[Login & Autentikasi]
-        UC2[Kelola Master Data\nPemasok, Produk, Gudang, Mitra, User]
-        UC3[Penerimaan Barang\nCatat & Konfirmasi Penerimaan]
-        UC4[Penyaluran & Faktur\nDistribusi & Generate Faktur]
-        UC5[Opname Stok\nCatat Laku, Retur, Deteksi Anomali]
-        UC6[Rekonsiliasi Keuangan\nThree-tier Pricing]
-        UC7[Request Restok\nPermintaan & Approve Stok]
-        UC8[Lihat Laporan\nPerforma Produk & Penjualan]
+    subgraph SISTEM["Sistem Informasi Titip Jual (SIKONS)"]
+        direction TB
+        UC01(Login)
+        UC02(Mengelola Pemasok)
+        UC03(Mengelola Produk)
+        UC04(Mengelola Gudang)
+        UC05(Mengelola Mitra)
+        UC06(Mengelola Pengguna)
+        UC07(Melihat Stok Gudang)
+        UC08(Mengelola Penerimaan Barang)
+        UC09(Mengelola Penyaluran)
+        UC10(Membuat Faktur)
+        UC11(Melakukan Opname Stok)
+        UC12(Mendeteksi Anomali Stok)
+        UC13(Melihat Rekonsiliasi Penyalur)
+        UC14(Melihat Rekonsiliasi Mitra)
+        UC15(Mengajukan Permintaan Stok)
+        UC16(Menyetujui Permintaan Stok)
+        UC17(Melihat Laporan & Analitik)
     end
-    
-    Penyalur --- UC1 & UC2 & UC3 & UC4 & UC5 & UC6 & UC7 & UC8
-    Sales --- UC1 & UC3 & UC4 & UC5
-    Mitra --- UC1 & UC5 & UC7
-    Pemasok --- UC1 & UC8
+
+    PEN[Penyalur] --- UC01 & UC02 & UC03 & UC04 & UC05 & UC06
+    PEN --- UC08 & UC09 & UC13
+    PEN --- UC16 & UC17
+
+    SAL[Sales Field] --- UC01 & UC07 & UC08 & UC09
+    SAL --- UC11 & UC15
+
+    MIT[Mitra] --- UC01 & UC11 & UC14 & UC15
+
+    PEM[Pemasok] --- UC01 & UC17
+
+    UC09 -. <<include>> .-> UC10
+    UC16 -. <<include>> .-> UC09
+    UC12 -. <<extend>> .-> UC11
 ```
 
 ---
 
 ## 4. Activity Diagram — Penerimaan Barang
 
+> **UML Activity Diagram** — Initial node `((Mulai))`, action node `(Aksi)`, decision `{Pertanyaan}`,
+> final node `((Selesai))`. Aliran digambarkan dengan panah `-->`.
+
 ```mermaid
 flowchart TD
-    Start([Mulai]) --> A[Membuka Form Penerimaan]
-    A --> B[Memilih Pemasok]
-    B --> C[Memilih Gudang Tujuan]
-    C --> D[Mengisi Tanggal Penerimaan]
-    D --> E[Menambahkan Item Barang\nPilih Produk, Jumlah, Harga Pabrik Aktual]
-    E --> F{Simpan?}
-    F -->|Draft| G[Menyimpan Draft]
-    F -->|Konfirmasi| H[Validasi Data]
-    H --> I{Data Lengkap?}
-    I -->|Tidak| J[Menampilkan Error]
-    J --> E
-    I -->|Ya| K[Mengubah Status menjadi Completed]
-    K --> L[Menambah Stok Gudang]
-    L --> M[Menampilkan Notifikasi Sukses]
-    G --> End([Selesai])
-    M --> End
+    Start((Mulai))
+    Start --> A1(Membuka Form Penerimaan)
+    A1 --> A2(Memilih Pemasok)
+    A2 --> A3(Memilih Gudang Tujuan)
+    A3 --> A4(Mengisi Tanggal Penerimaan)
+    A4 --> A5(Menambahkan Item Barang)
+    A5 --> D1{Simpan?}
+    D1 -->|Draft| E1[(Simpan Draft)]
+    D1 -->|Konfirmasi| D2{Data Lengkap?}
+    D2 -->|Tidak| Err1[Tampilkan Error]
+    Err1 --> A5
+    D2 -->|Ya| A6(Konfirmasi Penerimaan)
+    A6 --> A7(Update Stok Gudang)
+    A7 --> Notif1[Tampilkan Notifikasi Sukses]
+    E1 --> End((Selesai))
+    Notif1 --> End
 ```
 
 ---
@@ -429,23 +450,23 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    Start([Mulai]) --> A[Membuka Form Penyaluran]
-    A --> B[Memilih Gudang Asal]
-    B --> C[Memilih Mitra Tujuan]
-    C --> D[Memilih Sales Pengantar]
-    D --> E[Menambahkan Item Barang\nPilih Produk, Jumlah Kirim]
-    E --> F{Simpan?}
-    F -->|Draft| G[Menyimpan Draft]
-    F -->|Kirim| H[Validasi Ketersediaan Stok]
-    H --> I{Stok Cukup?}
-    I -->|Tidak| J[Menampilkan Peringatan]
-    J --> E
-    I -->|Ya| K[Mengubah Status menjadi Sent]
-    K --> L[Mengurangi Stok Gudang]
-    L --> M[Generate Faktur & Nomor Faktur]
-    M --> N[Menampilkan Notifikasi Sukses]
-    G --> End([Selesai])
-    N --> End
+    Start((Mulai))
+    Start --> A1(Membuka Form Penyaluran)
+    A1 --> A2(Memilih Gudang Asal)
+    A2 --> A3(Memilih Mitra Tujuan)
+    A3 --> A4(Memilih Sales Pengantar)
+    A4 --> A5(Menambahkan Item Barang)
+    A5 --> D1{Simpan?}
+    D1 -->|Draft| E1[(Simpan Draft)]
+    D1 -->|Kirim| D2{Cukup Stok?}
+    D2 -->|Tidak| Err1[Tampilkan Peringatan]
+    Err1 --> A5
+    D2 -->|Ya| A6(Kirim Penyaluran)
+    A6 --> A7(Kurangi Stok Gudang)
+    A7 --> A8(Generate Faktur)
+    A8 --> Notif1[Tampilkan Notifikasi Sukses]
+    E1 --> End((Selesai))
+    Notif1 --> End
 ```
 
 ---
@@ -454,27 +475,30 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    Start([Mulai]) --> A[Membuka Form Opname]
-    A --> B[Memilih Mitra]
-    B --> C[Memilih Tanggal Kunjungan]
-    C --> D[Input Item Opname per Produk]
-    D --> E[Mengisi Jumlah Laku & Retur]
-    E --> F[Sistem Otomatis Menghitung Stok Fisik]
-    F --> G{Stok Fisik Negatif?}
-    G -->|Ya| H[Menandai Anomali]
-    G -->|Tidak| I[Lanjut]
-    H --> I
-    I --> J{Simpan?}
-    J -->|Draft| K[Menyimpan Draft]
-    J -->|Submit| L[Menyimpan & Mengubah Status Submitted]
-    L --> M[Menampilkan Notifikasi]
-    K --> End([Selesai])
-    M --> End
+    Start((Mulai))
+    Start --> A1(Membuka Form Opname)
+    A1 --> A2(Memilih Mitra)
+    A2 --> A3(Memilih Tanggal Kunjungan)
+    A3 --> A4(Input Item Opname per Produk)
+    A4 --> A5(Mengisi Jumlah Laku & Retur)
+    A5 --> Sys1(Hitung Stok Fisik)
+    Sys1 --> D1{Stok Fisik < 0?}
+    D1 -->|Ya| A6(Tandai Anomali)
+    D1 -->|Tidak| D2{Simpan?}
+    A6 --> D2
+    D2 -->|Draft| E1[(Simpan Draft)]
+    D2 -->|Submit| A7(Simpan & Ubah Status)
+    A7 --> Notif1[Tampilkan Notifikasi]
+    E1 --> End((Selesai))
+    Notif1 --> End
 ```
 
 ---
 
 ## 7. Sequence Diagram — Konfirmasi Penerimaan Barang
+
+> **UML Sequence Diagram** — `activate`/`deactivate` untuk activation bar pada lifeline.
+> `->>+` synchronous call (mengaktifkan target), `-->>-` return response (menonaktifkan target).
 
 ```mermaid
 sequenceDiagram
@@ -483,23 +507,25 @@ sequenceDiagram
     participant API as Server API
     participant DB as MariaDB
     
-    Penyalur->>UI: Mengisi form penerimaan barang
-    Penyalur->>UI: Menekan tombol "Konfirmasi"
-    UI->>API: PATCH /api/penerimaan-barang/:id
+    Penyalur->>UI: Klik tombol "Konfirmasi"
+    activate UI
     
-    Note over API: Validasi status draft
-    Note over API: Validasi RBAC (penyalur only)
+    UI->>+API: PATCH /api/penerimaan-barang/:id
+    Note over API: Validasi status draft & RBAC
     
-    API->>DB: BEGIN TRANSACTION
-    API->>DB: UPDATE penerimaan_barang SET status = 'completed'
-    API->>DB: SELECT item_penerimaan_barang WHERE id_penerimaan = ?
-    API->>DB: INSERT INTO stok_gudang (id_gudang, id_produk, jumlah) ON DUPLICATE KEY UPDATE jumlah = jumlah + VALUES(jumlah)
-    DB-->>API: OK
-    API->>DB: COMMIT
+    API->>+DB: UPDATE penerimaan_barang<br/>SET status = 'completed'
+    DB-->>-API: OK
     
-    API-->>UI: Response 200 { message: "Berhasil dikonfirmasi" }
-    UI-->>Penyalur: Menampilkan notifikasi sukses
-    UI-->>Penyalur: Stok gudang bertambah
+    API->>+DB: SELECT item_penerimaan_barang<br/>WHERE id_penerimaan = :id
+    DB-->>-API: data items
+    
+    API->>+DB: UPDATE stok_gudang SET jumlah = jumlah + :qty
+    DB-->>-API: OK
+    
+    API-->>-UI: 200 OK { message: "Berhasil dikonfirmasi" }
+    
+    UI-->>Penyalur: Tampilkan notifikasi sukses
+    deactivate UI
 ```
 
 ---
