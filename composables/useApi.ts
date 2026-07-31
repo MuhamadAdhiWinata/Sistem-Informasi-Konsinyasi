@@ -12,7 +12,9 @@ export function useApi() {
     onResponseError({ response }) {
       if (response.status === 401) {
         auth.logout();
-        navigateTo('/auth/login');
+        if (import.meta.client) {
+          navigateTo('/auth/login');
+        }
       }
     },
   });

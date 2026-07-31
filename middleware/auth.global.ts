@@ -1,23 +1,21 @@
 const PUBLIC_AUTH_PATHS = ['/auth/login']
 
-export default defineNuxtRouteMiddleware((to, from) => {
+export default defineNuxtRouteMiddleware((to) => {
   const isPublicAuth = PUBLIC_AUTH_PATHS.includes(to.path)
+  const auth = useAuth()
 
-  // Only run on client
-  if (import.meta.client) {
-    const auth = useAuth()
-    auth.init()
-
-    if (!auth.isLoggedIn.value) {
-      if (!isPublicAuth) {
-        return navigateTo('/auth/login')
-      }
-      return
+  // Jalan di server (SSR) dan client — mencegah render dashboard sebelum login
+  if (!auth.isLoggedIn.value) {
+    if (!isPublicAuth) {
+      // Token tidak ada / expired — hapus cookie lalu arahkan ke login
+      auth.logout()
+      return navigateTo('/auth/login')
     }
+    return
+  }
 
-    // Already logged in — redirect away from login
-    if (to.path === '/auth/login') {
-      return navigateTo('/')
-    }
+  // Sudah login — jangan biarkan akses halaman login
+  if (to.path === '/auth/login') {
+    return navigateTo('/')
   }
 })

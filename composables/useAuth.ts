@@ -1,7 +1,5 @@
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 
-// Simple singleton auth store (no Pinia dependency needed)
-const token = ref<string | null>(null);
 export interface AuthUser {
   id: number
   nama: string
@@ -11,32 +9,56 @@ export interface AuthUser {
   idPemasok?: number | null
 }
 
-const user = ref<AuthUser | null>(null);
+interface AuthState {
+  token: string
+  user: AuthUser
+}
 
-function isClient(): boolean {
-  return typeof window !== 'undefined';
+const AUTH_COOKIE_NAME = 'sikons_auth';
+// Sesuai JWT_EXPIRES_IN di server/utils/auth.ts (24 jam)
+const AUTH_COOKIE_MAX_AGE = 60 * 60 * 24;
+
+function decodeJwtPayload(token: string): Record<string, unknown> | null {
+  try {
+    const base64Url = token.split('.')[1];
+    if (!base64Url) return null;
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const padded = base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), '=');
+    return JSON.parse(atob(padded));
+  } catch {
+    return null;
+  }
+}
+
+function isTokenExpired(token: string): boolean {
+  const payload = decodeJwtPayload(token);
+  if (!payload || typeof payload.exp !== 'number') return false;
+  return payload.exp * 1000 <= Date.now();
+}
+
+function parseAuth(state: AuthState | null | undefined): AuthState | null {
+  if (!state || typeof state.token !== 'string' || !state.user) return null;
+  if (isTokenExpired(state.token)) return null;
+  return state;
 }
 
 export function useAuth() {
+  // useCookie Nuxt auto JSON-parse/serialize nilai cookie
+  const cookie = useCookie<AuthState | null>(AUTH_COOKIE_NAME, {
+    maxAge: AUTH_COOKIE_MAX_AGE,
+    sameSite: 'lax',
+    path: '/',
+  });
+
+  const authState = computed(() => parseAuth(cookie.value));
+
+  const token = computed(() => authState.value?.token ?? null);
+  const user = computed<AuthUser | null>(() => authState.value?.user ?? null);
   const isLoggedIn = computed(() => !!token.value);
   const isPenyalur = computed(() => user.value?.peran === 'penyalur');
   const isSales = computed(() => user.value?.peran === 'sales');
   const isMitra = computed(() => user.value?.peran === 'mitra');
   const isPemasok = computed(() => user.value?.peran === 'pemasok');
-
-  function init() {
-    if (!isClient()) return;
-    const stored = localStorage.getItem('sikons_auth');
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        token.value = parsed.token;
-        user.value = parsed.user;
-      } catch {
-        localStorage.removeItem('sikons_auth');
-      }
-    }
-  }
 
   async function login(email: string, password: string) {
     const res: any = await $fetch('/api/auth/login', {
@@ -44,20 +66,12 @@ export function useAuth() {
       body: { email, password },
     });
     const { token: t, user: u } = res.data || res;
-    token.value = t;
-    user.value = u;
-    if (isClient()) {
-      localStorage.setItem('sikons_auth', JSON.stringify({ token: t, user: u }));
-    }
+    cookie.value = { token: t, user: u } satisfies AuthState;
     return { token: t, user: u };
   }
 
   function logout() {
-    token.value = null;
-    user.value = null;
-    if (isClient()) {
-      localStorage.removeItem('sikons_auth');
-    }
+    cookie.value = null;
   }
 
   function getHeaders() {
@@ -67,5 +81,5 @@ export function useAuth() {
     return {};
   }
 
-  return { token, user, isLoggedIn, isPenyalur, isSales, isMitra, isPemasok, init, login, logout, getHeaders };
+  return { token, user, isLoggedIn, isPenyalur, isSales, isMitra, isPemasok, login, logout, getHeaders };
 }
