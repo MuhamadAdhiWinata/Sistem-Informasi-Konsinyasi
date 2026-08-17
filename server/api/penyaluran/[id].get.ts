@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm'
 import { penyaluran, itemPenyaluran, mitra, gudang, pengguna, produk, faktur } from '~~/server/database/schema'
 import { useDB } from '~~/server/utils/database'
-import { requireRole } from '~~/server/utils/rbac'
+import { requireRole, requireOwnership } from '~~/server/utils/rbac'
 
 export default defineEventHandler(async (event) => {
   requireRole(event, ['penyalur', 'sales', 'mitra', 'pemasok'])
@@ -34,6 +34,8 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: 'Penyaluran not found' })
   }
 
+  requireOwnership(event, { idMitra: header[0].idMitra })
+
   let items = await db
     .select({
       id: itemPenyaluran.id,
@@ -45,24 +47,32 @@ export default defineEventHandler(async (event) => {
       jumlahDikirim: itemPenyaluran.jumlahDikirim,
       snapshotHargaRetail: itemPenyaluran.snapshotHargaRetail,
       snapshotHargaGrosir: itemPenyaluran.snapshotHargaGrosir,
+      idPemasok: produk.idPemasok,
     })
     .from(itemPenyaluran)
     .leftJoin(produk, eq(itemPenyaluran.idProduk, produk.id))
     .where(eq(itemPenyaluran.idPenyaluran, id))
 
   if (user.peran === 'pemasok') {
-    items = items.map(i => ({
-      ...i,
-      snapshotHargaRetail: '0',
-      snapshotHargaGrosir: '0',
-    }))
+    items = items
+      .filter(i => i.idPemasok === user.idPemasok)
+      .map(i => ({
+        ...i,
+        snapshotHargaRetail: '0',
+        snapshotHargaGrosir: '0',
+      }))
+    if (!items.length) {
+      throw createError({ statusCode: 403, statusMessage: 'Forbidden: Bukan data milik Anda' })
+    }
   }
 
-  const fakturData = await db
-    .select()
-    .from(faktur)
-    .where(eq(faktur.idPenyaluran, id))
-    .limit(1)
+  const fakturData = user.peran === 'pemasok'
+    ? []
+    : await db
+        .select()
+        .from(faktur)
+        .where(eq(faktur.idPenyaluran, id))
+        .limit(1)
 
   return { data: { ...header[0], items, faktur: fakturData[0] || null } }
 })

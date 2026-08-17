@@ -1,9 +1,11 @@
 import { eq } from 'drizzle-orm';
 import { pemasok } from '~~/server/database/schema';
 import { useDB } from '~~/server/utils/database';
+import { requireOwnership } from '~~/server/utils/rbac';
 
 export default defineEventHandler(async (event) => {
   const id = Number(getRouterParam(event, 'id'));
+  requireOwnership(event, { idPemasok: id });
   const db = await useDB();
   const item = await db.select().from(pemasok).where(eq(pemasok.id, id)).limit(1);
   if (!item.length) {

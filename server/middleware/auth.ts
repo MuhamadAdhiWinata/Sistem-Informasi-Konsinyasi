@@ -33,16 +33,15 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    // Verifikasi user masih ada di database
+    // Verifikasi user masih ada di database + ambil idMitra/idPemasok fresh (sumber kebenaran, bukan JWT)
     const db = await useDB();
-    const userExists = await db
-      .select({ id: pengguna.id })
+    const userRows = await db
+      .select({ id: pengguna.id, idMitra: pengguna.idMitra, idPemasok: pengguna.idPemasok })
       .from(pengguna)
       .where(eq(pengguna.id, decoded.id))
-      .limit(1)
-      .then(rows => rows.length > 0);
+      .limit(1);
 
-    if (!userExists) {
+    if (!userRows.length) {
       throw createError({
         statusCode: 401,
         statusMessage: 'Unauthorized: User tidak ditemukan, silakan login ulang',
@@ -50,6 +49,6 @@ export default defineEventHandler(async (event) => {
     }
 
     // Pasang data user di context agar bisa dipakai di route handler (misal event.context.user)
-    event.context.user = decoded;
+    event.context.user = { ...decoded, idMitra: userRows[0].idMitra, idPemasok: userRows[0].idPemasok };
   }
 });

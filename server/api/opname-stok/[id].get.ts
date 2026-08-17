@@ -1,8 +1,10 @@
 import { eq } from 'drizzle-orm'
 import { opnameStok, itemOpname, mitra, pengguna, produk } from '~~/server/database/schema'
 import { useDB } from '~~/server/utils/database'
+import { requireRole, requireOwnership } from '~~/server/utils/rbac'
 
 export default defineEventHandler(async (event) => {
+  requireRole(event, ['penyalur', 'sales', 'mitra'])
   const id = Number(getRouterParam(event, 'id'))
   const db = await useDB()
 
@@ -27,6 +29,8 @@ export default defineEventHandler(async (event) => {
   if (!header.length) {
     throw createError({ statusCode: 404, statusMessage: 'Opname not found' })
   }
+
+  requireOwnership(event, { idMitra: header[0].idMitra })
 
   const items = await db
     .select({

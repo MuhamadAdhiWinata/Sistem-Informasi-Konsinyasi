@@ -1,9 +1,13 @@
 import { sql } from 'drizzle-orm'
 import { useDB } from '~~/server/utils/database'
+import { requireRole } from '~~/server/utils/rbac'
 
 export default defineEventHandler(async (event) => {
+  requireRole(event, ['penyalur', 'sales', 'mitra'])
+  const user = event.context.user!
   const query = getQuery(event)
-  const idMitra = Number(query.idMitra)
+  // Mitra hanya boleh melihat expected items untuk dirinya sendiri
+  const idMitra = user.peran === 'mitra' ? user.idMitra! : Number(query.idMitra)
   if (!idMitra) throw createError({ statusCode: 400, statusMessage: 'Parameter idMitra wajib diisi' })
 
   const db = await useDB()

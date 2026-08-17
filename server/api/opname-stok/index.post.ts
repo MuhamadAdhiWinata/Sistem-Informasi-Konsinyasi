@@ -26,6 +26,9 @@ export default defineEventHandler(async (event) => {
   const db = await useDB()
   const user = event.context.user!
 
+  // Mitra hanya bisa membuat opname untuk dirinya sendiri
+  const idMitra = user.peran === 'mitra' ? user.idMitra! : body.idMitra
+
   const today = body.tanggalKunjungan.replace(/-/g, '')
   const count = await db
     .select({ count: sql<number>`count(*)` })
@@ -37,7 +40,7 @@ export default defineEventHandler(async (event) => {
   const idOpname = await db.transaction(async (tx) => {
     const [header] = await tx.insert(opnameStok).values({
       nomorOpname,
-      idMitra: body.idMitra,
+      idMitra,
       idSales: user.id,
       tanggalKunjungan: new Date(body.tanggalKunjungan),
       status: 'draft',

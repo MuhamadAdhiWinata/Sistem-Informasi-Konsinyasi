@@ -1,7 +1,7 @@
 import { eq, and } from 'drizzle-orm'
 import { penerimaanBarang, itemPenerimaanBarang, pemasok, gudang, pengguna, produk } from '~~/server/database/schema'
 import { useDB } from '~~/server/utils/database'
-import { requireRole } from '~~/server/utils/rbac'
+import { requireRole, requireOwnership } from '~~/server/utils/rbac'
 
 export default defineEventHandler(async (event) => {
   requireRole(event, ['penyalur', 'sales', 'pemasok'])
@@ -30,6 +30,8 @@ export default defineEventHandler(async (event) => {
   if (!header.length) {
     throw createError({ statusCode: 404, statusMessage: 'Penerimaan not found' })
   }
+
+  requireOwnership(event, { idPemasok: header[0].idPemasok })
 
   const items = await db
     .select({

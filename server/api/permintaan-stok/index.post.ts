@@ -20,6 +20,9 @@ export default defineEventHandler(async (event) => {
   const db = await useDB()
   const user = event.context.user!
 
+  // Mitra hanya bisa request restock untuk dirinya sendiri
+  const idMitra = user.peran === 'mitra' ? user.idMitra! : body.idMitra
+
   const today = new Date().toISOString().split('T')[0].replace(/-/g, '')
   const count = await db
     .select({ count: sql<number>`count(*)` })
@@ -30,7 +33,7 @@ export default defineEventHandler(async (event) => {
 
   const [header] = await db.insert(permintaanStok).values({
     nomorPermintaan,
-    idMitra: body.idMitra,
+    idMitra,
     dimintaOleh: user.id,
     status: 'pending',
   })

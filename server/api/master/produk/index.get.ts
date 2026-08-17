@@ -3,6 +3,7 @@ import { produk, pemasok } from '~~/server/database/schema';
 import { useDB } from '~~/server/utils/database';
 
 export default defineEventHandler(async (event) => {
+  const user = event.context.user!
   const db = await useDB();
   const items = await db.select({
     id: produk.id,
@@ -19,6 +20,7 @@ export default defineEventHandler(async (event) => {
   })
     .from(produk)
     .leftJoin(pemasok, eq(produk.idPemasok, pemasok.id))
+    .where(user.peran === 'pemasok' ? eq(produk.idPemasok, user.idPemasok!) : undefined)
     .orderBy(desc(produk.id));
   return { data: items };
 });

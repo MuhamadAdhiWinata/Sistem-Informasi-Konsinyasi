@@ -236,6 +236,7 @@
 | 12.2 | Performa — bundle size optimal | Hindari bundle besar | ⏳ | |
 | 12.3 | Responsivitas mobile | Berfungsi di 360px | ✅ | Tested sidebars |
 | 12.4 | Keamanan — JWT + RBAC middleware | Semua API route terproteksi | ✅ | Middleware global on /api/** |
+| 12.4a | **Multi-tenant scoping Mitra & Pemasok** | Isolasi data per role | ✅ | Mitra & pemasok hanya melihat data miliknya: filter `where` per endpoint + `requireOwnership` di `[id]` + idMitra/idPemasok fresh dari DB di middleware auth + force idMitra di POST opname/permintaan + dashboard per-role. Detail: lihat catatan bawah. |
 | 12.5 | Keandalan DB — ACID transaction | `BEGIN/COMMIT/ROLLBACK` | ⏳ | |
 | 12.6 | Validasi input (client + server) | Zod / Yup / skema | ⏳ | |
 
@@ -292,6 +293,15 @@
 
 ---
 
+> ⏱ Terakhir diperbarui: Sabtu, 15 Agustus 2026 — Multi-tenant scoping Mitra & Pemasok (isolasi data per role).
+> 🔒 **Multi-tenant Scoping (v1):**
+> - **Mitra**: hanya melihat mitra sendiri (master/mitra), penyaluran/faktur/opname/permintaan miliknya; detail lintas tenant → 403; POST opname & permintaan-stok memaksa `idMitra = user.idMitra` (anti spoof); expected-items memaksa idMitra sendiri.
+> - **Pemasok**: hanya melihat pemasok sendiri, produk miliknya (master/produk), penerimaan dari dirinya, stok gudang produknya, penyaluran yang mengandung minimal 1 produknya (subquery item→produk→idPemasok); harga retail/grosir & faktur disembunyikan; detail lintas tenant → 403.
+> - **Middleware auth**: `idMitra`/`idPemasok` diambil fresh dari DB (bukan dari JWT) → scoping tidak bisa basi.
+> - **requireRole ditambahkan** di endpoint yang tadinya terbuka: master/pengguna (penyalur+sales, sales hanya lihat sesama sales), master/gudang (penyalur+sales), faktur (penyalur+mitra), opname & permintaan-stok GET (penyalur+sales+mitra).
+> - **Dashboard** (`pages/index.vue`): fetch per role — mitra & pemasok tidak lagi 403 di master data milik pihak lain.
+> - **Sales tidak di-scope** (keputusan user) — masih melihat semua data operasional sesuai desain RBAC awal.
+>
 > ⏱ Terakhir diperbarui: Kamis, 19 Juni 2026 — Menambahkan script `db:reset` (clean → migrate → seed) + dokumentasi README — Seed diperbarui: 6 mitra, 11 pengguna, 36 transaksi completed (s.d. 14 Jun). Masterdata mitra + pengguna + transaksi diperbanyak. Kolom `alamat`, `lat`, `lng` tampil di tabel mitra. Siap untuk transaksi baru mulai besok.
 >
 > 🚀 **Workflow Stok & Approval (v2):**

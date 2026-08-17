@@ -1,13 +1,19 @@
 import { eq, and, sql, desc } from 'drizzle-orm'
 import { stokGudang, gudang, produk, itemPenerimaanBarang, penerimaanBarang } from '~~/server/database/schema'
 import { useDB } from '~~/server/utils/database'
+import { requireRole } from '~~/server/utils/rbac'
 
 export default defineEventHandler(async (event) => {
+  requireRole(event, ['penyalur', 'sales', 'pemasok'])
+  const user = event.context.user!
   const db = await useDB()
   const query = getQuery(event)
   const idGudang = query.idGudang ? Number(query.idGudang) : undefined
 
-  const where = idGudang ? and(eq(stokGudang.idGudang, idGudang)) : undefined
+  const where = and(
+    idGudang ? eq(stokGudang.idGudang, idGudang) : undefined,
+    user.peran === 'pemasok' ? eq(produk.idPemasok, user.idPemasok!) : undefined,
+  )
 
   const items = await db
     .select({

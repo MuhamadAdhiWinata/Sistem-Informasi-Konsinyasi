@@ -1,6 +1,7 @@
 import { eq } from 'drizzle-orm';
 import { produk, pemasok } from '~~/server/database/schema';
 import { useDB } from '~~/server/utils/database';
+import { requireOwnership } from '~~/server/utils/rbac';
 
 export default defineEventHandler(async (event) => {
   const id = Number(getRouterParam(event, 'id'));
@@ -24,5 +25,6 @@ export default defineEventHandler(async (event) => {
   if (!items.length) {
     throw createError({ statusCode: 404, statusMessage: 'Produk not found' });
   }
+  requireOwnership(event, { idPemasok: items[0].idPemasok });
   return { data: items[0] };
 });

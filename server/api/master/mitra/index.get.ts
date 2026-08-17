@@ -3,9 +3,11 @@ import { mitra } from '~~/server/database/schema';
 import { useDB } from '~~/server/utils/database';
 
 export default defineEventHandler(async (event) => {
-  const user = event.context.user
+  const user = event.context.user!
   const db = await useDB();
-  const items = await db.select().from(mitra).orderBy(desc(mitra.id));
+  const items = user.peran === 'mitra'
+    ? await db.select().from(mitra).where(eq(mitra.id, user.idMitra!))
+    : await db.select().from(mitra).orderBy(desc(mitra.id));
 
   let result = items
   if (user?.peran === 'pemasok') {

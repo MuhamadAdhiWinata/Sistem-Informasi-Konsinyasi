@@ -372,6 +372,77 @@ function opnameStatusLabel(status: string) {
 async function fetchData() {
   isLoading.value = true
   try {
+    const role = auth.user.value?.peran
+    const toCount = (res: any) => String((res.data as any[])?.length || 0)
+
+    if (role === 'mitra') {
+      const [produkRes, mitraRes, penyaluranRes, opnameRes, fakturRes] = await Promise.all([
+        api('/api/master/produk'),
+        api('/api/master/mitra'),
+        api('/api/penyaluran'),
+        api('/api/opname-stok'),
+        api('/api/faktur'),
+      ])
+
+      statsRow1.value = [
+        buildStat('Produk', toCount(produkRes), 'Katalog produk', Package, 'emerald'),
+        buildStat('Mitra', toCount(mitraRes), 'Mitra Anda', Store, 'orange'),
+        buildStat('Penyaluran', toCount(penyaluranRes), 'Barang diterima', Truck, 'amber'),
+        buildStat('Opname Stok', toCount(opnameRes), 'Siklus opname', ClipboardCheck, 'red'),
+      ]
+      statsRow2.value = []
+      masterDataLinks.value = [
+        buildLink('/master/produk', 'Produk', Package, 'emerald', toCount(produkRes)),
+      ]
+      transaksiLinks.value = [
+        buildLink('/penyaluran', 'Penyaluran', Truck, 'amber', `${toCount(penyaluranRes)} transaksi`),
+        buildLink('/faktur', 'Faktur', FileText, 'blue', `${toCount(fakturRes)} dokumen`),
+        buildLink('/opname-stok', 'Opname Stok', ClipboardCheck, 'red', `${toCount(opnameRes)} siklus`),
+      ]
+
+      recentPenyaluran.value = ((penyaluranRes as any).data || []).slice(0, 5)
+      lowStockItems.value = []
+      opnameAnomalies.value = ((opnameRes as any).data || []).filter((o: any) => o.memilikiAnomali).slice(0, 10)
+      isLoading.value = false
+      return
+    }
+
+    if (role === 'pemasok') {
+      const [pemasokRes, produkRes, penyaluranRes, penerimaanRes, stokRes] = await Promise.all([
+        api('/api/master/pemasok'),
+        api('/api/master/produk'),
+        api('/api/penyaluran'),
+        api('/api/penerimaan-barang'),
+        api('/api/stok-gudang'),
+      ])
+
+      statsRow1.value = [
+        buildStat('Pemasok', toCount(pemasokRes), 'Profil Anda', Building2, 'blue'),
+        buildStat('Produk', toCount(produkRes), 'Produk milik Anda', Package, 'emerald'),
+        buildStat('Penyaluran', toCount(penyaluranRes), 'Mengandung produk Anda', Truck, 'amber'),
+        buildStat('Penerimaan', toCount(penerimaanRes), 'Barang Anda masuk', ArrowDownToLine, 'cyan'),
+      ]
+      statsRow2.value = [
+        buildStat('Stok Gudang', toCount(stokRes), 'Item produk Anda', Warehouse, 'purple'),
+      ]
+      masterDataLinks.value = [
+        buildLink('/master/pemasok', 'Pemasok', Building2, 'blue', toCount(pemasokRes)),
+        buildLink('/master/produk', 'Produk', Package, 'emerald', toCount(produkRes)),
+      ]
+      transaksiLinks.value = [
+        buildLink('/penerimaan-barang', 'Penerimaan Barang', ArrowDownToLine, 'cyan', `${toCount(penerimaanRes)} transaksi`),
+        buildLink('/penyaluran', 'Penyaluran', Truck, 'amber', `${toCount(penyaluranRes)} transaksi`),
+      ]
+
+      recentPenyaluran.value = ((penyaluranRes as any).data || []).slice(0, 5)
+      lowStockItems.value = ((stokRes as any).data || [])
+        .filter((s: any) => Number(s.jumlah) <= 5)
+        .slice(0, 10)
+      opnameAnomalies.value = []
+      isLoading.value = false
+      return
+    }
+
     const [pemasokRes, produkRes, mitraRes, gudangRes, penggunaRes, penyaluranRes, penerimaanRes, opnameRes, stokRes] = await Promise.all([
       api('/api/master/pemasok'),
       api('/api/master/produk'),
@@ -384,7 +455,6 @@ async function fetchData() {
       api('/api/stok-gudang'),
     ])
 
-    const toCount = (res: any) => String((res.data as any[])?.length || 0)
     const pemasok = toCount(pemasokRes)
     const produk = toCount(produkRes)
     const mitra = toCount(mitraRes)
@@ -416,10 +486,14 @@ async function fetchData() {
       buildLink('/master/pengguna', 'Pengguna', Users, 'pink', pengguna),
     ]
 
+    const fakturCount = role === 'sales'
+      ? null
+      : `${toCount(await api('/api/faktur'))} dokumen`
+
     transaksiLinks.value = [
       buildLink('/penerimaan-barang', 'Penerimaan Barang', ArrowDownToLine, 'cyan', `${penerimaanCount} transaksi`),
       buildLink('/penyaluran', 'Penyaluran', Truck, 'amber', `${penyaluranCount} transaksi`),
-      buildLink('/faktur', 'Faktur', FileText, 'blue', `${toCount(await api('/api/faktur'))} dokumen`),
+      ...(fakturCount ? [buildLink('/faktur', 'Faktur', FileText, 'blue', fakturCount)] : []),
       buildLink('/opname-stok', 'Opname Stok', ClipboardCheck, 'red', `${opnameCount} siklus`),
       buildLink('/stok-gudang', 'Stok Gudang', Warehouse, 'purple', `${toCount(stokRes)} item`),
       buildLink('/rekonsiliasi-penyalur', 'Rekonsiliasi', FileText, 'orange', 'Laporan'),
