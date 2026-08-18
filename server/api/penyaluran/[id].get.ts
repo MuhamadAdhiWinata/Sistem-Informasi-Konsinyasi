@@ -54,13 +54,7 @@ export default defineEventHandler(async (event) => {
     .where(eq(itemPenyaluran.idPenyaluran, id))
 
   if (user.peran === 'pemasok') {
-    items = items
-      .filter(i => i.idPemasok === user.idPemasok)
-      .map(i => ({
-        ...i,
-        snapshotHargaRetail: '0',
-        snapshotHargaGrosir: '0',
-      }))
+    items = items.filter(i => i.idPemasok === user.idPemasok)
     if (!items.length) {
       throw createError({ statusCode: 403, statusMessage: 'Forbidden: Bukan data milik Anda' })
     }

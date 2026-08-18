@@ -354,6 +354,11 @@
 > - **pages/index.vue**: Ganti `(auth.user as any)` → `auth.user.value`, ganti `(r as any)` → typed cast
 > - **color="neutral" fix**: Ganti semua `color="neutral"` → `color="gray"` (@nuxt/ui v2 tidak punya `neutral`)
 >
+> 🔧 **Bug Fix v2 (solved):**
+> - **penyaluran/[id].get.ts**: Hapus masking `snapshotHargaRetail/Grosir = '0'` untuk role pemasok — detail penyaluran sekarang menampilkan harga asli (item sudah terfilter ke produk milik pemasok, jadi tidak ada kebocoran data)
+> - **penyaluran/index.get.ts**: Hapus nulling `totalNilai` untuk role pemasok — kolom Total di list penyaluran sekarang menampilkan nilai faktur asli
+> - **penyaluran/index.get.ts**: Total untuk pemasok dihitung dari subtotal item milik pemasok saja (`SUM(jumlah_dikirim * snapshot_harga_retail)` per penyaluran, filter `produk.id_pemasok`) — sebelumnya memakai total faktur seluruh penyaluran yang mencampur produk pemasok lain
+>
 > 🔄 **Template Alignment v1 (done):**
 > - **app.vue**: Tambah `<NuxtLayout>` agar layout system aktif
 > - **app.config.ts**: primary `green`, gray `zinc` (sesuai dashboard-template.nuxt.dev)

@@ -1,4 +1,4 @@
-import { desc, eq, inArray } from 'drizzle-orm'
+import { desc, eq, inArray, sql } from 'drizzle-orm'
 import { penyaluran, mitra, gudang, pengguna, faktur, itemPenyaluran, produk } from '~~/server/database/schema'
 import { useDB } from '~~/server/utils/database'
 
@@ -17,6 +17,20 @@ export default defineEventHandler(async (event) => {
         .innerJoin(produk, eq(itemPenyaluran.idProduk, produk.id))
         .where(eq(produk.idPemasok, user.idPemasok!)),
     )
+  }
+
+  let totalPemasok: Record<number, string> = {}
+  if (user.peran === 'pemasok') {
+    const rows = await db
+      .select({
+        idPenyaluran: itemPenyaluran.idPenyaluran,
+        total: sql<string>`SUM(${itemPenyaluran.jumlahDikirim} * ${itemPenyaluran.snapshotHargaRetail})`,
+      })
+      .from(itemPenyaluran)
+      .innerJoin(produk, eq(itemPenyaluran.idProduk, produk.id))
+      .where(eq(produk.idPemasok, user.idPemasok!))
+      .groupBy(itemPenyaluran.idPenyaluran)
+    totalPemasok = Object.fromEntries(rows.map(r => [r.idPenyaluran, r.total]))
   }
 
   const items = await db
@@ -39,10 +53,9 @@ export default defineEventHandler(async (event) => {
     .where(scope)
     .orderBy(desc(penyaluran.id))
 
-  let result = items
   if (user.peran === 'pemasok') {
-    result = items.map(i => ({ ...i, totalNilai: null }))
+    return { data: items.map(i => ({ ...i, totalNilai: totalPemasok[i.id] ?? '0' })) }
   }
 
-  return { data: result }
+  return { data: items }
 })
